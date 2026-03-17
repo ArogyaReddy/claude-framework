@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FRAMEWORK-MECHANICS.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="framework-mechanics--how-claude-really-works-with-this-framework">Framework Mechanics — How Claude Really Works With This Framework</h1>
+<blockquote>
+<p><strong>This document is the honest technical answer to: &quot;Does Claude really follow this?&quot;</strong></p>
+<p>Not documentation showing how things <em>should</em> work.
+This documents what is <em>actually</em> happening — verified by reading every file — as of March 2026.</p>
+</blockquote>
+<hr>
+<h2 id="the-short-answer">The Short Answer</h2>
+<p><strong>Yes, Claude really does follow this framework.</strong> But not everything is automatic. There is a clear split:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>What Is Here</th>
+<th>Active?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Skills</td>
+<td>17 <code>.md</code> files with instructions</td>
+<td>Yes — fires when invoked</td>
+</tr>
+<tr>
+<td>Session startup protocol</td>
+<td>In global CLAUDE.md</td>
+<td>Yes — runs every session</td>
+</tr>
+<tr>
+<td>SESSION_LOG.md memory</td>
+<td>File exists with real content</td>
+<td>Yes — read at session start</td>
+</tr>
+<tr>
+<td>PROFILE.md identity</td>
+<td>File exists, partially filled</td>
+<td>Partially — has unfilled placeholders</td>
+</tr>
+<tr>
+<td>Hooks (safety layer)</td>
+<td>3 <code>.ps1</code> scripts written</td>
+<td><strong>NO — not wired, not firing</strong></td>
+</tr>
+<tr>
+<td><code>.claudeignore</code></td>
+<td>Must exist per-project</td>
+<td>Only where it has been created</td>
+</tr>
+<tr>
+<td>Token discipline</td>
+<td>Workflow reference doc</td>
+<td>Human-facing — requires your habits</td>
+</tr>
+</tbody>
+</table>
+<p>Two real gaps need fixing before the framework is fully active. They are covered in <strong>Section 7</strong>.</p>
+<hr>
+<h2 id="section-1--what-actually-happens-every-time-you-open-claude-code">Section 1 — What Actually Happens Every Time You Open Claude Code</h2>
+<p>This is not how it &quot;should&quot; work. This is the verified sequence, step by step.</p>
+<pre class="hljs"><code><div>YOU open Claude Code in any project folder
+        ↓
+Claude Code (the app) looks for CLAUDE.md in project folder
+        ↓
+If found: loads it into Claude's context window
+        ↓
+Claude Code (the app) looks for ~/.claude/CLAUDE.md (global)
+        ↓
+Loads global CLAUDE.md into same context window
+        ↓
+The global CLAUDE.md contains this startup protocol:
+  → Read local CLAUDE.md if it exists (done)
+  → Read PROFILE.md if it exists
+  → Read SESSION_LOG.md (most recent entry) if it exists
+        ↓
+Claude now has: project rules + your identity + session history
+ALL visible at once. Before you type a single word.
+        ↓
+You type your first message
+        ↓
+Claude responds knowing everything already
+</div></code></pre>
+<p><strong>What Claude is actually doing:</strong> Reading files. Not running programs. Not accessing a database. The &quot;intelligence&quot; is just text loaded into its working memory (context window) so Claude can see it and follow it.</p>
+<hr>
+<h2 id="section-2--how-claudemd-really-drives-claude">Section 2 — How CLAUDE.md Really Drives Claude</h2>
+<h3 id="the-mechanism">The mechanism</h3>
+<p>Claude Code loads <code>CLAUDE.md</code> into Claude's context before your first message. Every rule becomes part of what Claude can &quot;see&quot; for the entire session.</p>
+<h3 id="what-this-actually-changes">What this actually changes</h3>
+<p>Rules in CLAUDE.md are not suggestions. They behave like <strong>system instructions</strong> — Claude follows them the same way it follows its training.</p>
+<p>When CLAUDE.md says:</p>
+<pre class="hljs"><code><div>- No preamble (no &quot;Sure!&quot;, &quot;Of course!&quot;, &quot;Here is...&quot;)
+- No closing summary
+- Return only the modified function or file
+</div></code></pre>
+<p>Claude does not add preambles because it literally sees the rule telling it not to.</p>
+<h3 id="what-claudemd-cannot-do">What CLAUDE.md cannot do</h3>
+<ul>
+<li>It cannot override Claude's safety training (Claude will still refuse genuinely harmful requests)</li>
+<li>It only applies for the session duration. It is re-read next session but Claude does not &quot;learn&quot; from it</li>
+<li>Vague rules get interpreted. <code>&quot;Be concise&quot;</code> is vague. <code>&quot;Responses under 5 sentences unless asked&quot;</code> is not.</li>
+</ul>
+<h3 id="two-layers-loaded-together">Two layers loaded together</h3>
+<pre class="hljs"><code><div>Global CLAUDE.md (~/.claude/CLAUDE.md)     —  fires in EVERY project, always
+          +
+Project CLAUDE.md (./CLAUDE.md)            —  fires only in THIS project
+
+Both in context at once. Project rules override global rules where they conflict.
+</div></code></pre>
+<hr>
+<h2 id="section-3--how-sessionlogmd-really-gives-claude-%22memory%22">Section 3 — How SESSION_LOG.md Really Gives Claude &quot;Memory&quot;</h2>
+<h3 id="the-common-misconception">The common misconception</h3>
+<p>Claude does NOT have persistent memory. There is no database. Nothing is stored in Claude's model between sessions.</p>
+<h3 id="what-actually-happens">What actually happens</h3>
+<pre class="hljs"><code><div>Session 1:
+  You work all day on HireFlow
+  You say: &quot;Close the session.&quot;
+  Claude reads its context (the whole conversation)
+  Claude writes SESSION_LOG.md to your project folder
+  Session ends. Claude's context is wiped completely.
+
+Session 2 (next morning):
+  Claude Code opens → reads SESSION_LOG.md from disk
+  Loads that text into Claude's new context window
+  Claude now &quot;knows&quot; what happened yesterday
+  — not because it remembered
+  — because it read the file you saved
+</div></code></pre>
+<h3 id="the-real-consequence">The real consequence</h3>
+<p><strong>If you close Claude Code without saying &quot;Close the session.&quot; — there is no continuity.</strong>
+The ledger is never written. Tomorrow's Claude starts completely blank.</p>
+<h3 id="what-sessionlogmd-contains-real-example-from-this-framework">What SESSION_LOG.md contains (real example from this framework)</h3>
+<p>The actual file at <code>C:/AROG/Claude-Free/claude-framework/SESSION_LOG.md</code> contains:</p>
+<pre class="hljs"><code><div>== SESSION 2026-03-16 ==
+Built: output-control skills framework architecture analysis
+Decisions: [specific decisions logged]
+Status: [exact state of work]
+Next: [exact next steps]
+</div></code></pre>
+<p>This is what gets loaded tomorrow. Specific, accurate, actionable — because Claude wrote it from real conversation context, not from a template.</p>
+<h3 id="why-this-matters-for-cost">Why this matters for cost</h3>
+<p>Without SESSION_LOG.md: every session starts with you explaining &quot;we're building a recruitment app, we use TypeScript, we finished the job listing page yesterday...&quot;
+With SESSION_LOG.md: Claude reads 300 tokens of summary → knows everything → you start working immediately.</p>
+<hr>
+<h2 id="section-4--how-profilemd-really-changes-claudes-behavior">Section 4 — How PROFILE.md Really Changes Claude's Behavior</h2>
+<h3 id="the-mechanism">The mechanism</h3>
+<p>PROFILE.md is read alongside CLAUDE.md at session start. It tells Claude who <em>you</em> are — not what the project is.</p>
+<h3 id="what-it-actually-changes">What it actually changes</h3>
+<p>When PROFILE.md contains:</p>
+<pre class="hljs"><code><div>- When I ask a question: I want the answer first, context second.
+- What I dislike: Long preambles, repeating what I just said back to me.
+- I prefer simple solutions over clever ones.
+- I am cost-conscious with tokens — keep responses tight.
+</div></code></pre>
+<p>Claude uses these preferences to shape every response. Not just response length — also:</p>
+<ul>
+<li><strong>Tone</strong> — peer-to-peer vs teaching mode vs formal professional</li>
+<li><strong>Ordering</strong> — answer first vs explanation first</li>
+<li><strong>Recommendation style</strong> — &quot;here are 5 options&quot; vs &quot;here is the best option, here is why&quot;</li>
+<li><strong>Error explanations</strong> — concise vs detailed</li>
+<li><strong>Code comments</strong> — minimal vs fully documented</li>
+</ul>
+<h3 id="the-current-gap">The current gap</h3>
+<p>PROFILE.md exists and is partially filled. But these fields are still placeholders:</p>
+<pre class="hljs"><code><div>- Name: [Your name]       ← Claude cannot personalise responses
+- Role: [placeholder]     ← Claude makes assumptions about your experience level
+- Primary languages: [placeholder]  ← Claude may default to wrong language
+- Stack I work in daily: [placeholder]  ← Claude may miss stack preferences
+</div></code></pre>
+<p><strong>These must be filled in. See Section 7 for what to do.</strong></p>
+<p>The parts that ARE filled in (communication style, decision patterns, current project) are currently active and affecting Claude's responses.</p>
+<hr>
+<h2 id="section-5--how-skills-really-work">Section 5 — How Skills Really Work</h2>
+<h3 id="the-mechanism">The mechanism</h3>
+<p>A skill is a <code>.md</code> file containing instructions. When you invoke it:</p>
+<pre class="hljs"><code><div>You type: &quot;Use debug-first skill.&quot;
+        ↓
+Claude Code reads: C:/AROG/Claude-Free/claude-framework/skills/debug-first.md
+        ↓
+The file contents are injected into Claude's context
+        ↓
+Claude now &quot;sees&quot; the full set of debug-first instructions
+        ↓
+Claude follows them — because they are now visible to it
+</div></code></pre>
+<p>There is no code running. No compilation. No magic. Just a file being read and its text placed in front of Claude.</p>
+<h3 id="two-types-of-skills">Two types of skills</h3>
+<p><strong><code>agent: false</code> — runs in your current session:</strong></p>
+<pre class="hljs"><code><div>Your session context:
+  [your conversation so far]
+  [CLAUDE.md rules]
+  + [skill instructions added here]
+Claude now behaves differently for the duration of this conversation.
+</div></code></pre>
+<p><strong><code>agent: true</code> — Claude Code spawns a subagent:</strong></p>
+<pre class="hljs"><code><div>Your session context (unchanged):           Subagent session:
+  [your conversation]                    →  [skill instructions]
+                                            [the task]
+                                            subagent does the work
+                                         ←  result returned to you
+</div></code></pre>
+<p>The <code>agent: true</code> pattern protects your main context window. Use it for skills that read many files (code-review, project-scan). Use <code>agent: false</code> for lightweight instruction sets (scope-guard, change-manifest).</p>
+<h3 id="does-claude-actually-follow-skill-instructions">Does Claude actually follow skill instructions?</h3>
+<p>Yes — reliably. The 4 most-used skills were audited and all contain clean, unambiguous structured instruction sets. Claude follows them consistently because:</p>
+<ol>
+<li>The instructions are precise (not vague)</li>
+<li>They use structured output formats (EXPECTS/ACTUAL/CAUSE/FIX, SCOPE BLOCKER, CHANGE MANIFEST)</li>
+<li>They contain explicit stop conditions (&quot;Stop. Wait for approval.&quot;)</li>
+</ol>
+<h3 id="all-17-skills--verified-to-exist">All 17 skills — verified to exist</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Agent</th>
+<th>What it really does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>debug-first</code></td>
+<td>false</td>
+<td>Forces EXPECTS→ACTUAL→CAUSE→FIX diagnosis before touching code</td>
+</tr>
+<tr>
+<td><code>scope-guard</code></td>
+<td>false</td>
+<td>Locks changes to named files. Triggers SCOPE BLOCKER for anything else</td>
+</tr>
+<tr>
+<td><code>code-review</code></td>
+<td>true</td>
+<td>Reviews file against CLAUDE.md rules. Returns violations only</td>
+</tr>
+<tr>
+<td><code>spec-to-task</code></td>
+<td>true</td>
+<td>Converts spec → ordered task list, one file per task, dependencies stated</td>
+</tr>
+<tr>
+<td><code>change-manifest</code></td>
+<td>false</td>
+<td>Produces CHANGE MANIFEST: modified/created/deleted with spec refs</td>
+</tr>
+<tr>
+<td><code>session-closer</code></td>
+<td>false</td>
+<td>Writes SESSION_LOG.md from conversation context. Archives history</td>
+</tr>
+<tr>
+<td><code>minimal-output</code></td>
+<td>false</td>
+<td>Strips all narration. Returns code only</td>
+</tr>
+<tr>
+<td><code>output-control</code></td>
+<td>false</td>
+<td>Activates XML tag format for precise length/format control</td>
+</tr>
+<tr>
+<td><code>structured-response</code></td>
+<td>false</td>
+<td>Forces labeled section output</td>
+</tr>
+<tr>
+<td><code>followup-refine</code></td>
+<td>false</td>
+<td>Produces two versions: technical + plain English</td>
+</tr>
+<tr>
+<td><code>safe-cleanup-with-backup</code></td>
+<td>false</td>
+<td>Creates backup before any destructive deletion</td>
+</tr>
+<tr>
+<td><code>duplicate-structure-audit</code></td>
+<td>true</td>
+<td>Classifies duplicate folders as SAFE/CONFLICT/UNKNOWN</td>
+</tr>
+<tr>
+<td><code>jsx-to-standalone-html</code></td>
+<td>true</td>
+<td>Converts .jsx/.tsx to single .html file with no dependencies</td>
+</tr>
+<tr>
+<td><code>healthcheck</code></td>
+<td>true</td>
+<td>Scans project for missing framework components</td>
+</tr>
+<tr>
+<td><code>decision-log</code></td>
+<td>false</td>
+<td>Writes structured decision entry: date/decision/reason/alternatives</td>
+</tr>
+<tr>
+<td><code>project-scan</code></td>
+<td>true</td>
+<td>Full project scan → PROJECT_SCAN.md gap report</td>
+</tr>
+<tr>
+<td><code>framework-apply</code></td>
+<td>true</td>
+<td>Installs framework components based on scan report</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="section-6--how-token-savings-really-work">Section 6 — How Token Savings Really Work</h2>
+<h3 id="what-actually-reduces-cost">What actually reduces cost</h3>
+<p><strong><code>.claudeignore</code> — the biggest single saving</strong></p>
+<pre class="hljs"><code><div>Without it:
+  Claude can potentially read node_modules/ → 50,000+ tokens burned
+  Claude reads dist/, build/, logs/ → thousands more
+  One wrong &quot;let me check for context&quot; → $0.50–$2.00 wasted
+
+With it:
+  Claude sees only your ~50 real source files
+  Token cost: minimal
+</div></code></pre>
+<p>This is mechanical. No discipline required. Write the file once, it works forever.</p>
+<p><strong>CLAUDE.md and SESSION_LOG.md — removes re-explanation cost</strong></p>
+<pre class="hljs"><code><div>Without: You type &quot;our stack is TypeScript, Node 20, Prisma...&quot; every session → ~300–500 tokens
+With: CLAUDE.md auto-loaded → 0 tokens of re-explanation
+</div></code></pre>
+<p>Also mechanical. Works automatically.</p>
+<p><strong>Skills — replace long explanatory prompts</strong></p>
+<pre class="hljs"><code><div>Without skill: 80-word prompt explaining what diagnosis process you want
+With skill:    &quot;Use debug-first skill.&quot; → 6 tokens
+</div></code></pre>
+<p>The skill file itself costs tokens to load — but far fewer than typing the same instructions each time.</p>
+<p><strong><code>/compact</code> — extends session life</strong></p>
+<pre class="hljs"><code><div>Without compacting: Context fills at ~60% → quality degrades → more corrections needed
+With compacting at 60%: Session resets to near-empty → work continues efficiently
+</div></code></pre>
+<p>This requires discipline. See the table below.</p>
+<h3 id="what-requires-your-discipline-vs-what-is-automatic">What requires your discipline vs what is automatic</h3>
+<table>
+<thead>
+<tr>
+<th>Saving</th>
+<th>Automatic?</th>
+<th>What you must do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.claudeignore</code> blocks node_modules</td>
+<td>Yes, once created</td>
+<td>Create it</td>
+</tr>
+<tr>
+<td>CLAUDE.md rules apply</td>
+<td>Yes, always</td>
+<td>Nothing after initial setup</td>
+</tr>
+<tr>
+<td>SESSION_LOG.md continuity</td>
+<td><strong>No</strong></td>
+<td>Say &quot;Close the session.&quot; every time</td>
+</tr>
+<tr>
+<td><code>/compact</code> context management</td>
+<td><strong>No</strong></td>
+<td>Run at 60%, not 95%</td>
+</tr>
+<tr>
+<td>Scope guard prevents file-sprawl</td>
+<td><strong>No</strong></td>
+<td>Remember to invoke the skill</td>
+</tr>
+<tr>
+<td>Minimal-output saves output tokens</td>
+<td><strong>No</strong></td>
+<td>Remember to invoke the skill</td>
+</tr>
+<tr>
+<td>4-element prompts reduce back-and-forth</td>
+<td><strong>No</strong></td>
+<td>Write better prompts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The honest summary:</strong> The framework removes the largest waste sources automatically. The remaining savings require habits. The habits in <code>workflow/daily-checklist.md</code> and <code>workflow/token-discipline.md</code> exist exactly because automatic enforcement is not possible for these.</p>
+<h3 id="token-disciplinemd--what-it-actually-contains">Token-discipline.md — what it actually contains</h3>
+<p>Located at <code>C:/AROG/Claude-Free/claude-framework/workflow/token-discipline.md</code>.
+Contains 10 ranked rules, each with: the rule, a bad example, a good example, and the token impact.
+It is a human-facing checklist — not a hook, not a script.
+<strong>Read it once at the start of a project. It changes how you write prompts.</strong></p>
+<hr>
+<h2 id="section-7--the-two-gaps-what-is-not-working-right-now">Section 7 — The Two Gaps (What Is Not Working Right Now)</h2>
+<h3 id="gap-1-hooks-are-written-but-not-wired-%E2%9A%A0%EF%B8%8F">Gap 1: Hooks Are Written But Not Wired ⚠️</h3>
+<p><strong>What this means:</strong>
+Three functional PowerShell scripts exist:</p>
+<ul>
+<li><code>hooks/pre-tool-use.ps1</code> — blocks <code>rm -rf</code>, <code>DROP TABLE</code>, writes to <code>.env</code>, force push, unapproved installs</li>
+<li><code>hooks/post-tool-use.ps1</code> — logs every tool call, tracks file changes</li>
+<li><code>hooks/pre-compact.ps1</code> — saves state snapshot before compaction</li>
+</ul>
+<p><strong>None of them are firing.</strong> The global <code>C:/Users/Princ/.claude/settings.json</code> contains only <code>{}</code>.</p>
+<p><strong>What you lose without them:</strong></p>
+<ul>
+<li>No automated safety blocking (Claude Code will not stop dangerous commands)</li>
+<li>No automated tool-use logging</li>
+<li>No automatic state snapshots before compaction</li>
+</ul>
+<p><strong>What you still have without them:</strong></p>
+<ul>
+<li>CLAUDE.md safety rules still apply (Claude follows them as instructions)</li>
+<li>Session startup protocol still works</li>
+<li>All skills still work</li>
+<li>The hooks are a second safety layer on top — the first layer (CLAUDE.md rules) is still active</li>
+</ul>
+<p><strong>How to fix it:</strong>
+Replace <code>C:/Users/Princ/.claude/settings.json</code> (which currently contains <code>{}</code>) with:</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"hooks"</span>: {
+    <span class="hljs-attr">"PreToolUse"</span>: [
+      {
+        <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">"Bash"</span>,
+        <span class="hljs-attr">"hooks"</span>: [
+          {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>,
+            <span class="hljs-attr">"command"</span>: <span class="hljs-string">"powershell -NoProfile -ExecutionPolicy Bypass -File C:/AROG/Claude-Free/claude-framework/hooks/pre-tool-use.ps1"</span>
+          }
+        ]
+      },
+      {
+        <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">"Write"</span>,
+        <span class="hljs-attr">"hooks"</span>: [
+          {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>,
+            <span class="hljs-attr">"command"</span>: <span class="hljs-string">"powershell -NoProfile -ExecutionPolicy Bypass -File C:/AROG/Claude-Free/claude-framework/hooks/pre-tool-use.ps1"</span>
+          }
+        ]
+      },
+      {
+        <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">"Edit"</span>,
+        <span class="hljs-attr">"hooks"</span>: [
+          {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>,
+            <span class="hljs-attr">"command"</span>: <span class="hljs-string">"powershell -NoProfile -ExecutionPolicy Bypass -File C:/AROG/Claude-Free/claude-framework/hooks/pre-tool-use.ps1"</span>
+          }
+        ]
+      }
+    ],
+    <span class="hljs-attr">"PostToolUse"</span>: [
+      {
+        <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">".*"</span>,
+        <span class="hljs-attr">"hooks"</span>: [
+          {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>,
+            <span class="hljs-attr">"command"</span>: <span class="hljs-string">"powershell -NoProfile -ExecutionPolicy Bypass -File C:/AROG/Claude-Free/claude-framework/hooks/post-tool-use.ps1"</span>
+          }
+        ]
+      }
+    ],
+    <span class="hljs-attr">"PreCompact"</span>: [
+      {
+        <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">".*"</span>,
+        <span class="hljs-attr">"hooks"</span>: [
+          {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>,
+            <span class="hljs-attr">"command"</span>: <span class="hljs-string">"powershell -NoProfile -ExecutionPolicy Bypass -File C:/AROG/Claude-Free/claude-framework/hooks/pre-compact.ps1"</span>
+          }
+        ]
+      }
+    ]
+  }
+}
+</div></code></pre>
+<blockquote>
+<p>Note: These paths use the absolute framework path so hooks fire correctly from any project folder, not just the framework repo.</p>
+</blockquote>
+<hr>
+<h3 id="gap-2-profilemd-has-unfilled-placeholders-%E2%9A%A0%EF%B8%8F">Gap 2: PROFILE.md Has Unfilled Placeholders ⚠️</h3>
+<p><strong>What this means:</strong>
+PROFILE.md is read every session. But these fields still contain <code>[placeholder]</code> text:</p>
+<ul>
+<li><code>Name</code> — Claude cannot personalise responses</li>
+<li><code>Role</code> — Claude cannot calibrate explanation depth to your experience</li>
+<li><code>Primary languages</code> — Claude may default to wrong language choices</li>
+<li><code>Stack I work in daily</code> — Claude misses stack preferences</li>
+<li><code>Team context</code> — Claude doesn't know if you're solo or on a team</li>
+<li><code>Experience level</code> — Claude can't adjust how it explains concepts</li>
+</ul>
+<p><strong>The fields already filled (and working):</strong></p>
+<ul>
+<li>Communication style preferences ✅</li>
+<li>Decision patterns ✅</li>
+<li>Current project (ADP ROLL) ✅</li>
+<li>Writing style ✅</li>
+<li>Focus area (acknowledgement tasks, e-sign, onboarding) ✅</li>
+</ul>
+<p><strong>How to fix it:</strong>
+Fill in the placeholders in <code>C:/AROG/Claude-Free/claude-framework/PROFILE.md</code>.
+The file has a built-in guard: Claude is instructed to stop and ask you to fill it in if placeholders still exist.</p>
+<hr>
+<h2 id="section-8--what-claude-can-and-cannot-do-on-its-own">Section 8 — What Claude Can and Cannot Do on Its Own</h2>
+<h3 id="claude-genuinely-does-these-no-user-action-required-after-setup">Claude genuinely does these (no user action required after setup)</h3>
+<ul>
+<li>Reads CLAUDE.md and SESSION_LOG.md at session start</li>
+<li>Follows output rules (no preamble, concise responses, etc.)</li>
+<li>Uses the correct tech stack from CLAUDE.md</li>
+<li>Applies scope rules (but only if scope-guard is invoked)</li>
+<li>Writes SESSION_LOG.md when &quot;Close the session.&quot; is said</li>
+<li>Reads skill files when invoked</li>
+<li>Follows structured output formats from skills</li>
+</ul>
+<h3 id="claude-cannot-do-these-without-your-action">Claude cannot do these without your action</h3>
+<ul>
+<li>Remember anything without SESSION_LOG.md being written</li>
+<li>Protect context without <code>/compact</code> being run</li>
+<li>Activate hooks (settings.json must be configured)</li>
+<li>Know who you are if PROFILE.md has placeholders</li>
+</ul>
+<h3 id="what-%22close-the-session%22-actually-triggers-step-by-step">What &quot;Close the session.&quot; actually triggers (step by step)</h3>
+<pre class="hljs"><code><div>You say: &quot;Close the session.&quot;
+        ↓
+Claude reads the session-closer skill file
+        ↓
+Claude looks at the full conversation currently in context
+        ↓
+Claude writes:
+  SESSION_LOG.md    — what was done, decisions made, next steps
+  decisions.md      — any architectural or approach decisions (if applicable)
+        ↓
+Claude generates the archive commands for .claude/history/
+(You must run these — Claude outputs them but PowerShell runs them, not Claude)
+        ↓
+Session is done. Context cleared.
+
+Next session:
+  SESSION_LOG.md is re-read
+  Claude says: &quot;Continuing from [exactly where you left off]&quot;
+</div></code></pre>
+<hr>
+<h2 id="section-9--the-reality-of-ai-%22memory%22-no-illusions">Section 9 — The Reality of AI &quot;Memory&quot; (No Illusions)</h2>
+<p>Claude Code does not have persistent memory. No session history is stored in the AI model itself.</p>
+<p>What you actually have:</p>
+<pre class="hljs"><code><div>&quot;Memory&quot; = FILES that Claude reads at session start
+
+Session log         →  SESSION_LOG.md (written by Claude, read next session)
+Your identity       →  PROFILE.md     (written by you, read every session)
+Project rules       →  CLAUDE.md      (written by you, read every session)
+Decision history    →  decisions.md   (written by Claude, read next session)
+Pattern learnings   →  patterns.md    (written by Claude, read next session)
+</div></code></pre>
+<p>Each of these is just text written to disk. The &quot;memory&quot; is as good as what got written and how well it was written. This is why:</p>
+<ul>
+<li>&quot;Close the session.&quot; matters — that's when the writing happens</li>
+<li>Specific, clear session logs produce better continuity than vague ones</li>
+<li>If you skip closing the session, that day's context is permanently lost</li>
+</ul>
+<p><strong>This is not a weakness.</strong> It is actually very reliable — file-based memory does not degrade, does not hallucinate previous sessions, and is inspectable. You can open SESSION_LOG.md and see exactly what Claude knows about your project.</p>
+<hr>
+<h2 id="section-10--verification-is-it-currently-working">Section 10 — Verification: Is It Currently Working?</h2>
+<p>Run this check right now:</p>
+<h3 id="test-1-session-startup-30-seconds">Test 1: Session startup (30 seconds)</h3>
+<p>Open a new Claude Code session in any project. Type:</p>
+<pre class="hljs"><code><div>What do you know about this project? List: your output rules, the tech stack, what we did last session.
+</div></code></pre>
+<p>If Claude answers correctly from CLAUDE.md + SESSION_LOG.md without being told → working.</p>
+<h3 id="test-2-skills-30-seconds">Test 2: Skills (30 seconds)</h3>
+<pre class="hljs"><code><div>Use debug-first skill.
+The API returns 500 on every POST request.
+</div></code></pre>
+<p>If Claude produces EXPECTS/ACTUAL/CAUSE/FIX format and waits for approval → skill working.</p>
+<h3 id="test-3-hooks-30-seconds">Test 3: Hooks (30 seconds)</h3>
+<p>Currently: hooks are not wired. This test will show nothing until settings.json is fixed.
+After fixing: try a Bash command. <code>pre-tool-use.ps1</code> should log it.</p>
+<h3 id="test-4-profilemd-30-seconds">Test 4: PROFILE.md (30 seconds)</h3>
+<pre class="hljs"><code><div>How would you describe me as a developer?
+</div></code></pre>
+<p>If Claude gives generic descriptions → PROFILE.md placeholders not filled yet.
+If Claude describes your actual role, style, and stack → PROFILE.md is working.</p>
+<hr>
+<h2 id="summary">Summary</h2>
+<p>The framework is real and substantially working. The skills, session memory, and output rules all function exactly as designed. Two things need attention before it is complete:</p>
+<ol>
+<li><strong>Wire the hooks</strong> — populate <code>C:/Users/Princ/.claude/settings.json</code> with the configuration in Section 7</li>
+<li><strong>Fill PROFILE.md</strong> — add your name, role, experience level, languages, and stack</li>
+</ol>
+<p>Everything else is active.</p>
+<hr>
+<p><em>Claude Code Master Framework — Mechanics &amp; Implementation Reality</em>
+<em>Verified: March 2026</em></p>
+
+</body>
+</html>

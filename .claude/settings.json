@@ -1,0 +1,83 @@
+{
+  "maxBudgetUsd": 50,
+  "permissions": {
+    "deny": [
+      "Read(.env*)",
+      "Write(.env*)",
+      "Bash(rm -rf*)",
+      "Bash(sudo *)",
+      "Bash(git push --force*)"
+    ],
+    "ask": [
+      "Bash(npm install*)",
+      "Bash(pip install*)",
+      "Bash(yarn add*)",
+      "Bash(git push*)"
+    ],
+    "allowedTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(npm run *)",
+      "Bash(npm test*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/pre-tool-use.ps1"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/pre-tool-use.ps1"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/pre-tool-use.ps1"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/post-tool-use.ps1"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/pre-compact.ps1"
+          }
+        ]
+      }
+    ]
+  }
+}

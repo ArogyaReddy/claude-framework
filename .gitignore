@@ -1,0 +1,8 @@
+.claude/logs/
+cleanup-backup-*/
+PROJECT_SCAN_RAW.md
+SESSION_LOG.md
+setup-test-output.txt
+dist/
+node_modules/
+

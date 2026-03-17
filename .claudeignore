@@ -1,0 +1,119 @@
+# .claudeignore — Token Budget Configuration
+# Files and folders listed here are invisible to Claude.
+# Invisible = cannot hallucinate about = lower token cost.
+# Be aggressive. If Claude doesn't need to read it, ignore it.
+
+# --- Dependencies ---
+node_modules/
+.pnp/
+.pnp.js
+vendor/
+bower_components/
+
+# --- Build Output ---
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+coverage/
+*.min.js
+*.min.css
+*.bundle.js
+*.chunk.js
+
+# --- Generated Files ---
+*.generated.ts
+*.generated.js
+*.d.ts
+auto-generated/
+__generated__/
+
+# --- Logs ---
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Environment and Secrets ---
+.env
+.env.*
+*.pem
+*.key
+*.cert
+secrets/
+
+# --- Cache ---
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.turbo
+.turbo/
+
+# --- OS and Editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Large Data Files ---
+*.csv
+*.xlsx
+*.sql
+*.dump
+*.sqlite
+*.db
+data/
+fixtures/large/
+seeds/
+
+# --- Media Assets ---
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.mp4
+*.mp3
+*.pdf
+public/assets/
+static/images/
+
+# --- Test Snapshots (unless debugging) ---
+__snapshots__/
+*.snap
+
+# --- Lock Files ---
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Gemfile.lock
+
+# --- Docs (unless relevant) ---
+docs/
+*.md
+!CLAUDE.md
+!specs/
+!skills/
+!README.md
+
+# --- Infrastructure (unless relevant) ---
+terraform/
+.terraform/
+kubernetes/
+k8s/
+helm/
+docker/
+Dockerfile*
+docker-compose*
+.github/
+
+# --- Local Framework Source Copy ---
+claude-framework/
+{skills,hooks,prompts,specs,workflow,.claude}/

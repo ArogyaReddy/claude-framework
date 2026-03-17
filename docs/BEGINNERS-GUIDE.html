@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BEGINNERS-GUIDE.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="the-claude-code-framework--the-complete-beginners-guide">The Claude Code Framework — The Complete Beginner's Guide</h1>
+<blockquote>
+<p><strong>For anyone just starting out.</strong>
+Written like a teacher sitting next to you, explaining everything step by step.
+By the end of this guide, you will understand everything and be ready to use this framework on any project.</p>
+</blockquote>
+<hr>
+<h2 id="before-we-start--the-big-idea-in-one-sentence">Before We Start — The Big Idea in One Sentence</h2>
+<blockquote>
+<p><strong>This framework is a set of instructions, habits, and tools that make Claude (your AI coding helper) work smarter, faster, and safer — on every project.</strong></p>
+</blockquote>
+<hr>
+<h2 id="part-1--what-is-claude-code">Part 1 — What Is Claude Code?</h2>
+<h3 id="think-of-it-like-this">Think of it Like This</h3>
+<p>Imagine you have a <strong>very smart helper</strong> who can write code, fix bugs, and build entire features for you. This helper is called <strong>Claude</strong>.</p>
+<p>But here is the problem — every time you start a new day, Claude <strong>forgets everything</strong> from yesterday. It does not know your project. It does not know your rules. It does not know how you like things done.</p>
+<p>So every day you would have to say:</p>
+<blockquote>
+<p>&quot;Hey Claude, remember — we are building a recruitment website, we use TypeScript, we never delete files without asking, we always write tests first, and please don't add extra stuff I didn't ask for...&quot;</p>
+</blockquote>
+<p>That takes forever. And you might forget to say something important.</p>
+<h3 id="the-solution--the-framework">The Solution — The Framework</h3>
+<p>The <strong>Claude Code Framework</strong> is like a <strong>recipe book + rulebook + toolbox</strong> that you set up ONCE and then Claude reads it automatically at the start of every session.</p>
+<p>You never have to re-explain your rules again.</p>
+<pre class="hljs"><code><div>Without Framework:                    With Framework:
+─────────────────                     ──────────────────────────────
+You: &quot;Hey Claude, we use              Claude opens CLAUDE.md and
+TypeScript, we never...&quot;              already knows everything.
+Claude: &quot;Got it.&quot;
+(tomorrow it forgets)                 You just say: &quot;Build the
+You: &quot;Hey Claude, we use              login page.&quot;
+TypeScript, we never...&quot;              Done.
+</div></code></pre>
+<hr>
+<h2 id="part-2--the-map-big-picture">Part 2 — The Map (Big Picture)</h2>
+<p>Here is everything the framework contains and how it connects:</p>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Your Project] --> B[CLAUDE.md\nThe Rulebook]
+    A --> C[skills/\nSpecial Moves]
+    A --> D[.claude/settings.json\nPermissions + Safety]
+    A --> E[hooks/\nAutomatic Actions]
+    A --> F[prompts/\nCopy-Paste Templates]
+    A --> G[specs/\nFeature Blueprints]
+    A --> H[workflow/\nDaily Habits]
+
+    B --> B1[Identity: who Claude is]
+    B --> B2[Output Rules: how Claude writes]
+    B --> B3[Scope Rules: what Claude touches]
+    B --> B4[Your stack: language, framework]
+
+    C --> C1[debug-first\nFind bugs before fixing]
+    C --> C2[scope-guard\nDon't touch extra files]
+    C --> C3[code-review\nCheck quality]
+    C --> C4[spec-to-task\nPlan features]
+    C --> C5[change-manifest\nWhat changed?]
+    C --> C6[minimal-output\nCode only, no chatter]
+
+    D --> D1[deny: block dangerous commands]
+    D --> D2[ask: ask before risky actions]
+    D --> D3[allow: safe commands pass through]
+
+    E --> E1[pre-tool-use: check before action]
+    E --> E2[post-tool-use: log after action]
+    E --> E3[pre-compact: save before compressing]
+</div></code></pre>
+<hr>
+<h2 id="part-3--meet-hireflow-our-example-project">Part 3 — Meet HireFlow (Our Example Project)</h2>
+<p><strong>For this whole guide, we will build a real project called HireFlow.</strong></p>
+<p>HireFlow is a recruitment website. Here is what it does:</p>
+<pre class="hljs"><code><div>HireFlow — What It Does
+────────────────────────────────────────────────
+  Job Seekers can:
+    ✅ Browse open job positions
+    ✅ Submit job applications
+    ✅ Track their application status
+
+  HR Managers can:
+    ✅ Post new job openings
+    ✅ Review incoming applications
+    ✅ Schedule interviews
+    ✅ Accept or reject candidates
+
+  Tech Stack:
+    - TypeScript + Node.js (backend)
+    - React (frontend)
+    - PostgreSQL (database)
+    - Jest (testing)
+────────────────────────────────────────────────
+</div></code></pre>
+<p>We will use HireFlow as our example for EVERYTHING in this guide.</p>
+<hr>
+<h2 id="part-4--the-files-and-folders-what-each-piece-does">Part 4 — The Files and Folders (What Each Piece Does)</h2>
+<p>Think of the framework folder like a <strong>school backpack</strong>. Here is what is inside:</p>
+<pre class="hljs"><code><div>claude-framework/
+│
+├── CLAUDE.md              ← The Rulebook (Claude reads this every session)
+├── CLAUDE-TEMPLATE.md     ← Blank Rulebook template (copy to new projects)
+├── PROFILE.md             ← Who you are (Claude reads this every session)
+├── .claudeignore          ← &quot;Don't look in here&quot; list (token budget protector)
+│
+├── .claude/
+│   ├── settings.json      ← Safety rules + spending limit
+│   └── skills/            ← Skills only for this framework repo
+│
+├── skills/                ← Skills you copy to every project
+│   ├── debug-first.md
+│   ├── scope-guard.md
+│   ├── code-review.md
+│   └── ... (17 total)
+│
+├── hooks/                 ← Automatic robot actions
+│   ├── pre-tool-use.ps1
+│   ├── post-tool-use.ps1
+│   └── pre-compact.ps1
+│
+├── prompts/               ← Copy-paste prompt templates
+│   ├── golden-prompts.md           ← 12 ready-to-use prompt patterns
+│   ├── mega-prompt-template.md     ← Full XML template for complex tasks
+│   ├── managing-output-length.md   ← Reference card for output control
+│   └── prompt-decisions.md        ← Which prompt pattern for which situation
+│
+├── specs/                 ← Feature blueprints
+│   └── _template.md
+│
+└── workflow/              ← Daily habits and checklists
+    ├── daily-checklist.md
+    ├── token-discipline.md         ← 10-rule token cost checklist
+    └── project-setup.md
+</div></code></pre>
+<hr>
+<h2 id="part-5--claudemd-the-rulebook">Part 5 — CLAUDE.md (The Rulebook)</h2>
+<h3 id="what-is-it">What Is It?</h3>
+<p>CLAUDE.md is the <strong>most important file in the whole framework.</strong></p>
+<p>Every time you open Claude Code, it reads this file first. It is like a <strong>note taped to Claude's desk</strong> that says exactly how to behave.</p>
+<h3 id="why-does-it-matter">Why Does It Matter?</h3>
+<p>Without CLAUDE.md, Claude makes its own decisions about:</p>
+<ul>
+<li>How long to make responses</li>
+<li>Whether to add extra files you didn't ask for</li>
+<li>Which coding style to use</li>
+<li>What language/framework to use</li>
+</ul>
+<p>With CLAUDE.md, Claude knows all of this without being told.</p>
+<h3 id="what-goes-in-claudemd">What Goes in CLAUDE.md?</h3>
+<p>Think of it in 5 sections:</p>
+<pre class="hljs"><code><div>┌─────────────────────────────────────────────┐
+│  SECTION 1: Identity                        │
+│  &quot;You are a precise senior engineer.&quot;       │
+│  &quot;Do only what is asked. Nothing more.&quot;     │
+├─────────────────────────────────────────────┤
+│  SECTION 2: Output Rules                    │
+│  &quot;No 'Sure! Here is...' at the start.&quot;      │
+│  &quot;No summary at the end.&quot;                   │
+│  &quot;Return only what was asked for.&quot;          │
+├─────────────────────────────────────────────┤
+│  SECTION 3: Scope Rules                     │
+│  &quot;Only touch files I name.&quot;                 │
+│  &quot;Don't refactor nearby code.&quot;              │
+│  &quot;If you need to touch another file, STOP.&quot; │
+├─────────────────────────────────────────────┤
+│  SECTION 4: Your Stack                      │
+│  &quot;Language: TypeScript, Node 20&quot;            │
+│  &quot;Framework: Express + React&quot;               │
+│  &quot;Tests: Jest&quot;                              │
+├─────────────────────────────────────────────┤
+│  SECTION 5: Hard Rules                      │
+│  &quot;Never touch .env files&quot;                   │
+│  &quot;Never install packages without asking&quot;    │
+│  &quot;Never commit without permission&quot;          │
+└─────────────────────────────────────────────┘
+</div></code></pre>
+<h3 id="hireflow-example--what-hireflows-claudemd-looks-like">HireFlow Example — What HireFlow's CLAUDE.md Looks Like</h3>
+<pre class="hljs"><code><div><span class="hljs-section"># CLAUDE.md — HireFlow Project</span>
+
+<span class="hljs-section">## Identity</span>
+You are a precise senior software engineer.
+Do only what is asked. Nothing more.
+
+<span class="hljs-section">## Output Rules</span>
+<span class="hljs-bullet">- </span>No preamble (no "Sure!", "Of course!", "Here is...")
+<span class="hljs-bullet">- </span>No closing summary
+<span class="hljs-bullet">- </span>Return only the modified function or file, not the whole project
+<span class="hljs-bullet">- </span>Comments only where logic is non-obvious
+
+<span class="hljs-section">## Scope Rules</span>
+<span class="hljs-bullet">- </span>Only touch the file(s) explicitly named in the prompt
+<span class="hljs-bullet">- </span>If a fix needs an unmentioned file, STOP and report it first
+<span class="hljs-bullet">- </span>No drive-by refactors
+<span class="hljs-bullet">- </span>No new dependencies without approval
+
+<span class="hljs-section">## Tech Stack</span>
+<span class="hljs-bullet">- </span>Language: TypeScript, Node 20
+<span class="hljs-bullet">- </span>Frontend: React 18, Tailwind CSS
+<span class="hljs-bullet">- </span>Backend: Express.js
+<span class="hljs-bullet">- </span>Database: PostgreSQL (using Prisma ORM)
+<span class="hljs-bullet">- </span>Tests: Jest + React Testing Library
+<span class="hljs-bullet">- </span>Linter: ESLint + Prettier
+
+<span class="hljs-section">## Project Structure</span>
+<span class="hljs-bullet">- </span>/src/api        — Express routes and controllers
+<span class="hljs-bullet">- </span>/src/components — React components
+<span class="hljs-bullet">- </span>/src/services   — Business logic
+<span class="hljs-bullet">- </span>/src/types      — TypeScript interfaces
+<span class="hljs-bullet">- </span>/tests          — All test files
+
+<span class="hljs-section">## Hard Rules</span>
+<span class="hljs-bullet">- </span>Never touch .env files
+<span class="hljs-bullet">- </span>Never run migrations without explicit instruction
+<span class="hljs-bullet">- </span>Never commit or push without explicit instruction
+<span class="hljs-bullet">- </span>Never install npm packages without asking first
+
+<span class="hljs-section">## Skills Available</span>
+<span class="hljs-bullet">- </span>skills/debug-first.md       → Any bug or error
+<span class="hljs-bullet">- </span>skills/scope-guard.md       → Multi-file or risky changes
+<span class="hljs-bullet">- </span>skills/code-review.md       → Pre-merge checks
+<span class="hljs-bullet">- </span>skills/spec-to-task.md      → Before starting any feature
+<span class="hljs-bullet">- </span>skills/change-manifest.md   → After any multi-file edit
+<span class="hljs-bullet">- </span>skills/session-closer.md    → End of each session
+</div></code></pre>
+<hr>
+<h2 id="profilemd--claudes-personal-notes-about-you">PROFILE.md — Claude's Personal Notes About You</h2>
+<p>This is the <strong>companion file to CLAUDE.md</strong> and the most underused part of the framework.</p>
+<p>CLAUDE.md tells Claude how to work on your <strong>project</strong>.
+PROFILE.md tells Claude who <strong>you</strong> are.</p>
+<p>Think of the difference like this:</p>
+<table>
+<thead>
+<tr>
+<th>CLAUDE.md says...</th>
+<th>PROFILE.md says...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Use TypeScript.&quot;</td>
+<td>&quot;My name is Prabhu. I'm a senior engineer.&quot;</td>
+</tr>
+<tr>
+<td>&quot;No console.log in production.&quot;</td>
+<td>&quot;When I ask a question, give me the answer first.&quot;</td>
+</tr>
+<tr>
+<td>&quot;Write tests for every function.&quot;</td>
+<td>&quot;I'm actively learning system architecture.&quot;</td>
+</tr>
+<tr>
+<td>&quot;Use Prisma ORM.&quot;</td>
+<td>&quot;I dislike long preambles and cautious disclaimers.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>With PROFILE.md filled in, Claude adapts to <strong>you</strong> — not just to the project.</p>
+<h3 id="how-to-fill-in-profilemd">How to Fill In PROFILE.md</h3>
+<p>The file lives at the root of your project. Open it and replace the placeholders:</p>
+<pre class="hljs"><code><div><span class="hljs-section">## Who I Am</span>
+<span class="hljs-bullet">- </span>Name: Prabhu
+<span class="hljs-bullet">- </span>Role: Senior Software Engineer
+<span class="hljs-bullet">- </span>Current Project: HireFlow — recruitment platform
+
+<span class="hljs-section">## Communication Style</span>
+<span class="hljs-bullet">- </span>When explaining: Be direct. Use examples over abstract descriptions.
+<span class="hljs-bullet">- </span>Tone I prefer: Peer-to-peer, no fluff
+<span class="hljs-bullet">- </span>What I dislike: Long preambles, repeating what I said back to me
+<span class="hljs-bullet">- </span>When I ask a question: Answer first, context second
+
+<span class="hljs-section">## Decision Patterns</span>
+<span class="hljs-bullet">- </span>I prefer simple solutions over clever ones
+<span class="hljs-bullet">- </span>I prefer editing existing files over creating new ones
+<span class="hljs-bullet">- </span>I am cost-conscious with tokens — keep responses tight
+
+<span class="hljs-section">## Notes</span>
+<span class="hljs-bullet">- </span>We always use camelCase for variables
+<span class="hljs-bullet">- </span>Our API uses snake_case keys in responses
+</div></code></pre>
+<h3 id="when-does-claude-read-profilemd">When Does Claude Read PROFILE.md?</h3>
+<p>Every session. At startup, alongside CLAUDE.md:</p>
+<pre class="hljs"><code><div>Claude Code opens
+        ↓
+Reads CLAUDE.md  →  loads project rules
+        ↓
+Reads PROFILE.md →  loads who you are
+        ↓
+Claude knows: the project rules AND the person giving the instructions
+</div></code></pre>
+<h3 id="warning-the-setup-check">Warning: The Setup Check</h3>
+<p>PROFILE.md ships with placeholder text like <code>[Your name]</code>. If you forget to fill it in, the <code>session-closer</code> skill will warn you before saving your session log.</p>
+<blockquote>
+<p><strong>Fill in PROFILE.md before your first real session on any new project.</strong></p>
+</blockquote>
+<hr>
+<h2 id="part-6--skills-the-special-moves">Part 6 — Skills (The Special Moves)</h2>
+<h3 id="what-is-a-skill">What Is a Skill?</h3>
+<p>A skill is like a <strong>cheat code</strong> for Claude.</p>
+<p>Instead of writing a long explanation every time, you say 3 words and Claude activates a whole set of behaviors.</p>
+<pre class="hljs"><code><div>Without skill:                        With skill:
+──────────────────────                ────────────────────────────
+&quot;Hey Claude, before you fix           &quot;Use debug-first skill.&quot;
+this bug, I want you to first
+tell me what you think is             Claude immediately:
+wrong, and where exactly,             1. States expected behavior
+and how big the fix is,               2. States actual behavior
+and then WAIT for me to               3. Points to likely cause
+approve before changing               4. States fix scope
+anything...&quot;                          5. Waits for approval
+</div></code></pre>
+<h3 id="how-do-you-use-a-skill">How Do You Use a Skill?</h3>
+<p>You just type the trigger phrase:</p>
+<pre class="hljs"><code><div>Use debug-first skill.
+Use scope-guard skill.
+Use code-review skill on src/api/jobs.ts
+Use spec-to-task skill on specs/applications.md
+Use change-manifest skill.
+</div></code></pre>
+<p>That is it. Three to five words.</p>
+<h3 id="the-skills-library--all-17-skills-explained">The Skills Library — All 17 Skills Explained</h3>
+<h4 id="group-1-daily-work-skills">Group 1: Daily Work Skills</h4>
+<hr>
+<p><strong>Skill 1: <code>debug-first</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use debug-first skill.&quot;
+When:    Something is broken. A bug. An error. Unexpected behavior.
+
+What it does:
+  Before touching ANY code, Claude must:
+  1. Say what should be happening (expected)
+  2. Say what IS happening (actual)
+  3. Point to the exact file and line number causing it
+  4. Say how small or big the fix needs to be
+  5. STOP and wait for your approval before fixing anything
+
+Why this matters:
+  Without this, Claude guesses and sometimes fixes the WRONG thing.
+  This skill forces diagnosis before surgery — just like a doctor.
+
+HireFlow Example:
+  Bug: &quot;Applications are not saving to the database.&quot;
+
+  Without skill → Claude immediately starts changing code everywhere.
+
+  With skill:
+  EXPECTS: POST /api/applications saves a new row in the applications table
+  ACTUAL:  POST /api/applications returns 200 but no row is created
+  CAUSE:   src/api/applications.ts:47 — await is missing before db.create()
+  FIX SCOPE: One line change in applications.ts only
+  STATUS: Waiting for approval to implement.
+</div></code></pre>
+<hr>
+<p><strong>Skill 2: <code>scope-guard</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use scope-guard skill.&quot;
+When:    You are about to ask Claude to change multiple files,
+         or any task where Claude might &quot;help extra&quot; beyond what you asked.
+
+What it does:
+  Locks Claude to ONLY what you named.
+  If Claude discovers it needs to change an unmentioned file,
+  it STOPS and shows a blocker instead of changing it silently.
+
+  SCOPE BLOCKER
+  Required change: src/services/email.ts:23
+  Reason: sendConfirmation() is missing a parameter
+  Need approval to proceed.
+
+Why this matters:
+  Claude is enthusiastic. Without a fence, it &quot;cleans up while it's in there.&quot;
+  This causes unexpected changes that break other things.
+
+HireFlow Example:
+  Task: &quot;Add validation to the job application form.&quot;
+  Without scope-guard → Claude also &quot;improves&quot; the login form,
+                        updates some types, and refactors a service.
+  With scope-guard → Claude only touches the application form.
+                     Anything else triggers a SCOPE BLOCKER.
+</div></code></pre>
+<hr>
+<p><strong>Skill 3: <code>code-review</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use code-review skill on src/api/jobs.ts&quot;
+When:    Before merging code. After writing a feature. Quality check.
+
+What it does:
+  Reviews the named file against your rules from CLAUDE.md.
+  Returns ONLY violations. Nothing else.
+  No suggestions. No praise. No rewrites.
+
+  VIOLATIONS: 2 found
+
+  [1] src/api/jobs.ts:34
+      Rule:    No raw SQL
+      Issue:   Direct SQL string used instead of Prisma ORM
+
+  [2] src/api/jobs.ts:89
+      Rule:    No console.log in production code
+      Issue:   console.log('job created') on line 89
+
+Why this matters:
+  Gets a second opinion before code ships.
+  Catches the rules you forgot while writing fast.
+
+HireFlow Example:
+  After building the &quot;Post a Job&quot; feature:
+  &quot;Use code-review skill on src/api/jobs.ts&quot;
+  → Catches 2 violations before they reach production.
+</div></code></pre>
+<hr>
+<p><strong>Skill 4: <code>spec-to-task</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use spec-to-task skill on specs/applications.md&quot;
+When:    You have written a spec for a feature and are ready to build it.
+
+What it does:
+  Reads your spec and converts it into a numbered task list.
+  Each task = one file, one change, clearly stated.
+  Tasks are ordered so each depends on the previous ones being done.
+
+  FEATURE: Job Application Form
+  SPEC:     specs/applications.md
+  TASKS:
+
+  [ ] Task 1
+      File:       src/types/application.ts
+      Change:     Create Application TypeScript interface
+      Preserve:   Nothing (new file)
+      Depends on: none
+
+  [ ] Task 2
+      File:       src/api/applications.ts
+      Change:     Add POST /api/applications route
+      Preserve:   Existing routes
+      Depends on: Task 1
+
+Why this matters:
+  Big features feel overwhelming.
+  This breaks them into safe, one-at-a-time steps you can approve individually.
+
+HireFlow Example:
+  You have specs/job-posting.md written.
+  &quot;Use spec-to-task skill on specs/job-posting.md&quot;
+  → Claude gives you 7 ordered tasks. You work through them one by one.
+</div></code></pre>
+<hr>
+<p><strong>Skill 5: <code>change-manifest</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use change-manifest skill.&quot;
+When:    After Claude has changed multiple files. Before committing.
+
+What it does:
+  Produces an exact log of what changed, why, and what was NOT touched.
+
+  CHANGE MANIFEST
+  ═══════════════════════════════════
+
+  Modified:
+    src/api/applications.ts
+      + Added POST /api/applications route
+      ~ Updated error handling to use AppError class
+      ✓ preserved: existing GET route unchanged
+
+  Created:
+    src/types/application.ts
+      Purpose: TypeScript interface for Application model
+
+  Spec Reference:
+    specs/applications.md § 4.1 Submit Application
+
+  ═══════════════════════════════════
+
+Why this matters:
+  Perfect for pull request descriptions.
+  Proves exactly what changed — no surprises in code review.
+</div></code></pre>
+<hr>
+<p><strong>Skill 6: <code>minimal-output</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use minimal-output skill.&quot;
+When:    Any time. Especially when you just want CODE, no explanation.
+
+What it does:
+  Strips all narration from Claude's responses.
+  No &quot;Here is the function you asked for...&quot;
+  No &quot;This implementation uses the following approach...&quot;
+  Just code. Clean. Fast.
+
+HireFlow Example:
+  Without skill: Claude writes 200 lines of explanation + 20 lines of code.
+  With skill:    Claude writes 20 lines of code.
+</div></code></pre>
+<hr>
+<h4 id="group-2-output--session-skills">Group 2: Output + Session Skills</h4>
+<hr>
+<p><strong>Skill 7: <code>session-closer</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Close the session.&quot; or &quot;Use session-closer skill.&quot;
+When:    End of every work session — before closing Claude Code.
+
+What it does:
+  Saves a summary of what happened to SESSION_LOG.md:
+  - What was built
+  - What decisions were made
+  - What is still unfinished
+  - Anything Claude noticed that needs attention
+
+Why this matters:
+  Next session, Claude reads this log and picks up EXACTLY where you left off.
+  No re-explaining. No &quot;where were we?&quot;
+
+HireFlow Example:
+  End of day → &quot;Close the session.&quot;
+  Tomorrow morning → Claude reads the log and knows:
+    &quot;We finished the job listing page. The application form
+     is 50% done — the validation is missing. Decision was
+     made to NOT use email verification for MVP.&quot;
+</div></code></pre>
+<hr>
+<p><strong>Skill 8: <code>output-control</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use output-control skill.&quot;
+When:    You need Claude to respond in a very specific length or format.
+
+What it does:
+  Activates XML tag format for controlling output exactly:
+
+  &lt;format&gt;numbered-list&lt;/format&gt;
+  &lt;length&gt;5 items max&lt;/length&gt;
+  &lt;sections&gt;Problem, Solution, Steps&lt;/sections&gt;
+</div></code></pre>
+<hr>
+<p><strong>Skill 9: <code>structured-response</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use structured-response skill.&quot;
+When:    You need a response divided into clearly labeled sections.
+
+HireFlow Example:
+  &quot;Use structured-response skill. Compare REST vs GraphQL for HireFlow's API.&quot;
+  → Claude responds with labeled sections:
+    ## Overview
+    ## Pros of REST for HireFlow
+    ## Cons of REST for HireFlow
+    ## Recommendation
+</div></code></pre>
+<hr>
+<h4 id="group-3-project-health-skills">Group 3: Project Health Skills</h4>
+<hr>
+<p><strong>Skill 10: <code>healthcheck</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use healthcheck skill.&quot;
+When:    After setting up the framework on a new project.
+         When something feels wrong with your setup.
+
+What it does:
+  Verifies that all framework pieces are in place and connected correctly.
+  Reports missing files, broken hooks, unconfigured settings.
+</div></code></pre>
+<hr>
+<p><strong>Skill 11: <code>decision-log</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use decision-log skill.&quot;
+When:    You just made an architectural decision you need to remember.
+
+HireFlow Example:
+  &quot;We decided to use Prisma instead of raw SQL. Use decision-log skill.&quot;
+  → Claude logs: Date, Decision, Reason, Alternatives Considered, Who Decided.
+</div></code></pre>
+<hr>
+<p><strong>Skill 12: <code>safe-cleanup-with-backup</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use safe-cleanup-with-backup skill.&quot;
+When:    About to delete files or folders.
+
+What it does:
+  Creates a backup FIRST, then performs the deletion.
+  If something goes wrong, you can restore from the backup.
+  Never skip this before a big cleanup.
+</div></code></pre>
+<hr>
+<p><strong>Skill 13: <code>project-scan</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use project-scan skill on /path/to/project&quot;
+When:    Starting to use this framework on an EXISTING project.
+
+What it does:
+  Scans the entire project and produces a gap report:
+  - What tech stack is being used
+  - What framework files are missing
+  - What rules should be in CLAUDE.md
+  - What skills would help this project
+</div></code></pre>
+<hr>
+<p><strong>Skill 14: <code>framework-apply</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use framework-apply skill.&quot;
+When:    After project-scan. Ready to install the framework.
+
+What it does:
+  Installs the framework files into your project:
+  - Creates CLAUDE.md with your tech stack filled in
+  - Copies relevant skills
+  - Sets up .claude/settings.json
+  - Creates the specs/ and workflow/ folders
+</div></code></pre>
+<hr>
+<h4 id="group-4-advanced-output-skills">Group 4: Advanced Output Skills</h4>
+<hr>
+<p><strong>Skill 15: <code>followup-refine</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use followup-refine skill.&quot;
+When:    You have a technical explanation that needs to reach two different audiences
+         (e.g. engineers AND a non-technical manager or stakeholder).
+
+What it does:
+  Takes any technical output and produces TWO versions:
+  1. Full technical depth  (for engineers)
+  2. Plain English summary (for everyone else)
+
+HireFlow Example:
+  You just designed the application submission API.
+  Product manager asks: &quot;Can you explain how applications are submitted?&quot;
+
+  &quot;Use followup-refine skill. Explain the application submission flow in HireFlow.&quot;
+
+  Engineers get: POST /api/applications → validation → Prisma create → 201 response.
+  PM gets: &quot;Candidates fill in their details on the form, click Submit,
+            and the data saves automatically. They see a success message. That's it.&quot;
+</div></code></pre>
+<hr>
+<p><strong>Skill 16: <code>duplicate-structure-audit</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use duplicate-structure-audit skill.&quot;
+When:    You suspect there are duplicate folders or files in your project.
+         After a messy migration or scaffolding session.
+
+What it does:
+  Scans your project for folders and files with the same name at different paths.
+  Classifies each as:
+    SAFE     — one is clearly an older copy, can be deleted
+    CONFLICT — both appear active, needs your decision
+    UNKNOWN  — cannot determine without more context
+
+  Recommendations are given, but NOTHING is deleted automatically.
+  Always pair with safe-cleanup-with-backup before acting.
+
+HireFlow Example:
+  After a rushed setup you see both src/components and src/component.
+  &quot;Use duplicate-structure-audit skill.&quot;
+  → Claude finds 3 conflicts, tells you which folder is canonical, proposes cleanup.
+  → You run safe-cleanup-with-backup first, then accept the cleanup.
+</div></code></pre>
+<hr>
+<p><strong>Skill 17: <code>jsx-to-standalone-html</code></strong></p>
+<pre class="hljs"><code><div>Invoke:  &quot;Use jsx-to-standalone-html skill on src/components/JobCard.tsx&quot;
+When:    You want to share a React component as a browser demo
+         that works WITHOUT Node.js, npm, or any dev setup.
+
+What it does:
+  Converts a JSX/TSX component into a single .html file.
+  All styles, logic, and markup bundled in one file.
+  Double-click in Windows Explorer → opens in Chrome → it just works.
+
+HireFlow Example:
+  Stakeholder wants to see the job card design but has no dev environment.
+  &quot;Use jsx-to-standalone-html skill on src/components/JobCard.tsx&quot;
+  → Claude produces JobCard.html. Attach to email. Stakeholder opens it. Done.
+
+Note: Only useful on React / JSX / TSX projects.
+</div></code></pre>
+<hr>
+<h2 id="part-7--the-4-elements-the-magic-formula">Part 7 — The 4 Elements (The Magic Formula)</h2>
+<h3 id="every-single-prompt-you-write-should-have-these-4-things">Every single prompt you write should have these 4 things:</h3>
+<pre class="hljs"><code><div>┌───────────────────────────────────────────────────────────┐
+│                                                           │
+│   SCOPE   → Exactly which file or function               │
+│   ACTION  → Exactly ONE thing to do                      │
+│   FENCE   → What must NOT be touched                     │
+│   OUTPUT  → What to return and what to leave out         │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+</div></code></pre>
+<h3 id="the-goal-over-time">The Goal Over Time</h3>
+<pre class="hljs"><code><div>Week 1:  You write all 4 elements in every prompt
+Week 2:  FENCE and OUTPUT live in CLAUDE.md (auto-loaded)
+Week 3:  Your prompts are just SCOPE + ACTION
+Week 4:  &quot;Add validation to the job form.&quot; ← complete prompt
+</div></code></pre>
+<h3 id="hireflow-examples">HireFlow Examples</h3>
+<pre class="hljs"><code><div>BAD PROMPT (vague):
+&quot;Make the job application better.&quot;
+
+Claude does not know:
+- Which file?
+- What kind of &quot;better&quot;?
+- What to leave alone?
+- What to return?
+
+Result: Claude rewrites half the project.
+
+────────────────────────────────────────────────────────────
+
+GOOD PROMPT (4 elements):
+&quot;In src/components/ApplicationForm.tsx,            ← SCOPE
+add email format validation to the email field.    ← ACTION
+Do not touch the name or resume fields.            ← FENCE
+Return only the modified component. No explanation.&quot;← OUTPUT
+
+Result: Claude changes exactly one thing. Nothing else.
+
+────────────────────────────────────────────────────────────
+
+GREAT PROMPT (after CLAUDE.md and skills are loaded):
+&quot;Use scope-guard skill.
+In src/components/ApplicationForm.tsx,
+add email format validation to the email field.&quot;
+
+(FENCE and OUTPUT are already in CLAUDE.md and scope-guard)
+</div></code></pre>
+<hr>
+<h2 id="part-8--golden-prompts-the-copy-paste-collection">Part 8 — Golden Prompts (The Copy-Paste Collection)</h2>
+<p>These are 12 ready-to-use prompt templates. Copy them, fill in the brackets, and send.</p>
+<h3 id="prompt-1-fix-something-in-a-file">Prompt 1: Fix Something in a File</h3>
+<pre class="hljs"><code><div>In [FILE], [ONE CHANGE].
+Do not touch [WHAT TO LEAVE ALONE].
+Return only the modified [function/section/file].
+No explanation.
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>In src/api/jobs.ts, fix the missing await on the database create call on line 47.
+Do not touch the GET route or the error handling.
+Return only the modified createJob function.
+No explanation.
+</div></code></pre>
+<hr>
+<h3 id="prompt-2-plan-before-building-always-use-this-for-big-tasks">Prompt 2: Plan Before Building (Always Use This for Big Tasks)</h3>
+<pre class="hljs"><code><div>Before writing any code, give me your step-by-step plan for:
+[TASK DESCRIPTION]
+
+Do not execute. Wait for my confirmation.
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Before writing any code, give me your step-by-step plan for:
+Building the interview scheduling feature — HR can pick a date/time
+and the candidate gets an email confirmation.
+
+Do not execute. Wait for my confirmation.
+</div></code></pre>
+<hr>
+<h3 id="prompt-3-build-from-a-spec">Prompt 3: Build From a Spec</h3>
+<pre class="hljs"><code><div>Build [FEATURE] according to specs/[SPEC FILE].
+Constraints:
+- [CONSTRAINT 1]
+- [CONSTRAINT 2]
+Output: [EXACTLY WHICH FILES]
+Stop after that.
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Build the job application form according to specs/application-form.md.
+Constraints:
+- No new npm packages
+- Do not modify the existing form wrapper component
+Output: src/components/ApplicationForm.tsx only.
+Stop after that.
+</div></code></pre>
+<hr>
+<h3 id="prompt-4-find-the-bug-use-debug-first-skill-first">Prompt 4: Find the Bug (Use debug-first Skill First!)</h3>
+<pre class="hljs"><code><div>Use debug-first skill.
+[DESCRIBE THE BUG HERE]
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Use debug-first skill.
+When a candidate submits an application, the confirmation email is not being sent.
+The API returns 200 but the email never arrives.
+</div></code></pre>
+<hr>
+<h3 id="prompt-5-code-review-before-merging">Prompt 5: Code Review Before Merging</h3>
+<pre class="hljs"><code><div>Use code-review skill on [FILE OR DIRECTORY].
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Use code-review skill on src/api/applications.ts
+</div></code></pre>
+<hr>
+<h3 id="prompt-6-refactor-safely">Prompt 6: Refactor Safely</h3>
+<pre class="hljs"><code><div>Refactor [FILE/FUNCTION] for [ONE GOAL: readability/performance/simplicity].
+Do not change behavior.
+Do not change external interfaces or function signatures.
+Show before/after for the key change only.
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Refactor src/services/emailService.ts for readability.
+Do not change behavior.
+Do not change exported function signatures.
+Show before/after for the key change only.
+</div></code></pre>
+<hr>
+<h3 id="prompt-7-exact-output-format">Prompt 7: Exact Output Format</h3>
+<pre class="hljs"><code><div>[TASK].
+Return:
+- [WHAT THE OUTPUT LOOKS LIKE]
+- [WHAT IT MUST NOT INCLUDE]
+- Stop after [STOP CONDITION].
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div>Write unit tests for the validateApplication function in src/services/validator.ts.
+Return:
+- Jest test blocks only
+- No imports (I will add them)
+- Stop after the last test case. No summary.
+</div></code></pre>
+<hr>
+<h3 id="prompt-12-complex-multi-requirement-task-xml-format">Prompt 12: Complex Multi-Requirement Task (XML Format)</h3>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">task</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>[Single sentence — what done looks like]<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">requirements</span>&gt;</span>
+    - [Requirement 1]
+    - [Requirement 2]
+    - [Requirement 3]
+  <span class="hljs-tag">&lt;/<span class="hljs-name">requirements</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">constraints</span>&gt;</span>
+    - [What must not change]
+    - [What must be preserved]
+  <span class="hljs-tag">&lt;/<span class="hljs-name">constraints</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">output</span>&gt;</span>[Exactly which files to return]<span class="hljs-tag">&lt;/<span class="hljs-name">output</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">task</span>&gt;</span>
+</div></code></pre>
+<p><strong>HireFlow Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">task</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>Add a rate limiter to the job application endpoint<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">requirements</span>&gt;</span>
+    - Max 3 applications per email per 24 hours
+    - Return 429 with a clear error message if limit is hit
+    - Store limit counters in the existing Redis client
+  <span class="hljs-tag">&lt;/<span class="hljs-name">requirements</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">constraints</span>&gt;</span>
+    - Do not modify the authentication middleware
+    - Do not change existing application validation logic
+  <span class="hljs-tag">&lt;/<span class="hljs-name">constraints</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">output</span>&gt;</span>src/api/applications.ts only. No explanation.<span class="hljs-tag">&lt;/<span class="hljs-name">output</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">task</span>&gt;</span>
+</div></code></pre>
+<hr>
+<h2 id="part-9--settingsjson-safety--permissions">Part 9 — settings.json (Safety + Permissions)</h2>
+<h3 id="think-of-it-like-traffic-lights">Think of it Like Traffic Lights</h3>
+<pre class="hljs"><code><div>🔴 DENY  → Blocked always, no matter what
+🟡 ASK   → Claude asks you first before doing this
+🟢 ALLOW → Passes through automatically, no questions asked
+</div></code></pre>
+<h3 id="hireflows-settingsjson">HireFlow's settings.json</h3>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"maxBudgetUsd"</span>: <span class="hljs-number">50</span>,
+
+  <span class="hljs-attr">"permissions"</span>: {
+    <span class="hljs-attr">"deny"</span>: [
+      <span class="hljs-string">"Read(.env*)"</span>,
+      <span class="hljs-string">"Write(.env*)"</span>,
+      <span class="hljs-string">"Bash(rm -rf*)"</span>,
+      <span class="hljs-string">"Bash(sudo *)"</span>,
+      <span class="hljs-string">"Bash(git push --force*)"</span>
+    ],
+    <span class="hljs-attr">"ask"</span>: [
+      <span class="hljs-string">"Bash(npm install*)"</span>,
+      <span class="hljs-string">"Bash(git push*)"</span>
+    ],
+    <span class="hljs-attr">"allowedTools"</span>: [
+      <span class="hljs-string">"Read"</span>,
+      <span class="hljs-string">"Write"</span>,
+      <span class="hljs-string">"Edit"</span>,
+      <span class="hljs-string">"Bash(git status)"</span>,
+      <span class="hljs-string">"Bash(git diff*)"</span>,
+      <span class="hljs-string">"Bash(git add*)"</span>,
+      <span class="hljs-string">"Bash(git commit*)"</span>,
+      <span class="hljs-string">"Bash(npm run *)"</span>,
+      <span class="hljs-string">"Bash(npm test*)"</span>
+    ]
+  }
+}
+</div></code></pre>
+<h3 id="why-these-rules">Why These Rules?</h3>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>deny Read(.env*)</code></td>
+<td>.env has passwords. Nobody should read it, ever.</td>
+</tr>
+<tr>
+<td><code>deny Bash(rm -rf*)</code></td>
+<td>This deletes everything. Block it completely.</td>
+</tr>
+<tr>
+<td><code>deny git push --force*</code></td>
+<td>Force push can destroy your main branch permanently.</td>
+</tr>
+<tr>
+<td><code>ask npm install*</code></td>
+<td>Installing new packages costs money and adds risk. Ask first.</td>
+</tr>
+<tr>
+<td><code>ask git push*</code></td>
+<td>Always ask before pushing code to the shared repo.</td>
+</tr>
+<tr>
+<td><code>allow npm run *</code></td>
+<td>Running scripts (build, test, dev) is safe.</td>
+</tr>
+<tr>
+<td><code>maxBudgetUsd: 50</code></td>
+<td>Claude can't spend more than $50 in API calls per session.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="claudeignore--what-claude-cannot-see">.claudeignore — What Claude Cannot See</h2>
+<p><code>.claudeignore</code> works exactly like <code>.gitignore</code> — but for Claude.</p>
+<p>Files and folders listed here are <strong>invisible to Claude</strong>. It cannot read them, reference them, or spend tokens on them.</p>
+<pre class="hljs"><code><div>Without .claudeignore:
+  Project has 10,000 files
+  Claude can potentially read any of them
+  One wrong &quot;let me check the context&quot; → 50,000 tokens gone
+
+With .claudeignore listing node_modules/, dist/, logs/:
+  Claude sees only the ~50 files that actually matter
+  Token cost: minimal
+</div></code></pre>
+<h3 id="where-to-put-it">Where to Put It</h3>
+<p>Create it in your project root, right next to CLAUDE.md:</p>
+<pre class="hljs"><code><div>hireflow/
+├── CLAUDE.md
+├── PROFILE.md
+├── .claudeignore     ← create here
+├── .gitignore
+├── src/
+└── package.json
+</div></code></pre>
+<h3 id="what-to-put-in-it">What to Put In It</h3>
+<pre class="hljs"><code><div># Build output — Claude doesn't need compiled files
+dist/
+build/
+.next/
+out/
+
+# Dependencies — NEVER let Claude read these
+node_modules/
+
+# Logs — not useful for coding
+*.log
+logs/
+
+# Environment files — extra protection (deny rules also cover this)
+.env
+.env.*
+
+# Lock files — auto-generated, irrelevant to Claude
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Large data / media — would eat tokens with zero benefit
+*.csv
+*.png
+*.jpg
+*.mp4
+seed-data/
+</div></code></pre>
+<blockquote>
+<p><strong>Rule:</strong> If Claude doesn't actively need a file to do its job, put it in <code>.claudeignore</code>. Start aggressive. Add back only what you need.</p>
+</blockquote>
+<hr>
+<h2 id="part-10--hooks-automatic-robot-actions">Part 10 — Hooks (Automatic Robot Actions)</h2>
+<h3 id="what-is-a-hook">What Is a Hook?</h3>
+<p>A hook is an <strong>automatic action</strong> that happens before or after Claude does something.</p>
+<pre class="hljs"><code><div>You ask Claude to write a file
+         ↓
+[pre-tool-use hook fires] ← checks if it's safe
+         ↓
+Claude writes the file
+         ↓
+[post-tool-use hook fires] ← logs what happened
+</div></code></pre>
+<h3 id="the-3-hooks">The 3 Hooks</h3>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>When It Fires</th>
+<th>What It Does in HireFlow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pre-tool-use.ps1</code></td>
+<td>BEFORE Claude edits/runs anything</td>
+<td>Logs the action, checks scope</td>
+</tr>
+<tr>
+<td><code>post-tool-use.ps1</code></td>
+<td>AFTER Claude edits/runs anything</td>
+<td>Records what changed, updates change log</td>
+</tr>
+<tr>
+<td><code>pre-compact.ps1</code></td>
+<td>BEFORE context is compressed</td>
+<td>Saves current state so nothing is lost</td>
+</tr>
+</tbody>
+</table>
+<h3 id="practical-hooks-you-can-add">Practical Hooks You Can Add</h3>
+<p><strong>Auto-format code after every file write:</strong></p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">"Write"</span>,
+  <span class="hljs-attr">"hooks"</span>: [{ <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>, <span class="hljs-attr">"command"</span>: <span class="hljs-string">"prettier --write {filePath}"</span> }]
+}
+</div></code></pre>
+<p><strong>Run tests automatically after changing TypeScript files:</strong></p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"matcher"</span>: <span class="hljs-string">"Write"</span>,
+  <span class="hljs-attr">"hooks"</span>: [{ <span class="hljs-attr">"type"</span>: <span class="hljs-string">"command"</span>, <span class="hljs-attr">"command"</span>: <span class="hljs-string">"npm test -- {filePath}"</span>,
+              <span class="hljs-attr">"match"</span>: { <span class="hljs-attr">"path"</span>: <span class="hljs-string">"src/**/*.ts"</span> } }]
+}
+</div></code></pre>
+<hr>
+<h2 id="part-11--specs-feature-blueprints">Part 11 — Specs (Feature Blueprints)</h2>
+<h3 id="what-is-a-spec">What Is a Spec?</h3>
+<p>Before you build a feature, you write a <strong>spec</strong> — a blueprint that describes exactly what it should do.</p>
+<p>This is like an architect drawing a house plan before builders start laying bricks.</p>
+<h3 id="why-write-a-spec-first">Why Write a Spec First?</h3>
+<pre class="hljs"><code><div>Without spec:
+  You: &quot;Build me an application form.&quot;
+  Claude: Builds something.
+  You: &quot;That's not what I meant...&quot;
+  Claude: Rebuilds it.
+  You: &quot;Still not right...&quot;
+  → Wasted time, wasted money.
+
+With spec:
+  You write exactly what you want.
+  Claude reads it.
+  Claude builds exactly that.
+  Done.
+</div></code></pre>
+<h3 id="hireflow-spec-example--job-application-form">HireFlow Spec Example — Job Application Form</h3>
+<pre class="hljs"><code><div><span class="hljs-section"># Spec: Job Application Form</span>
+
+Status: Approved
+Spec ID: SPEC-003
+
+<span class="hljs-section">## 1. Problem</span>
+Candidates need a way to apply for jobs on the platform.
+Currently there is no form or submission mechanism.
+
+<span class="hljs-section">## 2. Goal</span>
+A candidate can fill in and submit a job application in under 2 minutes.
+
+<span class="hljs-section">## 3. Scope</span>
+
+<span class="hljs-section">### In Scope</span>
+<span class="hljs-bullet">- </span>Application form with: full name, email, resume upload, cover letter
+<span class="hljs-bullet">- </span>Submit button that calls POST /api/applications
+<span class="hljs-bullet">- </span>Success message after submission
+<span class="hljs-bullet">- </span>Email validation on the email field
+
+<span class="hljs-section">### Out of Scope</span>
+<span class="hljs-bullet">- </span>Application editing after submission
+<span class="hljs-bullet">- </span>Multi-step forms
+<span class="hljs-bullet">- </span>LinkedIn import
+
+<span class="hljs-section">## 4. Behavior</span>
+
+<span class="hljs-section">### 4.1 Submit Application</span>
+Input:  name (string), email (string), resumeUrl (string), coverLetter (string)
+Output: { success: true, applicationId: "uuid" }
+Edge:   If email already applied to this job → return 409 Conflict
+
+<span class="hljs-section">## 5. Files Affected</span>
+
+| File | Change Type | Notes |
+|---|---|---|
+| src/components/ApplicationForm.tsx | Create | New form component |
+| src/api/applications.ts | Modify | Add POST route |
+| src/types/application.ts | Create | TypeScript interface |
+| tests/ApplicationForm.test.tsx | Create | Unit tests |
+
+<span class="hljs-section">## 6. Acceptance Criteria</span>
+<span class="hljs-bullet">
+- </span>[ ] Form renders with all 4 fields
+<span class="hljs-bullet">- </span>[ ] Email field validates format
+<span class="hljs-bullet">- </span>[ ] Submission calls POST /api/applications
+<span class="hljs-bullet">- </span>[ ] Success message appears after submit
+<span class="hljs-bullet">- </span>[ ] Duplicate application returns a friendly error
+</div></code></pre>
+<hr>
+<h2 id="part-12--the-daily-workflow-what-to-do-every-day">Part 12 — The Daily Workflow (What to Do Every Day)</h2>
+<h3 id="morning-startup-routine">Morning Startup Routine</h3>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    A[Start Claude Code] --> B[Claude reads CLAUDE.md automatically]
+    B --> C{Is there a SESSION_LOG?}
+    C -->|Yes| D[Claude reads last session summary]
+    C -->|No| E[Fresh start]
+    D --> F[You are ready to work]
+    E --> F
+    F --> G[Run /context to see how much memory is used]
+    G --> H[Start your first task]
+</div></code></pre>
+<h3 id="before-every-single-task">Before Every Single Task</h3>
+<pre class="hljs"><code><div>PHASE 1 CHECKLIST (takes 30 seconds):
+
+[ ] Is there a spec for this? → REFERENCE it. Don't re-explain it.
+[ ] Do I know which file(s) are in scope? → Name them in the prompt.
+[ ] What must NOT change? → Say it FIRST in the prompt.
+[ ] Is this complex or multi-file? → Use Plan Gate prompt. Do not skip.
+[ ] Does a skill cover this? → Use it instead of explaining.
+[ ] Am I about to write &quot;and also&quot;? → STOP. Split into two prompts.
+</div></code></pre>
+<h3 id="writing-the-prompt">Writing the Prompt</h3>
+<pre class="hljs"><code><div>PHASE 2 CHECKLIST (takes 30 seconds):
+
+[ ] SCOPE   — exact file name is in there
+[ ] ACTION  — only one thing I'm asking for
+[ ] FENCE   — I said what not to touch
+[ ] OUTPUT  — I said what format to return
+
+Self-check:
+[ ] Remove every word that is not SCOPE, ACTION, FENCE, or OUTPUT.
+[ ] Does it still say exactly what I want? → Send it.
+</div></code></pre>
+<h3 id="during-the-session--context-management">During the Session — Context Management</h3>
+<pre class="hljs"><code><div>[ ] Check /context regularly — if above 60%, compact NOW.
+[ ] To compact: /compact Preserve: active specs, file paths, pending decisions.
+                           Discard: completed steps, tool output details.
+[ ] Switching to a completely different task? Use /clear instead.
+</div></code></pre>
+<h3 id="end-of-session">End of Session</h3>
+<pre class="hljs"><code><div>[ ] Run: &quot;Use change-manifest skill.&quot; (if you changed multiple files)
+[ ] Run: &quot;Close the session.&quot;         (always — saves your progress)
+</div></code></pre>
+<hr>
+<h2 id="part-13--building-hireflow-from-zero-complete-walkthrough">Part 13 — Building HireFlow from Zero (Complete Walkthrough)</h2>
+<h3 id="step-1-set-up-the-framework-on-hireflow">Step 1: Set Up the Framework on HireFlow</h3>
+<pre class="hljs"><code><div>Day 1, Minute 1 — you're starting fresh.
+</div></code></pre>
+<p><strong>In Claude Code, type:</strong></p>
+<pre class="hljs"><code><div>Use project-scan skill on C:/projects/hireflow
+</div></code></pre>
+<p>Claude scans HireFlow and produces a gap report. Then:</p>
+<pre class="hljs"><code><div>Use framework-apply skill.
+</div></code></pre>
+<p>Claude installs all framework files into HireFlow.</p>
+<p><strong>Now fill in your stack in <code>CLAUDE.md</code>:</strong></p>
+<ul>
+<li>Language: TypeScript, Node 20</li>
+<li>Framework: Express + React</li>
+<li>Database: PostgreSQL with Prisma</li>
+<li>Tests: Jest</li>
+</ul>
+<p><strong>Run the sanity check:</strong></p>
+<pre class="hljs"><code><div>Read CLAUDE.md. Confirm by listing:
+- The 3 most important output rules
+- The 2 things you must never do
+- Which skills are available
+No other output.
+</div></code></pre>
+<p>If Claude answers correctly → you're done. Framework is installed.</p>
+<hr>
+<h3 id="step-2-write-the-spec-for-your-first-feature">Step 2: Write the Spec for Your First Feature</h3>
+<p><strong>Feature: Job Listings Page</strong></p>
+<p>Create <code>specs/job-listings.md</code> using the spec template:</p>
+<ul>
+<li>Problem: no way to browse open jobs</li>
+<li>Goal: candidates can see all open positions</li>
+<li>Scope: listing only, no filtering yet</li>
+<li>Files: src/components/JobList.tsx, src/api/jobs.ts</li>
+</ul>
+<hr>
+<h3 id="step-3-convert-spec-to-tasks">Step 3: Convert Spec to Tasks</h3>
+<pre class="hljs"><code><div>Use spec-to-task skill on specs/job-listings.md
+</div></code></pre>
+<p>Claude returns:</p>
+<pre class="hljs"><code><div>FEATURE: Job Listings Page
+TASKS:
+
+[ ] Task 1
+    File:       src/types/job.ts
+    Change:     Create Job TypeScript interface
+    Depends on: none
+
+[ ] Task 2
+    File:       src/api/jobs.ts
+    Change:     Add GET /api/jobs route returning all open jobs
+    Depends on: Task 1
+
+[ ] Task 3
+    File:       src/components/JobList.tsx
+    Change:     Create JobList component that fetches and displays jobs
+    Depends on: Task 2
+
+[ ] Task 4
+    File:       tests/JobList.test.tsx
+    Change:     Add unit tests for JobList component
+    Depends on: Task 3
+</div></code></pre>
+<hr>
+<h3 id="step-4-execute-tasks-one-at-a-time">Step 4: Execute Tasks One at a Time</h3>
+<p><strong>Task 1 — Create job types:</strong></p>
+<pre class="hljs"><code><div>Use scope-guard skill.
+Build Task 1 from specs/job-listings.md:
+Create the Job TypeScript interface in src/types/job.ts.
+Include: id, title, company, location, salary, postedAt, status.
+Return only the new file.
+</div></code></pre>
+<p><strong>Review Claude's output. If good → confirm. If not → ask it to adjust.</strong></p>
+<p><strong>Task 2 — Create the API route:</strong></p>
+<pre class="hljs"><code><div>Use scope-guard skill.
+Build Task 2 from specs/job-listings.md:
+In src/api/jobs.ts, add GET /api/jobs that returns all open jobs from the database.
+Use Prisma. Do not touch existing routes.
+Return only the modified file.
+</div></code></pre>
+<p><strong>Task 3 — Build the component:</strong></p>
+<pre class="hljs"><code><div>Use scope-guard skill.
+Build Task 3 from specs/job-listings.md:
+Create src/components/JobList.tsx.
+It fetches from GET /api/jobs on mount and renders a list of job cards.
+Use Tailwind for styling consistent with our existing components.
+Return only the new file.
+</div></code></pre>
+<p><strong>Task 4 — Write the tests:</strong></p>
+<pre class="hljs"><code><div>Build Task 4 from specs/job-listings.md:
+Write Jest tests for src/components/JobList.tsx.
+Test: renders correctly, shows loading state, shows jobs after fetch, handles empty state.
+Return test blocks only. No imports.
+</div></code></pre>
+<hr>
+<h3 id="step-5-review-before-merging">Step 5: Review Before Merging</h3>
+<pre class="hljs"><code><div>Use code-review skill on src/api/jobs.ts
+Use code-review skill on src/components/JobList.tsx
+</div></code></pre>
+<p>Fix any violations, then:</p>
+<pre class="hljs"><code><div>Use change-manifest skill.
+</div></code></pre>
+<p>Review the manifest. It becomes your pull request description.</p>
+<hr>
+<h3 id="step-6-end-the-day">Step 6: End the Day</h3>
+<pre class="hljs"><code><div>Close the session.
+</div></code></pre>
+<p>Claude saves:</p>
+<ul>
+<li>Job listings page is complete ✅</li>
+<li>Tests passing ✅</li>
+<li>Next: Application form feature (SPEC-003 is ready)</li>
+<li>Decision made: not using pagination in v1</li>
+</ul>
+<p>Tomorrow, Claude reads this and picks up immediately.</p>
+<hr>
+<h3 id="full-hireflow-feature-flow-chart">Full HireFlow Feature Flow Chart</h3>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    A[New Feature Needed] --> B[Write spec in specs/]
+    B --> C[Use spec-to-task skill]
+    C --> D[Get ordered task list]
+    D --> E[Use scope-guard skill]
+    E --> F[Execute Task 1]
+    F --> G{Task correct?}
+    G -->|No| H[Adjust with debug-first or re-prompt]
+    H --> G
+    G -->|Yes| I[Move to Task 2]
+    I --> J[Repeat until all tasks done]
+    J --> K[Use code-review skill on each file]
+    K --> L{Violations?}
+    L -->|Yes| M[Fix violations]
+    M --> L
+    L -->|No| N[Use change-manifest skill]
+    N --> O[Create Pull Request using manifest]
+    O --> P[Use session-closer skill]
+    P --> Q[Feature shipped!]
+</div></code></pre>
+<hr>
+<h2 id="part-14--under-the-hood-what-claude-is-actually-doing">Part 14 — Under the Hood: What Claude Is Actually Doing</h2>
+<p>This is the most misunderstood part. Most people use Claude Code without ever understanding what is actually happening behind the scenes. Once you see it, everything makes sense.</p>
+<hr>
+<h3 id="the-context-window--claudes-working-memory">The Context Window — Claude's Working Memory</h3>
+<p>Imagine Claude has a <strong>whiteboard</strong>. Everything it can see and work with in one session is written on that whiteboard:</p>
+<pre class="hljs"><code><div>┌─────────────────────────────────────────────────────────────┐
+│                    CLAUDE'S WHITEBOARD                      │
+│                    (Context Window)                         │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ CLAUDE.md content         (loaded at start)            │
+│  ✅ SESSION_LOG.md content    (loaded at start)            │
+│  ✅ Your messages             (every prompt you send)      │
+│  ✅ Claude's responses        (every reply it gave)        │
+│  ✅ Files Claude read         (content of every file read) │
+│  ✅ Command output            (results of every tool used) │
+│                                                             │
+│  ⚠️  Whiteboard is limited in size.                        │
+│      When it fills up → quality drops → things get lost.   │
+└─────────────────────────────────────────────────────────────┘
+</div></code></pre>
+<p><strong>Critical:</strong> Claude does NOT have permanent memory. When you close Claude Code, the whiteboard is erased. Next session — blank whiteboard again.</p>
+<p>This is why CLAUDE.md exists. It gets loaded back onto the whiteboard automatically every new session.</p>
+<hr>
+<h3 id="what-happens-when-you-open-claude-code-step-by-step">What Happens When You Open Claude Code (Step by Step)</h3>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    participant You
+    participant ClaudeCode as Claude Code (app)
+    participant Claude as Claude (AI)
+    participant Files as Your Files
+
+    You->>ClaudeCode: Open Claude Code in project folder
+    ClaudeCode->>Files: Read CLAUDE.md
+    Files-->>ClaudeCode: CLAUDE.md content
+    ClaudeCode->>Claude: Load CLAUDE.md into context window
+    ClaudeCode->>Files: Check for SESSION_LOG.md
+    Files-->>ClaudeCode: Last session summary (if exists)
+    ClaudeCode->>Claude: Load session summary into context
+    Note over Claude: Claude now "knows" your rules,<br/>your stack, and where you left off
+    You->>Claude: Type your first prompt
+    Claude-->>You: Responds knowing everything already
+</div></code></pre>
+<p><strong>Key insight:</strong> Claude Code (the app) does the loading. Claude (the AI) just receives what is put in front of it. It cannot &quot;go looking&quot; by itself — the app puts things into its context.</p>
+<hr>
+<h3 id="what-happens-when-you-invoke-a-skill">What Happens When You Invoke a Skill</h3>
+<p>When you type <code>Use debug-first skill.</code>, people think Claude &quot;activates a feature&quot;. That is not what happens.</p>
+<p>Here is the reality:</p>
+<pre class="hljs"><code><div>You type: &quot;Use debug-first skill.&quot;
+                ↓
+Claude Code reads skills/debug-first.md
+                ↓
+The content of that file gets added to the context window
+                ↓
+Claude now has those instructions visible on its whiteboard
+                ↓
+Claude follows them — because it can see them
+</div></code></pre>
+<p><strong>A skill is just instructions in a file. No magic. No code running.</strong></p>
+<p>This also means:</p>
+<ul>
+<li>Skills with <code>agent: true</code> → Claude Code spawns a separate Claude instance (subagent). This protects your main context window from being filled by the skill's work.</li>
+<li>Skills with <code>agent: false</code> → Instructions land directly in your current context window and modify Claude's behavior in-place.</li>
+</ul>
+<pre class="hljs"><code><div>agent: false (in your context):          agent: true (separate context):
+──────────────────────────               ─────────────────────────────────
+Your conversation                         Your conversation (unchanged)
++ skill instructions added                      ↓
+= Claude behaves differently              Claude Code spawns sub-Claude
+                                          Sub-Claude gets: skill + task
+                                          Sub-Claude does the work
+                                          Result returned to your session
+</div></code></pre>
+<p><strong>HireFlow Example:</strong> <code>code-review</code> has <code>agent: true</code> because it reads many files. If it ran in your context, it would eat half your whiteboard space. Instead, it runs in its own mini-session, does the review, and hands you back just the violations list.</p>
+<hr>
+<h3 id="who-writes-sessionlogmd-and-how">Who Writes SESSION_LOG.md? (And How?)</h3>
+<p><strong>Claude writes it.</strong> Not an automatic system. Not a script.</p>
+<p>When you say <code>Close the session.</code>, here is what happens:</p>
+<pre class="hljs"><code><div>You: &quot;Close the session.&quot;
+        ↓
+Claude reads the session-closer skill instructions
+        ↓
+Claude looks at its whiteboard (the full conversation)
+        ↓
+Claude summarises: what was built, what was decided,
+                   what is unfinished, what to do next
+        ↓
+Claude calls the Write tool → writes SESSION_LOG.md to your project folder
+        ↓
+Session is closed. Whiteboard cleared.
+</div></code></pre>
+<p>Next session:</p>
+<pre class="hljs"><code><div>Claude Code opens → reads SESSION_LOG.md → loads it onto the whiteboard
+Claude immediately knows: &quot;We finished job listings. Application form is next.&quot;
+</div></code></pre>
+<p><strong>This is why &quot;Close the session&quot; is not optional.</strong> Without it, tomorrow's Claude starts completely blank.</p>
+<hr>
+<h3 id="what-does-compact-do-the-most-misunderstood-command">What Does /compact Do? (The Most Misunderstood Command)</h3>
+<p>Your whiteboard fills up over a long session. When it gets above ~60%, Claude starts forgetting early parts.</p>
+<p><code>/compact</code> is like <strong>erasing the detailed notes but keeping the key points</strong>:</p>
+<pre class="hljs"><code><div>BEFORE /compact:
+──────────────────────────────────────────────────────────
+&quot;You asked me to create job types. Here is what I did.
+ First I looked at the existing types folder. Then I read
+ the Prisma schema. Then I wrote the interface. You said
+ it looked good. Then you asked me to add the API route.
+ I looked at the existing routes and...&quot;
+[hundreds of lines of detailed conversation history]
+──────────────────────────────────────────────────────────
+
+AFTER /compact with preservation instructions:
+──────────────────────────────────────────────────────────
+Context summary:
+- Created src/types/job.ts (Job interface)
+- Created src/api/jobs.ts (GET /api/jobs route)
+- Active spec: specs/job-listings.md
+- Current task: Task 3 (JobList component)
+- Decision: no pagination in v1
+──────────────────────────────────────────────────────────
+</div></code></pre>
+<p>The whiteboard is now mostly empty again. Work continues with the important context preserved.</p>
+<p><strong>Always compact with explicit instructions:</strong></p>
+<pre class="hljs"><code><div>/compact Preserve: active specs, file paths touched, pending decisions, unresolved blockers.
+         Discard: completed steps, raw tool output, code listings that are already in files.
+</div></code></pre>
+<p>Without those instructions, Claude decides what to keep — and it might keep the wrong things.</p>
+<hr>
+<h3 id="what-do-hooks-actually-execute">What Do Hooks Actually Execute?</h3>
+<p>Hooks are <strong>PowerShell scripts</strong> (<code>.ps1</code> files) that the Claude Code app runs at specific moments. Claude the AI does NOT run them. The app does.</p>
+<pre class="hljs"><code><div>YOU ask Claude to write a file
+        ↓
+Claude Code: &quot;Wait — there is a pre-tool-use hook configured.&quot;
+        ↓
+Claude Code runs: hooks/pre-tool-use.ps1
+(This is PowerShell running on your computer — not Claude)
+        ↓
+Hook result is reported back to Claude
+        ↓
+Claude writes the file (or stops if hook returned an error)
+        ↓
+Claude Code runs: hooks/post-tool-use.ps1
+</div></code></pre>
+<p><strong>Think of it as:</strong> Claude Code is the referee. Before and after every action, the referee checks its rulebook (hooks). If the hook says stop, the action stops — regardless of what Claude wanted to do.</p>
+<hr>
+<h3 id="the-full-picture--one-session-from-open-to-close">The Full Picture — One Session from Open to Close</h3>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    A[Open Claude Code] --> B[App reads CLAUDE.md]
+    B --> C[App reads SESSION_LOG.md if exists]
+    C --> D[Both loaded into Claude's context window]
+    D --> E[You type a prompt]
+    E --> F{Does prompt invoke a skill?}
+    F -->|Yes| G[App reads skill file → adds to context]
+    F -->|No| H[Claude processes prompt directly]
+    G --> H
+    H --> I{Does response need a tool?\nRead/Write/Edit/Bash}
+    I -->|Yes| J[pre-tool-use hook fires]
+    J --> K[Tool executes on your computer]
+    K --> L[post-tool-use hook fires]
+    L --> M[Tool result added to context]
+    M --> N[Claude formulates response]
+    I -->|No| N
+    N --> O[Response sent to you]
+    O --> P{Session over?}
+    P -->|No| E
+    P -->|Yes| Q[You: 'Close the session']
+    Q --> R[Claude writes SESSION_LOG.md]
+    R --> S[Session closed. Whiteboard cleared.]
+    S --> T[Next session: cycle restarts]
+</div></code></pre>
+<hr>
+<h2 id="part-15--tokens-and-cost-how-this-framework-saves-your-money">Part 15 — Tokens and Cost: How This Framework Saves Your Money</h2>
+<h3 id="what-is-a-token">What Is a Token?</h3>
+<p>A token is a small piece of text. Roughly:</p>
+<ul>
+<li>1 token ≈ 4 characters ≈ ¾ of a word</li>
+<li>&quot;Hello world&quot; = ~3 tokens</li>
+<li>A 500-line file = ~2,000–3,000 tokens</li>
+</ul>
+<p><strong>You pay for every token that goes INTO Claude and every token that comes OUT.</strong></p>
+<pre class="hljs"><code><div>You pay for:
+  ┌─────────────────┐     ┌─────────────────┐
+  │  EVERYTHING you │     │  EVERYTHING     │
+  │  send to Claude │  +  │  Claude sends   │
+  │  (input tokens) │     │  back to you    │
+  │                 │     │  (output tokens)│
+  └─────────────────┘     └─────────────────┘
+</div></code></pre>
+<p>This includes: your prompt, CLAUDE.md contents, files Claude read, skill contents, hook output, tool results, conversation history — <strong>everything on the whiteboard</strong>.</p>
+<hr>
+<h3 id="what-burns-tokens-fast-and-how-to-stop-it">What Burns Tokens Fast (And How to Stop It)</h3>
+<pre class="hljs"><code><div>TOKEN BURNER #1: Vague prompts → back-and-forth
+──────────────────────────────────────────────────
+You: &quot;Make the app better.&quot;                        → 5 tokens
+Claude: &quot;What specifically do you want?&quot;           → 300 tokens
+You: &quot;The job form is slow.&quot;                       → 8 tokens
+Claude: &quot;Here are 5 approaches...&quot;                 → 800 tokens
+You: &quot;Option 3 please.&quot;                            → 5 tokens
+Claude: [implements option 3 + explains it]        → 1500 tokens
+─────────────────────────────────────
+Total: ~2,600 tokens to do one thing
+
+One good scoped prompt: ~400 tokens for the same result.
+
+FIX: Use the 4-Element formula. Saves 80%+ of tokens on every messy task.
+</div></code></pre>
+<pre class="hljs"><code><div>TOKEN BURNER #2: Claude reads unnecessary files
+──────────────────────────────────────────────────
+If Claude can see node_modules/ — 50,000+ tokens consumed just reading it.
+If Claude reads 5 irrelevant files to &quot;understand context&quot; — 10,000 tokens gone.
+
+FIX: Use .claudeignore to hide everything Claude doesn't need.
+     Use scope-guard to prevent Claude from going file-exploring.
+</div></code></pre>
+<pre class="hljs"><code><div>TOKEN BURNER #3: Verbose responses
+──────────────────────────────────────────────────
+Claude default: explains what it did, why, what it considered,
+                what you could do differently, suggestions for the future...
+That might be 800 tokens of narration + 50 tokens of actual code.
+
+FIX: Use minimal-output skill. CLAUDE.md output rules.
+     Result: 50 tokens of code. 94% savings.
+</div></code></pre>
+<pre class="hljs"><code><div>TOKEN BURNER #4: Re-explaining context every session
+──────────────────────────────────────────────────
+&quot;Hey Claude, we're building a recruitment app. We use TypeScript.
+ Our database is PostgreSQL. We use Prisma. Yesterday we finished
+ the job listings page...&quot;
+→ 200+ tokens. Every. Single. Session.
+
+FIX: CLAUDE.md + SESSION_LOG.md loaded automatically.
+     You pay 0 tokens re-explaining what is already written there.
+</div></code></pre>
+<hr>
+<h3 id="how-each-framework-piece-saves-tokens">How Each Framework Piece Saves Tokens</h3>
+<table>
+<thead>
+<tr>
+<th>Framework Piece</th>
+<th>How It Saves Tokens</th>
+<th>Typical Saving</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CLAUDE.md</strong></td>
+<td>Rules loaded once instead of typed every session</td>
+<td>200–500 tokens per session</td>
+</tr>
+<tr>
+<td><strong>.claudeignore</strong></td>
+<td>Hides node_modules, dist, logs — prevents accidental reading</td>
+<td>10,000–50,000 tokens per session</td>
+</tr>
+<tr>
+<td><strong>Skills (3 words)</strong></td>
+<td><code>Use debug-first skill.</code> = 4 tokens vs 80-word explanation = 80 tokens</td>
+<td>90% reduction per invocation</td>
+</tr>
+<tr>
+<td><strong>minimal-output skill</strong></td>
+<td>Cuts response verbosity from 800 tokens → 50 tokens</td>
+<td>90% reduction per response</td>
+</tr>
+<tr>
+<td><strong>Specs</strong></td>
+<td>Clean spec → Claude builds right first time. No back-and-forth.</td>
+<td>3,000–8,000 tokens per feature</td>
+</tr>
+<tr>
+<td><strong>scope-guard</strong></td>
+<td>Stops Claude reading extra files for &quot;context&quot;</td>
+<td>500–5,000 tokens per task</td>
+</tr>
+<tr>
+<td><strong>SESSION_LOG.md</strong></td>
+<td>Tomorrow's Claude picks up instantly. No re-explaining.</td>
+<td>200–500 tokens per session</td>
+</tr>
+<tr>
+<td><strong>/compact</strong></td>
+<td>Compresses 10,000 tokens of history → 500 token summary</td>
+<td>Extends session by 10–20×</td>
+</tr>
+<tr>
+<td><strong>4-Element Prompts</strong></td>
+<td>One precise prompt vs. 3–5 clarification rounds</td>
+<td>2,000–5,000 tokens per task</td>
+</tr>
+<tr>
+<td><strong>maxBudgetUsd: 50</strong></td>
+<td>Hard stop — can't accidentally run up a $500 bill</td>
+<td>Prevents worst-case scenarios</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Go deeper:</strong> Your framework includes <code>workflow/token-discipline.md</code> — a 10-rule ranked checklist covering every common token waste pattern. Read it once and keep it open whenever costs feel high. Each rule has a bad/good example and the exact token impact.</p>
+</blockquote>
+<hr>
+<h3 id="a-real-cost-comparison--with-and-without-framework">A Real Cost Comparison — With and Without Framework</h3>
+<pre class="hljs"><code><div>BUILDING THE HIREFLOW JOB LISTINGS PAGE — WITHOUT FRAMEWORK:
+──────────────────────────────────────────────────────────────
+Session start:    Re-explain stack + rules          ~500 tokens
+Vague prompt:     3 rounds of clarification         ~3,000 tokens
+Claude explores:  Reads 8 files to &quot;understand&quot;     ~6,000 tokens
+Verbose response: Code + explanation + suggestions  ~2,000 tokens
+Wrong output:     1 correction round                ~1,500 tokens
+Re-explaining:    &quot;No wait, use Prisma not raw SQL&quot; ~500 tokens
+─────────────────────────────────────────────────────────────
+TOTAL: ~13,500 tokens
+
+WITH FRAMEWORK:
+──────────────────────────────────────────────────────────────
+Session start:    CLAUDE.md auto-loaded             200 tokens
+Session resume:   SESSION_LOG.md auto-loaded        300 tokens
+Spec converts:    spec-to-task (clear tasks)        ~400 tokens
+Scoped prompt:    scope-guard + 4 elements          ~200 tokens
+minimal-output:   Code only, no narration           ~300 tokens
+─────────────────────────────────────────────────────────────
+TOTAL: ~1,400 tokens
+
+SAVINGS: ~90% fewer tokens for the same feature.
+</div></code></pre>
+<hr>
+<h3 id="the-token-budget-mental-model">The Token Budget Mental Model</h3>
+<p>Think of your context window like a <strong>fuel tank</strong>, and tokens like petrol:</p>
+<pre class="hljs"><code><div>Context window = 200,000 tokens (fuel tank size — varies by Claude model)
+                 ↑
+Everything on the whiteboard eats fuel
+
+/compact = stops at a petrol station, refills the tank at low cost
+Close the session = park the car, save the route, start fresh tomorrow
+
+How to drive further on the same tank:
+  → Load only what you need (CLAUDE.md + SESSION_LOG = light weight)
+  → Ignore what you don't need (.claudeignore)
+  → Ask for code only, not explanations (minimal-output)
+  → Drive straight (4-element prompts, no u-turns)
+  → Refuel before empty (/compact at 60%, not 95%)
+</div></code></pre>
+<hr>
+<h2 id="part-16--quick-reference-card">Part 16 — Quick Reference Card</h2>
+<p>Cut this out and keep it next to your screen.</p>
+<pre class="hljs"><code><div>┌─────────────────────────────────────────────────────────────────┐
+│                    SKILLS QUICK REFERENCE                       │
+├──────────────────────────────────┬──────────────────────────────┤
+│ INVOKE                           │ WHEN                         │
+├──────────────────────────────────┼──────────────────────────────┤
+│ Use debug-first skill.           │ Something is broken          │
+│ Use scope-guard skill.           │ Touching 2+ files            │
+│ Use code-review skill on [file]  │ Before merging               │
+│ Use spec-to-task skill on [spec] │ Starting a new feature       │
+│ Use change-manifest skill.       │ After multi-file changes     │
+│ Use minimal-output skill.        │ Just want the code           │
+│ Use session-closer skill.        │ End of every session         │
+│ Use healthcheck skill.           │ Something feels broken       │
+│ Use safe-cleanup-with-backup.    │ Before deleting files        │
+└──────────────────────────────────┴──────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                   THE 4 ELEMENTS                                │
+├─────────────────────────────────────────────────────────────────┤
+│  SCOPE   → Which exact file or function                         │
+│  ACTION  → One thing to do                                      │
+│  FENCE   → What NOT to touch                                    │
+│  OUTPUT  → What format to return, what to exclude              │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                   DAILY SEQUENCE                                │
+├─────────────────────────────────────────────────────────────────┤
+│  START:   Claude reads CLAUDE.md + session log automatically    │
+│  BEFORE:  Run 30-second Phase 1 checklist                       │
+│  PROMPT:  SCOPE + ACTION + FENCE + OUTPUT                       │
+│  CHECK:   /context — compact if above 60%                       │
+│  END:     change-manifest → close the session                   │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                PERMISSION TRAFFIC LIGHTS                        │
+├─────────────────────────────────────────────────────────────────┤
+│  🔴 DENY  → .env files, rm -rf, git push --force               │
+│  🟡 ASK   → npm install, git push                              │
+│  🟢 ALLOW → Read, Write, Edit, git commands, npm run           │
+└─────────────────────────────────────────────────────────────────┘
+</div></code></pre>
+<hr>
+<h2 id="part-17--faq-questions-you-will-definitely-have">Part 17 — FAQ (Questions You Will Definitely Have)</h2>
+<p><strong>Q: Does Claude read my files automatically?</strong></p>
+<blockquote>
+<p>Only if you tell it to, or if a skill/hook tells it to. Claude cannot &quot;go looking&quot; on its own. It can only see what is placed in its context window. That is why .claudeignore is protective — it prevents the app from offering those files to Claude in the first place.</p>
+</blockquote>
+<p><strong>Q: Does Claude remember things between sessions?</strong></p>
+<blockquote>
+<p>No. Every session starts with a blank whiteboard. The only reason Claude &quot;remembers&quot; is because CLAUDE.md and SESSION_LOG.md are loaded into the new session's context window. Without those files, it knows nothing.</p>
+</blockquote>
+<p><strong>Q: My tokens are running out mid-session. What do I do?</strong></p>
+<blockquote>
+<p>Run <code>/compact</code> immediately with preservation instructions. Do not wait until your context is full — at 60% is the right time. If you are starting a completely different task, use <code>/clear</code> instead to wipe the whiteboard completely.</p>
+</blockquote>
+<p><strong>Q: If I type &quot;Use debug-first skill&quot; — is Claude running code?</strong></p>
+<blockquote>
+<p>No. Claude Code (the app) reads <code>skills/debug-first.md</code> and adds those instructions to Claude's context. Claude then follows those instructions because it can &quot;see&quot; them. Nothing is being compiled or executed. It is just text being put in front of the AI.</p>
+</blockquote>
+<p><strong>Q: Do I copy ALL the framework files to every project?</strong></p>
+<blockquote>
+<p>Copy the <code>skills/</code> folder, <code>CLAUDE-TEMPLATE.md</code> (rename to <code>CLAUDE.md</code>), <code>specs/_template.md</code>, and the <code>workflow/</code> folder. Run <code>Use framework-apply skill.</code> and it does this for you automatically.</p>
+</blockquote>
+<p><strong>Q: What happens if I forget to use a skill?</strong></p>
+<blockquote>
+<p>Nothing bad happens. You just get a less controlled result. The skills are habits that make things better — they are not required. But the more you use them, the better your results.</p>
+</blockquote>
+<p><strong>Q: Can I add my own rules to CLAUDE.md?</strong></p>
+<blockquote>
+<p>Absolutely. CLAUDE.md is yours. Add any rule you want. The more specific your rules, the more consistent Claude's behavior. If you find yourself saying the same thing in prompts repeatedly → that thing belongs in CLAUDE.md.</p>
+</blockquote>
+<p><strong>Q: What is the difference between <code>skills/</code> and <code>.claude/skills/</code>?</strong></p>
+<blockquote>
+<p><code>skills/</code> is the template library — these get copied to new projects. <code>.claude/skills/</code> contains skills only available in this framework repo's own sessions. When you install the framework on HireFlow, only <code>skills/</code> gets copied.</p>
+</blockquote>
+<p><strong>Q: What if Claude ignores a rule in CLAUDE.md?</strong></p>
+<blockquote>
+<p>Make the rule more explicit. Instead of &quot;be concise&quot; write &quot;responses must be under 5 sentences unless I explicitly ask for more.&quot; Vague rules get interpreted. Specific rules get followed.</p>
+</blockquote>
+<p><strong>Q: How do I know if the framework is working?</strong></p>
+<blockquote>
+<p>Run: <code>Use healthcheck skill.</code> It tells you exactly what is set up correctly and what is missing.</p>
+</blockquote>
+<p><strong>Q: What is the .claudeignore file for?</strong></p>
+<blockquote>
+<p>It works like .gitignore. Files listed here are hidden from Claude — it cannot see or read them. Use it to hide <code>node_modules/</code>, <code>dist/</code>, large data files, and anything else Claude does not need to see. Fewer files = cheaper API calls = faster responses.</p>
+</blockquote>
+<hr>
+<h2 id="summary--you-now-know-everything">Summary — You Now Know Everything</h2>
+<p>Here is everything you learned, in 40 words:</p>
+<blockquote>
+<p><strong>CLAUDE.md</strong> tells Claude who it is.
+<strong>Skills</strong> give it special moves.
+<strong>Specs</strong> plan features before building.
+<strong>Prompts</strong> follow 4 elements.
+<strong>Hooks</strong> automate safety.
+<strong>The context window</strong> is Claude's whiteboard — it resets every session.
+<strong>Tokens</strong> are what you pay — the framework cuts waste by 90%.
+<strong>The daily checklist</strong> keeps quality high.</p>
+</blockquote>
+<p>That is the whole framework.</p>
+<p>Now go build HireFlow. Or anything else.</p>
+<hr>
+<p><em>Claude Code Master Framework — Beginner's Guide</em>
+<em>Framework version: March 2026</em></p>
+
+</body>
+</html>
