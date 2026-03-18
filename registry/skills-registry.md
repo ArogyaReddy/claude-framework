@@ -9,7 +9,7 @@
 
 | Skill | File | Category | Stacks | Priority |
 |---|---|---|---|---|
-| scope-guard | skills/scope-guard.md | safety | all | HIGH |
+| scope-guard | skills/scope-guard/SKILL.md | safety | all | HIGH |
 | debug-first | skills/debug-first.md | debugging | all | HIGH |
 | code-review | skills/code-review.md | quality | all | HIGH |
 | change-manifest | skills/change-manifest.md | traceability | all | HIGH |
@@ -26,13 +26,16 @@
 | jsx-to-standalone-html | skills/jsx-to-standalone-html.md | conversion | react,jsx,tsx | LOW |
 | healthcheck | skills/healthcheck.md | onboarding | all | HIGH |
 | decision-log | skills/decision-log.md | session | all | MEDIUM |
+| skill-developer | .claude/skills/skill-developer/SKILL.md | meta | all | HIGH |
+| completion-audit | skills/completion-audit.md | verification | all | HIGH |
+| gap-pattern-analyzer | skills/gap-pattern-analyzer.md | meta | all | MEDIUM |
 
 ---
 
 ## Detail Entries
 
 ### scope-guard
-- **File:** skills/scope-guard.md
+- **File:** skills/scope-guard/SKILL.md
 - **Trigger:** "Use scope-guard skill."
 - **Category:** safety
 - **Applies to:** All stacks
@@ -40,6 +43,7 @@
 - **Signs it's needed:** Claude modifies files outside the stated task; Claude adds features not requested
 - **Priority:** HIGH
 - **Dependencies:** none
+- **Resources:** resources/examples.md, resources/patterns.md
 
 ---
 
@@ -232,3 +236,42 @@
 - **Signs it's needed:** Decision history is scattered across SESSION_LOG entries; same decisions are being revisited; no record of why a pattern was chosen
 - **Priority:** MEDIUM
 - **Dependencies:** .claude/history/ directory should exist (created by session-closer)
+
+---
+
+### skill-developer
+- **File:** .claude/skills/skill-developer/SKILL.md
+- **Trigger:** "Use skill-developer skill."
+- **Category:** meta (skill creation and management)
+- **Applies to:** All stacks — framework development
+- **When to add:** When creating new skills, modifying skill-rules.json, debugging skill activation, or implementing progressive disclosure
+- **Signs it's needed:** Creating custom skills; need to understand trigger patterns, hooks, enforcement levels; debugging why skills aren't activating
+- **Priority:** HIGH
+- **Dependencies:** .claude/skills/skill-rules.json for trigger configuration
+- **Resources:** ADVANCED.md, HOOK_MECHANISMS.md, PATTERNS_LIBRARY.md, SKILL_RULES_REFERENCE.md, TRIGGER_TYPES.md, TROUBLESHOOTING.md
+
+---
+
+### completion-audit
+- **File:** skills/completion-audit.md
+- **Trigger:** "Use completion-audit skill on [original request]"
+- **Category:** verification (gap analysis and completeness checking)
+- **Applies to:** All stacks — especially multi-requirement tasks
+- **When to add:** After complex implementations, multi-file changes, framework work, or when user lists multiple requirements
+- **Signs it's needed:** User says "make sure everything", "complete all", "implement all requirements"; requests with multiple "and" clauses; previous sessions had missing deliverables
+- **Priority:** HIGH
+- **Dependencies:** Should be used after primary work is complete, before marking task as done
+- **Usage pattern:** Reactive verification (run after completion) or proactive for high-stakes work
+
+---
+
+### gap-pattern-analyzer
+- **File:** skills/gap-pattern-analyzer.md
+- **Trigger:** "Use gap-pattern-analyzer skill on [time period]"
+- **Category:** meta (skill evolution and continuous improvement)
+- **Applies to:** All stacks — framework optimization
+- **When to add:** Monthly skill review, when completion-audit shows recurring patterns, or when optimizing framework effectiveness
+- **Signs it's needed:** Same gap types appearing repeatedly, completion-audit triggered but no gaps found (false positives), new gap types emerging that aren't caught by current triggers
+- **Priority:** MEDIUM
+- **Dependencies:** Requires .claude/logs/gap-patterns.jsonl with audit history, works with completion-audit skill
+- **Usage pattern:** Periodic analysis (monthly/quarterly), triggered by pattern thresholds, part of framework maintenance

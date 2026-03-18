@@ -28,6 +28,17 @@
     ]
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/skill-activation-prompt.sh"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -59,8 +70,12 @@
     ],
     "PostToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "Edit|Write",
         "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-tool-use-tracker.sh"
+          },
           {
             "type": "command",
             "command": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks/post-tool-use.ps1"

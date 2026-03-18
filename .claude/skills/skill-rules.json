@@ -1,0 +1,458 @@
+{
+    "version": "1.0",
+    "description": "Skill activation triggers for Claude Code Framework. Controls when skills automatically suggest.",
+    "skills": {
+        "scope-guard": {
+            "type": "guardrail",
+            "enforcement": "suggest",
+            "priority": "critical",
+            "description": "Prevents scope creep and edits outside task boundaries",
+            "promptTriggers": {
+                "keywords": [
+                    "multi-file",
+                    "refactor",
+                    "multiple files",
+                    "several files",
+                    "edit files",
+                    "scope",
+                    "task boundary"
+                ],
+                "intentPatterns": [
+                    "(edit|modify|change|update).*?multiple.*?files",
+                    "(refactor|restructure|reorganize)",
+                    "change.*?(several|many).*?files",
+                    "implement.*?(feature|functionality)",
+                    "add.*?(feature|component|module)"
+                ]
+            }
+        },
+        "debug-first": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Bug diagnosis before fixing",
+            "promptTriggers": {
+                "keywords": [
+                    "bug",
+                    "error",
+                    "broken",
+                    "not working",
+                    "issue",
+                    "problem",
+                    "fix",
+                    "debug"
+                ],
+                "intentPatterns": [
+                    "(fix|debug|solve|resolve).*?(bug|error|issue|problem)",
+                    "(doesn't|does not|isn't|is not).*?(work|working)",
+                    "(broken|failing|crash)",
+                    "why.*?(error|fail|not work)"
+                ]
+            }
+        },
+        "spec-to-task": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Convert specifications into sequenced task lists",
+            "promptTriggers": {
+                "keywords": [
+                    "spec",
+                    "specification",
+                    "requirements",
+                    "task list",
+                    "plan",
+                    "break down",
+                    "implement"
+                ],
+                "intentPatterns": [
+                    "(create|generate|make).*?(task list|plan|breakdown)",
+                    "(convert|transform).*?spec.*?(task|plan)",
+                    "(break down|decompose).*?(spec|requirement|feature)",
+                    "plan.*?(implementation|development)"
+                ]
+            }
+        },
+        "dev-docs": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Create comprehensive strategic plan with 3-file structure for complex multi-session tasks",
+            "promptTriggers": {
+                "keywords": [
+                    "dev docs",
+                    "create plan",
+                    "strategic plan",
+                    "multi-session",
+                    "complex task",
+                    "plan for",
+                    "dev documentation"
+                ],
+                "intentPatterns": [
+                    "(create|generate|make).*?(dev docs|plan|strategic plan)",
+                    "(plan|document).*?(complex|multi-session).*?task",
+                    "create.*?plan.*?for"
+                ]
+            }
+        },
+        "dev-docs-update": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Update dev documentation before context compaction or session end",
+            "promptTriggers": {
+                "keywords": [
+                    "update dev docs",
+                    "save progress",
+                    "context limit",
+                    "approaching limit",
+                    "update documentation",
+                    "capture state"
+                ],
+                "intentPatterns": [
+                    "update.*?(dev docs|documentation|progress)",
+                    "(save|capture|record).*?(progress|state|session)",
+                    "(approaching|near).*?(context limit|token limit)"
+                ]
+            }
+        },
+        "code-review": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Review code against defined rules",
+            "promptTriggers": {
+                "keywords": [
+                    "review",
+                    "code review",
+                    "check code",
+                    "review code",
+                    "quality",
+                    "best practices"
+                ],
+                "intentPatterns": [
+                    "(review|check|examine|analyze).*?code",
+                    "code.*?(quality|review|check)",
+                    "best.*?practices"
+                ]
+            }
+        },
+        "minimal-output": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Code-only output with no narration",
+            "promptTriggers": {
+                "keywords": [
+                    "code only",
+                    "no explanation",
+                    "minimal output",
+                    "just code",
+                    "code without",
+                    "clean output"
+                ],
+                "intentPatterns": [
+                    "(just|only).*?code",
+                    "code.*?(only|without explanation)",
+                    "minimal.*?output",
+                    "no.*?(explanation|commentary|narration)"
+                ]
+            }
+        },
+        "session-closer": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Capture session knowledge and update history",
+            "promptTriggers": {
+                "keywords": [
+                    "close session",
+                    "end session",
+                    "session end",
+                    "wrap up",
+                    "save session"
+                ],
+                "intentPatterns": [
+                    "(close|end|finish|wrap up).*?session",
+                    "session.*?(close|end|finish|summary)"
+                ]
+            }
+        },
+        "decision-log": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Log architectural and approach decisions",
+            "promptTriggers": {
+                "keywords": [
+                    "decision",
+                    "architecture decision",
+                    "ADR",
+                    "design decision",
+                    "approach decision",
+                    "why we chose"
+                ],
+                "intentPatterns": [
+                    "(log|record|document).*?decision",
+                    "(architecture|design|technical).*?decision",
+                    "ADR",
+                    "decision.*?(record|log)"
+                ]
+            }
+        },
+        "safe-cleanup-with-backup": {
+            "type": "guardrail",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Safe cleanup with backup before destructive deletion",
+            "promptTriggers": {
+                "keywords": [
+                    "delete",
+                    "remove",
+                    "cleanup",
+                    "clean up",
+                    "rm",
+                    "duplicate"
+                ],
+                "intentPatterns": [
+                    "(delete|remove|clean).*?(file|folder|directory)",
+                    "(cleanup|clean up)",
+                    "remove.*?duplicate"
+                ]
+            }
+        },
+        "duplicate-structure-audit": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Find and classify duplicate folders",
+            "promptTriggers": {
+                "keywords": [
+                    "duplicate",
+                    "duplicates",
+                    "duplicate folders",
+                    "duplicate files",
+                    "find duplicates"
+                ],
+                "intentPatterns": [
+                    "(find|search|audit).*?duplicate",
+                    "duplicate.*?(folder|file|structure)"
+                ]
+            }
+        },
+        "project-scan": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Scan project and produce gap analysis",
+            "promptTriggers": {
+                "keywords": [
+                    "scan project",
+                    "analyze project",
+                    "new project",
+                    "onboard project",
+                    "project analysis"
+                ],
+                "intentPatterns": [
+                    "(scan|analyze|audit).*?project",
+                    "new.*?project",
+                    "onboard.*?project"
+                ]
+            }
+        },
+        "framework-apply": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Install framework components into project",
+            "promptTriggers": {
+                "keywords": [
+                    "apply framework",
+                    "install framework",
+                    "setup framework",
+                    "framework install"
+                ],
+                "intentPatterns": [
+                    "(apply|install|setup).*?framework",
+                    "framework.*?(apply|install|setup)"
+                ]
+            }
+        },
+        "healthcheck": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "12-point diagnostic for framework health",
+            "promptTriggers": {
+                "keywords": [
+                    "healthcheck",
+                    "health check",
+                    "diagnostic",
+                    "verify framework",
+                    "check framework"
+                ],
+                "intentPatterns": [
+                    "(health.*?check|diagnostic)",
+                    "(verify|check).*?framework"
+                ]
+            }
+        },
+        "jsx-to-standalone-html": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Convert JSX/TSX to standalone HTML",
+            "promptTriggers": {
+                "keywords": [
+                    "convert jsx",
+                    "jsx to html",
+                    "standalone html",
+                    "html from jsx"
+                ],
+                "intentPatterns": [
+                    "convert.*?(jsx|tsx).*?html",
+                    "(jsx|tsx).*?standalone.*?html",
+                    "standalone.*?html.*?(jsx|tsx)"
+                ]
+            }
+        },
+        "output-control": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "low",
+            "description": "Explicit length and format control via XML tags",
+            "promptTriggers": {
+                "keywords": [
+                    "format control",
+                    "output format",
+                    "length control",
+                    "xml tags"
+                ],
+                "intentPatterns": [
+                    "(control|specify).*?(format|length|output)",
+                    "(format|length).*?control"
+                ]
+            }
+        },
+        "structured-response": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "low",
+            "description": "Section-divided labeled output",
+            "promptTriggers": {
+                "keywords": [
+                    "structured response",
+                    "sections",
+                    "labeled output",
+                    "organized output"
+                ],
+                "intentPatterns": [
+                    "structured.*?(response|output)",
+                    "(section|organize).*?output"
+                ]
+            }
+        },
+        "change-manifest": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "low",
+            "description": "Record what changed and why",
+            "promptTriggers": {
+                "keywords": [
+                    "change manifest",
+                    "what changed",
+                    "record changes",
+                    "change log"
+                ],
+                "intentPatterns": [
+                    "(record|log|document).*?change",
+                    "what.*?changed",
+                    "change.*?(manifest|log|record)"
+                ]
+            }
+        },
+        "followup-refine": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "low",
+            "description": "Two-step depth-then-condense pattern",
+            "promptTriggers": {
+                "keywords": [
+                    "detailed then summary",
+                    "two audiences",
+                    "depth then condense"
+                ],
+                "intentPatterns": [
+                    "(detail.*?then.*?summary|depth.*?then.*?condense)",
+                    "two.*?audiences"
+                ]
+            }
+        },
+        "completion-audit": {
+            "type": "guardrail",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Verify task completion against original requirements - prevents incomplete deliverables",
+            "promptTriggers": {
+                "keywords": [
+                    "make sure everything",
+                    "complete all",
+                    "all requirements",
+                    "everything is",
+                    "implement all",
+                    "verify complete",
+                    "double check",
+                    "ensure all"
+                ],
+                "intentPatterns": [
+                    "(make sure|ensure|verify).*?(all|everything|complete)",
+                    "(implement|complete|deliver).*?all.*?(requirements|features)",
+                    ".*?and.*?and.*?",
+                    "(multiple|several).*?(requirements|features|tasks)",
+                    "(check.*?complete|verify.*?done|audit.*?delivery)"
+                ]
+            }
+        },
+        "gap-pattern-analyzer": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Analyze gap patterns from completion audits and evolve skill effectiveness",
+            "promptTriggers": {
+                "keywords": [
+                    "gap patterns",
+                    "analyze gaps",
+                    "skill improvement",
+                    "recurring gaps",
+                    "audit analysis",
+                    "pattern analysis",
+                    "optimize triggers",
+                    "improve completion"
+                ],
+                "intentPatterns": [
+                    "(analyze|review|examine).*?(gap|audit).*?pattern",
+                    "(improve|optimize|evolve).*?(audit|completion|trigger)",
+                    "(recurring|repeated).*?gap",
+                    "skill.*?(improvement|optimization|evolution)"
+                ]
+            }
+        }
+    },
+    "notes": {
+        "enforcement_types": {
+            "suggest": "Skill suggestion appears but doesn't block execution",
+            "block": "Requires skill to be used before proceeding (guardrail)",
+            "warn": "Shows warning but allows proceeding"
+        },
+        "priority_levels": {
+            "critical": "Highest - Always trigger when matched",
+            "high": "Important - Trigger for most matches",
+            "medium": "Moderate - Trigger for clear matches",
+            "low": "Optional - Trigger only for explicit matches"
+        },
+        "customization": {
+            "keywords": "Add domain-specific terms relevant to your work",
+            "intentPatterns": "Use regex for flexible user intent matching"
+        }
+    }
+}

@@ -48,25 +48,81 @@ This updates SESSION_LOG.md and all `.claude/history/` knowledge files.
 - Backup divergent duplicates, then remove only after backup inventory is confirmed.
 - Always report backup path and deleted paths.
 
-## Output Rules
+## Output Rules (Token Efficiency Priority)
 
-- Keep responses concise and direct.
-- Use short explanations unless asked for detail.
-- For code edits, return changed files and key impact only.
+**Default to MINIMAL output:**
+- ✅ Bullet points over prose
+- ✅ File paths and line numbers over long explanations
+- ✅ Summary tables over paragraphs
+- ✅ Action results over process descriptions
+- ❌ No emojis unless explicitly requested
+- ❌ No narration of tool use ("Let me read...", "I'll now...")
+- ❌ No celebratory language unless warranted
+
+**For code changes:**
+```
+✅ Changed Files:
+  - path/to/file.js:45 - Added error handling
+  - path/to/other.js:12 - Updated import
+
+❌ Wordy version:
+"I've successfully modified the authentication system by reading the login file,
+analyzing the code, and then making the following changes..."
+```
+
+**For multi-file work:**
+```
+Summary:
+- Files changed: 3
+- Lines modified: ~45
+- Key changes:
+  • auth/login.js:23 - JWT validation added
+  • middleware/auth.js:67 - Token expiry check
+  • config/jwt.js - New config (created)
+```
 
 ## Output Format Defaults (System-Level)
 
-- Default format: bullet list for enumerations, prose for explanations — never both unsolicited.
-- For structured tasks (comparisons, audits, specs, onboarding), use labeled `##` sections.
-- Length default: as short as correct allows. Expand only when explicitly asked.
-- When a `<format>` or `<length>` tag appears in a prompt, it overrides all defaults here.
-- When a `<sections>` tag appears, divide the full response into those labeled sections only.
+- **Default format:** Bullet lists for everything except when prose is explicitly better
+- **For structured tasks:** Use `##` sections with bullet point content
+- **Length default:** As short as correct allows (target: <300 words unless complex)
+- **Override tags:** `<format>`, `<length>`, `<sections>` override all defaults
+- **Change summaries:** Always use file:line format
+
+## Token Efficiency Protocol
+
+**Every response should:**
+1. Lead with the answer/result (not the process)
+2. Use bullet points by default
+3. List files changed with paths (file:line format)
+4. Avoid repetition and filler phrases
+5. Skip process narration ("I will now...", "Let me...")
+
+**Template for code changes:**
+```
+Changed:
+- file.js:45 - What changed
+- other.js:12 - What changed
+
+Impact: [One line summary]
+```
+
+**Template for analysis:**
+```
+Findings:
+- [Key finding 1]
+- [Key finding 2]
+
+Recommendation: [Action]
+```
 
 ## Output Contracts
 
-- For audits: report findings first, ordered by severity.
-- For cleanup tasks: report backup inventory, deleted paths, and verification checks.
-- For conversion tasks: return runnable artifact path and shortest run/open instruction.
+- **Audits:** Findings first (severity-ordered), bullet format
+- **Cleanup tasks:** Backup path, deleted paths, verification (bullet format)
+- **Conversion tasks:** Output path + one-line run instruction
+- **Code edits:** File:line changes + impact summary (bullet format)
+- **Errors:** Error message + fix suggestion (bullet format, no preamble)
 
 ## Project Conventions
 
