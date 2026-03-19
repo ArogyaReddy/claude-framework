@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Claude Code 101 — Architect's Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #0b0d0f;
+  --surface:   #111418;
+  --surface2:  #181c22;
+  --border:    #1f2530;
+  --border2:   #2a3040;
+  --text:      #c8d0dc;
+  --text-dim:  #6b7585;
+  --text-xdim: #3d4555;
+  --head:      #edf0f5;
+  --accent:    #4af0a0;
+  --accent2:   #f0a04a;
+  --accent3:   #4a9ef0;
+  --red:       #f05a4a;
+  --mono:      'IBM Plex Mono', monospace;
+  --display:   'Syne', sans-serif;
+  --serif:     'Lora', serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1.8;
+  min-height:100vh;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ── LAYOUT ── */
+.page{ position:relative;z-index:1; }
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 32px;
+}
+
+/* ── HEADER ── */
+.masthead{
+  border-bottom:1px solid var(--border);
+  padding:80px 0 60px;
+  position:relative;
+  overflow:hidden;
+}
+
+.masthead::after{
+  content:'';
+  position:absolute;
+  top:-120px;right:-80px;
+  width:500px;height:500px;
+  background:radial-gradient(circle, rgba(74,240,160,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.m-label{
+  font-family:var(--display);
+  font-size:10px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+
+.m-label::before{
+  content:'';display:block;
+  width:32px;height:1px;
+  background:var(--accent);
+}
+
+h1{
+  font-family:var(--display);
+  font-size:clamp(3rem,7vw,5.5rem);
+  font-weight:800;
+  line-height:.95;
+  color:var(--head);
+  letter-spacing:-.03em;
+  margin-bottom:8px;
+}
+
+h1 .dim-word{ color:var(--text-xdim); }
+
+.masthead-sub{
+  margin-top:28px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  gap:24px;
+  border-top:1px solid var(--border);
+  padding-top:24px;
+}
+
+.masthead-desc{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:16px;
+  color:var(--text-dim);
+  line-height:1.6;
+  max-width:520px;
+}
+
+.masthead-meta{
+  text-align:right;
+  font-size:10px;
+  color:var(--text-xdim);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  line-height:1.9;
+}
+
+/* ── TOC ── */
+.toc{
+  border:1px solid var(--border);
+  background:var(--surface);
+  padding:32px;
+  margin:48px 0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px 40px;
+}
+
+.toc-title{
+  font-family:var(--display);
+  font-size:10px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--text-xdim);
+  margin-bottom:20px;
+  grid-column:1/-1;
+}
+
+.toc-item{
+  display:flex;align-items:baseline;gap:8px;
+  color:var(--text-dim);
+  font-size:12px;
+  text-decoration:none;
+  padding:5px 0;
+  border-bottom:1px solid transparent;
+  transition:color .2s, border-color .2s;
+}
+
+.toc-item:hover{ color:var(--accent); border-color:var(--border); }
+
+.toc-num{
+  color:var(--accent);
+  font-size:10px;
+  min-width:22px;
+}
+
+/* ── SECTIONS ── */
+.chapter{
+  padding:72px 0;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+
+.chapter:last-of-type{ border-bottom:none; }
+
+.ch-header{
+  display:flex;align-items:flex-start;gap:24px;
+  margin-bottom:40px;
+}
+
+.ch-num{
+  font-family:var(--display);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--accent);
+  min-width:40px;
+  padding-top:6px;
+}
+
+.ch-titles h2{
+  font-family:var(--display);
+  font-size:clamp(1.5rem,3.5vw,2.2rem);
+  font-weight:700;
+  color:var(--head);
+  line-height:1.1;
+  letter-spacing:-.02em;
+}
+
+.ch-titles .ch-tagline{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:14px;
+  color:var(--text-xdim);
+  margin-top:6px;
+}
+
+/* ── BODY TEXT ── */
+.prose{
+  font-family:var(--mono);
+  font-size:13.5px;
+  color:var(--text);
+  line-height:1.9;
+}
+
+.prose p{ margin-bottom:18px; }
+.prose p:last-child{ margin-bottom:0; }
+.prose strong{ color:var(--head); font-weight:500; }
+.prose em{ font-family:var(--serif); font-style:italic; color:var(--text-dim); }
+.prose a{ color:var(--accent3); text-decoration:none; border-bottom:1px solid rgba(74,158,240,.3); }
+
+/* ── CALLOUT ── */
+.callout{
+  border-left:2px solid var(--accent);
+  background:rgba(74,240,160,.04);
+  padding:20px 24px;
+  margin:28px 0;
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:15px;
+  color:var(--head);
+  line-height:1.65;
+}
+
+.callout-warn{
+  border-color:var(--accent2);
+  background:rgba(240,160,74,.04);
+}
+
+.callout-danger{
+  border-color:var(--red);
+  background:rgba(240,90,74,.04);
+}
+
+.callout-tag{
+  display:block;
+  font-family:var(--mono);
+  font-style:normal;
+  font-size:9px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:10px;
+  font-weight:500;
+}
+
+.callout-warn .callout-tag{ color:var(--accent2); }
+.callout-danger .callout-tag{ color:var(--red); }
+
+/* ── RULE TABLE ── */
+.rule-table{ margin:28px 0; }
+
+.rule-row{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:20px;
+  padding:16px 0;
+  border-top:1px solid var(--border);
+  align-items:start;
+}
+
+.rule-row:last-child{ border-bottom:1px solid var(--border); }
+
+.rule-key{
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--accent);
+  padding-top:2px;
+  font-weight:500;
+}
+
+.rule-val{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.75;
+}
+
+.rule-val strong{ color:var(--head); font-weight:500; }
+
+/* ── CODE BLOCKS ── */
+.code{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-top:2px solid var(--accent);
+  padding:24px;
+  margin:24px 0;
+  overflow-x:auto;
+  position:relative;
+}
+
+.code-label{
+  position:absolute;
+  top:-1px;right:16px;
+  background:var(--accent);
+  color:var(--bg);
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  padding:2px 8px;
+}
+
+.code pre{
+  font-family:var(--mono);
+  font-size:12.5px;
+  line-height:1.7;
+  color:var(--text);
+  white-space:pre;
+}
+
+.code .c{ color:var(--text-xdim); }
+.code .kw{ color:var(--accent3); }
+.code .str{ color:var(--accent2); }
+.code .fn{ color:var(--accent); }
+.code .flag{ color:var(--accent2); }
+.code .punct{ color:var(--text-dim); }
+
+/* ── COMPARE GRID ── */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  margin:28px 0;
+  border:1px solid var(--border);
+}
+
+.compare-col{
+  background:var(--surface);
+  padding:24px;
+}
+
+.compare-col:first-child{
+  border-right:2px solid var(--red);
+}
+
+.compare-col:last-child{
+  border-left:2px solid var(--accent);
+}
+
+.compare-col h4{
+  font-family:var(--display);
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+
+.compare-col:first-child h4{ color:var(--red); }
+.compare-col:last-child h4{ color:var(--accent); }
+
+.compare-col p{
+  font-size:12.5px;
+  color:var(--text-dim);
+  line-height:1.7;
+  font-family:var(--mono);
+}
+
+/* ── CARD GRID ── */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+  gap:2px;
+  margin:28px 0;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:22px;
+  position:relative;
+  transition:border-color .2s;
+}
+
+.card:hover{ border-color:var(--border2); }
+
+.card::before{
+  content:attr(data-num);
+  position:absolute;top:16px;right:16px;
+  font-size:28px;
+  font-family:var(--display);
+  font-weight:800;
+  color:var(--text-xdim);
+  line-height:1;
+}
+
+.card h4{
+  font-family:var(--display);
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--head);
+  margin-bottom:10px;
+}
+
+.card p{
+  font-size:12px;
+  color:var(--text-dim);
+  line-height:1.7;
+}
+
+/* ── BADGE PILLS ── */
+.badge{
+  display:inline-block;
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border-radius:2px;
+  margin:2px;
+}
+
+.badge-green{ background:rgba(74,240,160,.1); color:var(--accent); border:1px solid rgba(74,240,160,.2); }
+.badge-orange{ background:rgba(240,160,74,.1); color:var(--accent2); border:1px solid rgba(240,160,74,.2); }
+.badge-blue{ background:rgba(74,158,240,.1); color:var(--accent3); border:1px solid rgba(74,158,240,.2); }
+.badge-red{ background:rgba(240,90,74,.1); color:var(--red); border:1px solid rgba(240,90,74,.2); }
+
+/* ── CHECKLIST ── */
+.checklist{ margin:20px 0; }
+
+.check-item{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+  color:var(--text);
+  line-height:1.6;
+}
+
+.check-item:first-child{ border-top:1px solid var(--border); }
+
+.check-icon{ color:var(--accent); min-width:14px; margin-top:2px; }
+.check-icon.warn{ color:var(--accent2); }
+.check-icon.danger{ color:var(--red); }
+
+/* ── DIVIDER ── */
+.divider{
+  display:flex;align-items:center;gap:16px;
+  margin:40px 0;
+  color:var(--text-xdim);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+.divider::before,.divider::after{
+  content:'';flex:1;
+  height:1px;background:var(--border);
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:48px 0;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:24px;
+}
+
+.footer-brand{
+  font-family:var(--display);
+  font-size:18px;
+  font-weight:700;
+  color:var(--text-xdim);
+  letter-spacing:-.01em;
+}
+
+.footer-brand span{ color:var(--accent); }
+
+.footer-meta{
+  font-size:10px;
+  color:var(--text-xdim);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  text-align:right;
+  line-height:1.9;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.chapter{
+  animation:fadeUp .5s ease both;
+}
+
+/* stagger via nth-child would require JS; skip for pure CSS */
+
+@media(max-width:640px){
+  .compare{grid-template-columns:1fr;}
+  .compare-col:first-child{border-right:none;border-bottom:2px solid var(--red);}
+  .compare-col:last-child{border-left:none;border-top:2px solid var(--accent);}
+  .rule-row{grid-template-columns:1fr;gap:4px;}
+  .masthead-sub{grid-template-columns:1fr;}
+  .masthead-meta{text-align:left;}
+  footer{grid-template-columns:1fr;}
+  .footer-meta{text-align:left;}
+  .toc{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="container">
+
+<!-- ══ MASTHEAD ══ -->
+<header class="masthead">
+  <p class="m-label">Architect's Field Manual · AI-SDLC Edition</p>
+  <h1>CLAUDE<br/><span class="dim-word">CODE</span><br/>101</h1>
+  <div class="masthead-sub">
+    <p class="masthead-desc">
+      What I actually use, in the order it actually matters —
+      written as if you'll build production systems with this tomorrow.
+    </p>
+    <div class="masthead-meta">
+      Spec-Driven Development<br/>
+      AI-SDLC · Claude Code<br/>
+      Architect's Edition<br/>
+      v1.0 · 2026
+    </div>
+  </div>
+</header>
+
+<!-- ══ TOC ══ -->
+<nav class="toc">
+  <p class="toc-title">Contents</p>
+  <a class="toc-item" href="#ch-mindset"><span class="toc-num">01</span>The Right Mindset</a>
+  <a class="toc-item" href="#ch-session"><span class="toc-num">02</span>Session Architecture</a>
+  <a class="toc-item" href="#ch-claudemd"><span class="toc-num">03</span>CLAUDE.md — Your Constitution</a>
+  <a class="toc-item" href="#ch-prompting"><span class="toc-num">04</span>Prompting Like an Architect</a>
+  <a class="toc-item" href="#ch-context"><span class="toc-num">05</span>Context is a Resource</a>
+  <a class="toc-item" href="#ch-models"><span class="toc-num">06</span>Model Selection Strategy</a>
+  <a class="toc-item" href="#ch-git"><span class="toc-num">07</span>Git Discipline with AI Code</a>
+  <a class="toc-item" href="#ch-sdd"><span class="toc-num">08</span>Spec-Driven Development</a>
+  <a class="toc-item" href="#ch-loops"><span class="toc-num">09</span>Diagnosing Failure Loops</a>
+  <a class="toc-item" href="#ch-verify"><span class="toc-num">10</span>Verification is Non-Negotiable</a>
+  <a class="toc-item" href="#ch-tooling"><span class="toc-num">11</span>Hooks, MCP & Commands</a>
+  <a class="toc-item" href="#ch-systems"><span class="toc-num">12</span>Build Systems, Not Sessions</a>
+</nav>
+
+
+<!-- ══ 01 MINDSET ══ -->
+<section class="chapter" id="ch-mindset">
+  <div class="ch-header">
+    <span class="ch-num">01</span>
+    <div class="ch-titles">
+      <h2>The Right Mindset</h2>
+      <p class="ch-tagline">Before your fingers touch the keyboard.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Most people approach Claude Code as a faster way to Google. That is the wrong mental model and it explains most of the disappointing results people report.</p>
+
+    <p>Claude Code is a <strong>collaborating principal engineer</strong> — one that is extraordinarily fast, has no ego, works at 3am, and will follow your architectural decisions without argument. But like any engineer, what it builds is only as good as the brief it receives.</p>
+
+    <p>The mindset shift that changes everything: <strong>you are the architect. Claude is the implementation arm.</strong> The moment you invert that — the moment you ask Claude to be the architect — you inherit all of its defaults, its pattern-matching to common codebases, its tendency to over-engineer. You get a system built for a project Claude imagined, not the one you are actually building.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Core Principle</span>
+    Claude is stateless by nature. Every conversation begins from nothing except what you explicitly hand it. You are not working with a colleague who remembers context. You are working with the world's best contractor who reads a brief on arrival.
+  </div>
+
+  <div class="prose">
+    <p>This is not a limitation to work around. It is a design constraint to work <em>with</em>. When you internalize it, you stop getting frustrated that Claude "forgot" something. You start building briefs — CLAUDE.md, plan files, scratchpads — that make the statelessness irrelevant.</p>
+    <p>Professionals who get the most out of Claude Code think like systems designers: they invest in the configuration layer once, and collect returns on every session thereafter.</p>
+  </div>
+</section>
+
+
+<!-- ══ 02 SESSION ARCHITECTURE ══ -->
+<section class="chapter" id="ch-session">
+  <div class="ch-header">
+    <span class="ch-num">02</span>
+    <div class="ch-titles">
+      <h2>Session Architecture</h2>
+      <p class="ch-tagline">The five minutes that buy you hours.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>There is a ritual that separates professionals from beginners, and it costs five minutes.</p>
+    <p><strong>Before every session of meaningful work, activate Plan Mode.</strong> Hit <code>Shift + Tab</code> twice. Do not type the first real prompt until you have planned.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Key Binding</span>
+    <pre><span class="kw">Shift</span> + <span class="kw">Tab</span> + <span class="kw">Tab</span>    <span class="c">→  Enter Plan Mode</span>
+<span class="kw">Shift</span> + <span class="kw">Tab</span>           <span class="c">→  Toggle Sonnet ↔ Opus</span>
+<span class="kw">#</span>                    <span class="c">→  Append to CLAUDE.md mid-session</span>
+<span class="fn">/compact</span>             <span class="c">→  Compress context to summary</span>
+<span class="fn">/clear</span>               <span class="c">→  Full context reset (keeps CLAUDE.md)</span>
+<span class="fn">/cost</span>                <span class="c">→  Token spend for current session</span></pre>
+  </div>
+
+  <div class="prose">
+    <p>In Plan Mode, have Claude map what you are about to build <em>before</em> it writes a line. Ask it for tradeoffs. Push back. Settle on a direction together. The quality gap between planned sessions and unplanned ones is not subtle — it shows up in file count, abstraction depth, and the ratio of first-pass code that actually runs.</p>
+    <p>The session structure I use for any non-trivial feature:</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Phase 1 · Plan</span>
+      <span class="rule-val">Plan Mode. Describe intent. Ask Claude what it needs to know. Review its proposed approach. Correct architecture before a single file is created.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 2 · Spec</span>
+      <span class="rule-val">Have Claude write a <code>plan.md</code> with agreed approach, file map, and decisions. This becomes external memory for the session and the next one.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 3 · Build</span>
+      <span class="rule-val">Switch to Sonnet. Implement per the spec. One logical chunk at a time. Commit after each chunk works.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 4 · Verify</span>
+      <span class="rule-val">Ask Claude to interrogate its own output. "What assumptions did you make? What could break? What edge cases did you skip?" Then read the code yourself.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 5 · Update</span>
+      <span class="rule-val">Press <code>#</code> and update CLAUDE.md with anything you corrected or decided. Make the next session smarter than this one.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 03 CLAUDE.MD ══ -->
+<section class="chapter" id="ch-claudemd">
+  <div class="ch-header">
+    <span class="ch-num">03</span>
+    <div class="ch-titles">
+      <h2>CLAUDE.md —<br/>Your Constitution</h2>
+      <p class="ch-tagline">The document that runs before everything else.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>CLAUDE.md is the first file Claude reads at the start of every session. It shapes every decision that follows. Treat it like the constitution of your project — clear, authoritative, minimal, and frequently amended.</p>
+    <p>Most teams either skip it entirely or fill it with noise. Both are costly mistakes.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Hard Constraint</span>
+    Claude reliably tracks ~150–200 active instructions. Claude Code's own system prompt consumes roughly 50 of those slots. Every line in CLAUDE.md competes for attention. A bloated file means Claude starts silently dropping rules — and you won't know which ones.
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Keep It Short</span>
+      <span class="rule-val">Target under 100 meaningful lines. Cut anything Claude already knows from training. No folder explanations. No general coding advice.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Project-Specific Only</span>
+      <span class="rule-val">Document the <em>weird stuff</em>: non-obvious bash commands, constraints from past bugs, naming conventions that deviate from the norm, external services and their quirks.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Always Explain Why</span>
+      <span class="rule-val"><strong>"Use TypeScript strict mode"</strong> is weak. <strong>"Use TypeScript strict mode — we had three production bugs from implicit any in Q3"</strong> gives Claude the context to extend that rule to situations you didn't anticipate.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Update Every Session</span>
+      <span class="rule-val">Every time you correct Claude on the same thing twice, that correction belongs in CLAUDE.md. Press <code>#</code> mid-session. The file should grow smarter with every week you use it.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Section for SDD</span>
+      <span class="rule-val">If you run a spec-driven workflow, include a section declaring your spec format, where specs live, and which specs are active. Claude will honour them without being reminded each time.</span>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">CLAUDE.md Structure</span>
+    <pre><span class="c"># Project Constitution</span>
+
+<span class="kw">## Stack</span>
+<span class="str">Next.js 14 · TypeScript strict · Postgres · Redis</span>
+
+<span class="kw">## Constraints</span>
+<span class="str">- No new dependencies without asking first</span>
+<span class="str">- All DB queries go through /lib/db — never raw SQL in routes</span>
+<span class="str">- Auth: we use our own JWT, not next-auth (legacy decision, do not refactor)</span>
+
+<span class="kw">## Commands That Matter</span>
+<span class="str">- npm run check:types → must pass before any commit</span>
+<span class="str">- npm run seed → resets local DB to fixture state</span>
+
+<span class="kw">## Active Specs</span>
+<span class="str">- /specs/auth-refresh.md      (in progress)</span>
+<span class="str">- /specs/billing-v2.md        (planned)</span>
+
+<span class="kw">## Hard Rules</span>
+<span class="str">- Never use `any`. If you must, comment why above the line.</span>
+<span class="str">- Keep components under 200 lines. Split if larger.</span></pre>
+  </div>
+</section>
+
+
+<!-- ══ 04 PROMPTING ══ -->
+<section class="chapter" id="ch-prompting">
+  <div class="ch-header">
+    <span class="ch-num">04</span>
+    <div class="ch-titles">
+      <h2>Prompting Like<br/>an Architect</h2>
+      <p class="ch-tagline">Precision is not pedantry. It is respect for your own time.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Bad output from a capable model always traces back to the input. There is no exception to this rule. The model is not broken. The brief was incomplete.</p>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>❌ What Not to Do</h4>
+      <p>"Build me an auth system"<br/><br/>"Refactor the user module"<br/><br/>"Make this faster"<br/><br/>"Fix the bug"</p>
+    </div>
+    <div class="compare-col">
+      <h4>✅ What to Do</h4>
+      <p>"Build email/password auth using the existing User model, Redis sessions with 24h TTL, middleware on /api/protected only."<br/><br/>"Refactor UserService to use the repository pattern. Keep the same public interface — callers must not change."<br/><br/>"This runs on every request. Optimise for the hot path. No new dependencies."<br/><br/>"Here is the stack trace. Here is what I already tried. Here is my hypothesis."</p>
+    </div>
+  </div>
+
+  <div class="divider">Prompt Principles</div>
+
+  <div class="card-grid">
+    <div class="card" data-num="①">
+      <h4>First Message Sets Trajectory</h4>
+      <p>Claude anchors on your first message. Thirty extra seconds invested there compounds through the entire session. Never rush the opener.</p>
+    </div>
+    <div class="card" data-num="②">
+      <h4>Constrain the Solution Space</h4>
+      <p>Tell Claude what you do not want. "Minimal. One file if possible. No abstraction I didn't ask for." The absence of constraints is an invitation to over-engineer.</p>
+    </div>
+    <div class="card" data-num="③">
+      <h4>Give Context About Why</h4>
+      <p>"This is a prototype we'll throw away" and "This runs in production at 10k rpm" require different tradeoffs. Claude cannot infer what you haven't stated.</p>
+    </div>
+    <div class="card" data-num="④">
+      <h4>Show Before You Tell</h4>
+      <p>When Claude keeps misunderstanding, write a minimal example of the desired output. "Apply this pattern to the rest." Pattern-matching from a concrete example almost always works where prose fails.</p>
+    </div>
+    <div class="card" data-num="⑤">
+      <h4>The Verification Prompt</h4>
+      <p>After Claude builds something, ask: "What assumptions did you make? What edge cases aren't handled? What could break under load?" It surfaces issues it wouldn't volunteer.</p>
+    </div>
+    <div class="card" data-num="⑥">
+      <h4>Name the End State</h4>
+      <p>Before refactors: "The end state should look like X." Before debug: "Success means the test at line 47 passes." A clear exit condition prevents scope drift.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 05 CONTEXT ══ -->
+<section class="chapter" id="ch-context">
+  <div class="ch-header">
+    <span class="ch-num">05</span>
+    <div class="ch-titles">
+      <h2>Context is a Resource</h2>
+      <p class="ch-tagline">Manage it like memory. Spend it intentionally.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>A 200,000-token context window does not mean you get 200,000 tokens of consistent quality. Degradation begins around 20–40% usage. The model starts losing the thread — subtly at first, then obviously. By the time you notice, you are already in a hole.</p>
+    <p><strong>Compaction does not restore quality.</strong> If the model was degraded when <code>/compact</code> triggered, you get a degraded summary. The summary then continues to degrade. Many engineers experience this and assume the model is bad. The model is fine. The session was mismanaged.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">One Task Per Session</span>
+      <span class="rule-val">One conversation per feature or task. Building auth and then refactoring the database layer in the same session bleeds contexts together. Separate them.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">External Memory Always</span>
+      <span class="rule-val">For any work spanning more than one session, have Claude write a <code>SCRATCHPAD.md</code> or <code>plan.md</code>. These persist. Claude reads them on arrival next session and resumes without losing ground.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">The Copy-Paste Reset</span>
+      <span class="rule-val">When context bloats: copy critical state from terminal → <code>/compact</code> → <code>/clear</code> → paste only what matters. Fresh context. Essential information preserved. This is not defeat — it is maintenance.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Monitor With /cost</span>
+      <span class="rule-val">Run <code>/cost</code> periodically. When token spend looks high relative to what was produced, consider resetting before quality drops. Prevention is cheaper than recovery.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Clear Without Guilt</span>
+      <span class="rule-val"><code>/clear</code> does not erase project context. Claude still has CLAUDE.md. Nine times out of ten, clearing a degraded session and starting fresh produces better output than continuing a polluted one.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 06 MODELS ══ -->
+<section class="chapter" id="ch-models">
+  <div class="ch-header">
+    <span class="ch-num">06</span>
+    <div class="ch-titles">
+      <h2>Model Selection Strategy</h2>
+      <p class="ch-tagline">The right tool for the right decision type.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>The real question is not "which model is smarter" — it is <strong>"what is the cost of a wrong decision here?"</strong></p>
+    <p>When a wrong decision cascades through architecture — a bad data model, a broken auth assumption, a misunderstood business rule — you pay for it across dozens of subsequent sessions. When a wrong decision is local and cheaply verified — a loop written incorrectly, a utility function that fails a test — you catch it immediately and fix it in thirty seconds.</p>
+    <p>Calibrate model weight to decision reversibility.</p>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>Opus — High-Stakes Reasoning</h4>
+      <p>Architecture decisions. Security design. Data modeling. Performance tradeoffs. Anything where a mistake silently propagates. Anything requiring careful evaluation of edge cases before committing.</p>
+    </div>
+    <div class="compare-col">
+      <h4>Sonnet — Execution</h4>
+      <p>Implementing a plan that already exists. Writing boilerplate. Refactoring within defined constraints. Running tests and fixing failures. Any task where the path is clear and output is verifiable immediately.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Workflow</span>
+    Use Opus to plan and decide. Switch to Sonnet (Shift + Tab) for implementation. Your CLAUDE.md ensures both models operate under the same constraints — the handoff is clean. This alone can cut session costs by 40–60% on implementation-heavy work.
+  </div>
+</section>
+
+
+<!-- ══ 07 GIT ══ -->
+<section class="chapter" id="ch-git">
+  <div class="ch-header">
+    <span class="ch-num">07</span>
+    <div class="ch-titles">
+      <h2>Git Discipline<br/>With AI Code</h2>
+      <p class="ch-tagline">Your recovery tool. Not an afterthought.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>This section does not appear in most Claude Code tutorials. It should be the first thing they cover.</p>
+    <p>AI-generated code moves fast across many files simultaneously. Claude will cheerfully modify 40 files in a single response if the task warrants it. Without disciplined git hygiene, untangling a bad batch of changes becomes a forensic exercise.</p>
+  </div>
+
+  <div class="callout callout-danger">
+    <span class="callout-tag">Hard Rule</span>
+    Commit before you ask Claude to make significant changes. If Claude produces a bad output, <code>git restore .</code> returns you to a clean state in one command. Without a clean commit, you are manually unpicking changes across dozens of files.
+  </div>
+
+  <div class="checklist">
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>Commit before every significant Claude request.</strong> Treat each Claude session phase as a unit of work with a clean entry and exit point.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>Commit after every working chunk.</strong> When Claude completes a piece and it works, commit before asking for the next piece. Never build on unverified foundation.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>Use descriptive commit messages.</strong> When reviewing AI sessions, you need to know what Claude was asked to do at each step. The commit message is the audit trail.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>Review <code>git diff</code> before committing.</strong> AI-generated code is fast. It is also sometimes subtly wrong. Read what changed. Every time.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>Use branches for features.</strong> Never build directly on main with AI assistance. Branch per feature. Merge when verified. This contains blast radius.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon danger">▸</span>
+      <span><strong>Never blindly accept multi-file changes without reading them.</strong> The output speed of Claude Code creates an illusion of trustworthiness. Fast is not the same as correct.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 08 SDD ══ -->
+<section class="chapter" id="ch-sdd">
+  <div class="ch-header">
+    <span class="ch-num">08</span>
+    <div class="ch-titles">
+      <h2>Spec-Driven Development</h2>
+      <p class="ch-tagline">The architecture layer that makes everything else work.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>If you have worked with Claude Code for any length of time, you have noticed a pattern: the quality of the output correlates almost entirely with the quality of the intent you expressed going in. Spec-Driven Development (SDD) is the practice of making that intent explicit, versioned, and persistent — before you prompt.</p>
+    <p>A spec is not a requirements document. It is a <strong>constrained decision record</strong>: what you are building, what architectural decisions were made and why, and what the boundaries are. It lives in your repository. Claude reads it. It informs every prompt in the feature's lifetime.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Spec File Structure</span>
+    <pre><span class="c"># /specs/auth-refresh.md</span>
+
+<span class="kw">## Intent</span>
+<span class="str">Implement JWT refresh token rotation. Access tokens expire</span>
+<span class="str">in 15 minutes. Refresh tokens expire in 30 days and rotate</span>
+<span class="str">on use (old token invalidated on exchange).</span>
+
+<span class="kw">## Decisions Made</span>
+<span class="str">- Storage: Redis (not DB) — latency requirement &lt;5ms per check</span>
+<span class="str">- No refresh token families: simple rotation only</span>
+<span class="str">- Invalidation: DELETE key, not blacklist</span>
+
+<span class="kw">## Boundaries</span>
+<span class="str">- Do not touch User model — it is owned by /specs/user-v3.md</span>
+<span class="str">- Middleware must be composable, not monolithic</span>
+
+<span class="kw">## Status</span>
+<span class="str">[ ] Refresh endpoint   [ ] Middleware   [ ] Tests</span></pre>
+  </div>
+
+  <div class="prose">
+    <p>The payoff is compounding. Today's spec decisions become tomorrow's CLAUDE.md additions. After six months, your project has a documented decision history that any new developer — or any new Claude session — can read and immediately understand. You stop re-explaining the same architecture in every session.</p>
+    <p>The implementation detail: reference active specs in CLAUDE.md so Claude knows to honour them without being reminded. Closed specs stay in the repo as read-only history. Claude won't break them accidentally if it knows they're closed.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">SDD Principle</span>
+    A spec is not bureaucracy. It is the difference between Claude making decisions in your context versus Claude making decisions in the context of a similar open-source project it saw in training. The spec is how you ensure the former.
+  </div>
+</section>
+
+
+<!-- ══ 09 LOOPS ══ -->
+<section class="chapter" id="ch-loops">
+  <div class="ch-header">
+    <span class="ch-num">09</span>
+    <div class="ch-titles">
+      <h2>Diagnosing Failure Loops</h2>
+      <p class="ch-tagline">When to push. When to pivot. When to start over.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>At some point Claude will loop: trying the same failing approach, incrementally adjusting, failing again. Or it will produce something confidently wrong and be unmoved by your corrections. The instinct is to add more instruction. This is almost always wrong.</p>
+    <p><strong>If you have corrected the same thing three times and it has not landed, more correcting will not help.</strong> Something about the approach — the framing, the context, the task scope — needs to change.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Clear First</span>
+      <span class="rule-val">Run <code>/clear</code>. The accumulated context may itself be the problem. A fresh session with a sharper first message often resolves in one response what the degraded session could not in twenty.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Shrink the Task</span>
+      <span class="rule-val">If Claude cannot handle the full problem, extract the smallest piece it can succeed at. Get that working. Build back up. If Claude struggles with a complex task, the plan was insufficient — not the model.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Show, Don't Tell</span>
+      <span class="rule-val">Write a two-line example of exactly what you want. "This is the shape. Now produce this for the full dataset." Claude's pattern-matching from a concrete example outperforms its comprehension of abstract prose instructions.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Reframe the Problem</span>
+      <span class="rule-val">"Implement this as a state machine" versus "handle these transitions" can unlock entirely different reasoning paths. The mental model you impose in the prompt shapes how Claude reasons about the solution.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Blame the Brief</span>
+      <span class="rule-val">Before blaming the model, re-read your original prompt. Almost every persistent failure traces back to an ambiguity in the first message that Claude resolved in a way you didn't expect.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 10 VERIFICATION ══ -->
+<section class="chapter" id="ch-verify">
+  <div class="ch-header">
+    <span class="ch-num">10</span>
+    <div class="ch-titles">
+      <h2>Verification is<br/>Non-Negotiable</h2>
+      <p class="ch-tagline">Fast is not the same as correct. Ever.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Claude Code produces output at a speed that creates an illusion of authority. This is the most dangerous part of the tool for engineers who are still building their instincts. <strong>You must read the code Claude writes.</strong> Every file. Every time.</p>
+    <p>Claude — particularly in fast execution mode — has a pattern of overengineering: extra files, unnecessary abstraction layers, defensive code for cases you never mentioned. You can end up with twelve files for something that needed two lines if you do not check the output against the intent.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Verification Workflow</span>
+    After every significant Claude output: run the verification prompt. "What assumptions did you make in building this? What edge cases are not handled? What would break under production load? What did you add that I didn't ask for?" These four questions surface the vast majority of issues before they reach your tests.
+  </div>
+
+  <div class="checklist">
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span>Read <code>git diff</code> before accepting any multi-file change.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span>Run your type checker after every Claude session: <code>npm run check:types</code> or equivalent.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span>Count the files Claude created. If the number surprises you, investigate before moving on.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span>Check for added dependencies in <code>package.json</code>. Claude will install things without announcement.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span>Verify that Claude did not modify files outside the scope of the task. It happens.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon danger">▸</span>
+      <span>Never accept security-relevant code — auth, encryption, session handling — without reading every line yourself. Speed does not justify blindness here.</span>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:24px;">
+    <p>Hooks help here significantly. See Chapter 11. A type-check hook and a linter hook that run on every file Claude touches catch the most common class of issues automatically — without discipline fatigue.</p>
+  </div>
+</section>
+
+
+<!-- ══ 11 TOOLING ══ -->
+<section class="chapter" id="ch-tooling">
+  <div class="ch-header">
+    <span class="ch-num">11</span>
+    <div class="ch-titles">
+      <h2>Hooks, MCP<br/>&amp; Commands</h2>
+      <p class="ch-tagline">The infrastructure layer beneath the prompts.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>You do not need every feature. But you should treat this layer as the multiplier on everything else. One well-configured hook or MCP server eliminates a class of manual work permanently.</p>
+  </div>
+
+  <div class="divider">Hooks</div>
+  <div class="prose">
+    <p>Hooks run code automatically before or after Claude makes changes. They are the most underused feature in Claude Code and among the highest-leverage ones.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">.claude/hooks/post-edit.sh</span>
+    <pre><span class="c">#!/bin/bash</span>
+<span class="c"># Runs after every file Claude writes or modifies</span>
+
+<span class="c"># Auto-format changed files</span>
+<span class="fn">prettier</span> <span class="flag">--write</span> <span class="str">"$CLAUDE_FILE_PATH"</span>
+
+<span class="c"># Type-check immediately</span>
+<span class="fn">tsc</span> <span class="flag">--noEmit</span> <span class="flag">--skipLibCheck</span>
+
+<span class="c"># Lint the changed file only</span>
+<span class="fn">eslint</span> <span class="str">"$CLAUDE_FILE_PATH"</span> <span class="flag">--fix</span></pre>
+  </div>
+
+  <div class="prose">
+    <p>Problems caught by a hook are caught in zero seconds, before they accumulate. Technical debt from a long AI session is a real phenomenon — hooks are the primary countermeasure.</p>
+  </div>
+
+  <div class="divider">MCP Servers</div>
+  <div class="prose">
+    <p>If you are manually copying information from an external tool into Claude, there is almost certainly a Model Context Protocol server that eliminates that step. MCP servers connect Claude directly to Slack, GitHub, Jira, databases, internal APIs — anything that exposes structured data.</p>
+    <p>The test: count how many copy-paste steps exist in your current workflow between the tool and Claude. Each one is a candidate for an MCP server. Even if no server exists for your tool, building one is a matter of exposing structured data over a standard interface.</p>
+  </div>
+
+  <div class="divider">Custom Slash Commands</div>
+  <div class="code">
+    <span class="code-label">.claude/commands/review.md</span>
+    <pre><span class="c"># Triggered with: /review</span>
+
+Review the changes in the current session against the active spec.
+
+Check for:
+- <span class="str">Scope creep</span> (files or abstractions not in the spec)
+- <span class="str">Missing edge cases</span> from the spec's boundary conditions  
+- <span class="str">Type safety</span> violations
+- <span class="str">Anything added that was not explicitly requested</span>
+
+Output a short list of findings. Flag anything that should be 
+reverted before this moves to review.</pre>
+  </div>
+
+  <div class="prose">
+    <p>If you run the same kind of task more than three times in a week — review, debug, document, deploy prep — make it a command. The activation cost is ten minutes. The return is every subsequent instance of that task running in one keystroke.</p>
+  </div>
+</section>
+
+
+<!-- ══ 12 SYSTEMS ══ -->
+<section class="chapter" id="ch-systems">
+  <div class="ch-header">
+    <span class="ch-num">12</span>
+    <div class="ch-titles">
+      <h2>Build Systems,<br/>Not Sessions</h2>
+      <p class="ch-tagline">The compounding loop that separates good from great.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>The practitioners extracting the most from Claude Code are not using it interactively for individual tasks. They are building systems in which Claude is a component — scheduled, scripted, integrated into workflows that run without human intervention.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Headless Mode · -p Flag</span>
+    <pre><span class="c"># Run a prompt without entering interactive mode</span>
+<span class="fn">claude</span> <span class="flag">-p</span> <span class="str">"Review this PR diff and output a JSON summary of concerns"</span> \
+  <span class="punct">&lt;</span> pr-diff.txt \
+  <span class="punct">|</span> <span class="fn">jq</span> <span class="str">'.concerns[] | select(.severity == "high")'</span>
+
+<span class="c"># Pipe into documentation update</span>
+<span class="fn">git</span> diff HEAD~1 \
+  <span class="punct">|</span> <span class="fn">claude</span> <span class="flag">-p</span> <span class="str">"Update CHANGELOG.md based on this diff"</span> \
+  <span class="punct">>></span> CHANGELOG.md</pre>
+  </div>
+
+  <div class="prose">
+    <p>The headless flag unlocks Claude Code as a pipeline component. Automatic PR reviews. Automatic changelog generation. Automatic test gap analysis on new code. All logged, auditable, and improvable.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">The Compounding Loop</span>
+    Claude makes a mistake → you review the logs → you update CLAUDE.md or the tooling → Claude performs better next time. After months of this loop, the same underlying models produce meaningfully better output than at launch — not because the models improved, but because the configuration did. This is the return on investment that most people never reach.
+  </div>
+
+  <div class="prose">
+    <p>The discipline required: <strong>treat every correction as a system update, not a one-off fix.</strong> Every time you type the same correction twice, that correction should have been in CLAUDE.md. Every time you manually run the same verification step, that step should be a hook. Every time you paste the same context block, that context should be in a plan file.</p>
+    <p>The engineers who use Claude Code at its ceiling are not smarter about AI. They are more disciplined about configuration. The ceiling is high. Most people never find it because they are too busy prompting to invest in the infrastructure that makes prompting compoundingly better.</p>
+  </div>
+
+  <div class="divider">The End State</div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Session opens</span>
+      <span class="rule-val">Claude reads CLAUDE.md. Reads the active spec. Reads SCRATCHPAD.md. Knows the codebase constraints and the current task without a single explanatory message from you.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Work happens</span>
+      <span class="rule-val">Hooks run on every edit. Types are checked. Linting is automated. You review diffs, not files. You read output, not prompts.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Session closes</span>
+      <span class="rule-val">SCRATCHPAD.md is updated. CLAUDE.md gets any new rules. Commit is clean. The next session starts smarter than this one did.</span>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:32px;">
+    <p>That is not a vision. That is achievable in two weeks of disciplined setup. The investment is front-loaded. The returns are indefinite.</p>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-brand">CLAUDE<span> CODE</span> 101</div>
+  <div class="footer-meta">
+    Architect's Field Manual<br/>
+    Spec-Driven Development · AI-SDLC<br/>
+    v1.0 · 2026
+  </div>
+</footer>
+
+</div><!-- /container -->
+</div><!-- /page -->
+</body>
+</html>

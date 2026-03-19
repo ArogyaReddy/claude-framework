@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Claude Code 101 — Beginner's Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #5a5a5a;
+    --accent: #c9622f;
+    --rule: #e0d8d0;
+    --bg: #faf8f5;
+    --card: #ffffff;
+    --highlight: #f5efe8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    font-size: 16px;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding: 60px 0 40px;
+    text-align: center;
+    background: var(--bg);
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+
+  .subtitle {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ── Section ── */
+  section {
+    padding: 52px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  .section-number {
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 20px;
+  }
+
+  p { margin-bottom: 16px; color: var(--muted); }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--ink); font-weight: 500; }
+
+  /* ── Pull quote ── */
+  .pullquote {
+    border-left: 3px solid var(--accent);
+    background: var(--highlight);
+    padding: 18px 24px;
+    margin: 28px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  /* ── Key-value rule list ── */
+  .rule-list {
+    margin: 24px 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  .rule-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    align-items: start;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+
+  .rule-label {
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink);
+    padding-top: 2px;
+  }
+
+  .rule-body { color: var(--muted); font-size: 15px; }
+
+  /* ── Two-col comparison ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .compare-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 22px;
+  }
+
+  .compare-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .compare-card p { font-size: 14px; }
+
+  .compare-card.good { border-top: 3px solid #3a8f5e; }
+  .compare-card.bad  { border-top: 3px solid #c0392b; }
+
+  /* ── Tip card ── */
+  .tip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .tip-card .tip-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .tip-card h4 {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .tip-card p { font-size: 14px; margin: 0; }
+
+  /* ── Code snippet ── */
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border-radius: 4px;
+    padding: 18px 20px;
+    font-family: 'Menlo', 'Courier New', monospace;
+    font-size: 13px;
+    margin: 20px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  .code-block .dim  { color: #6a9955; }
+  .code-block .str  { color: #ce9178; }
+  .code-block .kw   { color: #569cd6; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 28px;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-top: 2px solid var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+    .rule-item { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <p class="eyebrow">Beginner's Reference · Claude Code</p>
+    <h1>Claude Code 101</h1>
+    <p class="subtitle">A professional summary of core principles, workflows, and best practices.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 1. Plan Before You Prompt -->
+  <section>
+    <p class="section-number">01 — Foundation</p>
+    <h2>Plan Before You Prompt</h2>
+    <p>The single most impactful habit when working with Claude Code is planning before typing. Activating <strong>Plan Mode (Shift + Tab twice)</strong> takes five minutes and consistently saves hours of downstream debugging. The quality gap between planned prompts and unplanned ones is not subtle — it is immediately visible in the output.</p>
+    <div class="pullquote">
+      "Think first, then type. If you don't have a software engineering background, the fix isn't to skip planning — it's to have a real back-and-forth with the model, explore tradeoffs, and settle on a direction together."
+    </div>
+    <p>Before requesting a feature, clarify the architecture. Before requesting a refactor, define the end state. Before debugging, articulate what is already known about the problem. Claude should be a collaborator in this process, not merely an executor.</p>
+  </section>
+
+  <!-- 2. Architecture as the Prompt -->
+  <section>
+    <p class="section-number">02 — Prompting</p>
+    <h2>Architecture Is the Prompt</h2>
+    <p>Vague prompts hand Claude creative freedom it will use poorly. The more left unspecified, the more Claude fills in on its own — and that wiggle room is where most problems originate.</p>
+
+    <div class="compare">
+      <div class="compare-card bad">
+        <h3>❌ Vague</h3>
+        <p>"Build me an auth system."</p>
+      </div>
+      <div class="compare-card good">
+        <h3>✅ Specific</h3>
+        <p>"Build email/password auth using the existing User model, store sessions in Redis with 24-hour expiry, and add middleware protecting all routes under /api/protected."</p>
+      </div>
+    </div>
+
+    <p>Three prompting principles that compound over time:</p>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-label">Specify constraints</span>
+        <span class="rule-body">Tell Claude what not to do. "Keep this simple. One file if possible. No abstractions I didn't ask for."</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Provide context</span>
+        <span class="rule-body">"This runs on every request" or "this is a throwaway prototype" fundamentally changes which tradeoffs make sense.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Show examples</span>
+        <span class="rule-body">When Claude misunderstands, write a minimal example of the desired output and say: "Apply this pattern to the rest."</span>
+      </div>
+    </div>
+
+    <p>If you are getting bad output from a capable model, the input is the problem. There is no shortcut around that.</p>
+  </section>
+
+  <!-- 3. CLAUDE.md -->
+  <section>
+    <p class="section-number">03 — Configuration</p>
+    <h2>The CLAUDE.md File</h2>
+    <p>CLAUDE.md is the first thing Claude reads at the start of every session. Every instruction in it shapes how Claude approaches the entire project. It is onboarding material that runs before every conversation.</p>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-label">Keep it short</span>
+        <span class="rule-body">Claude reliably follows ~150–200 instructions. Claude Code's system prompt already consumes ~50. Every instruction competes for attention — a bloated CLAUDE.md means Claude starts dropping rules unpredictably.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Make it specific</span>
+        <span class="rule-body">Skip general knowledge Claude already has. Document the weird stuff: non-obvious bash commands, project-specific patterns, constraints you have encountered before.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Explain the why</span>
+        <span class="rule-body">"Use TypeScript strict mode because we've had production bugs from implicit any types" is more useful than "use TypeScript strict mode." The reason helps Claude make judgment calls in unanticipated situations.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Keep it updated</span>
+        <span class="rule-body">Press <strong>#</strong> during a session and Claude will append instructions to CLAUDE.md automatically. If you correct Claude on the same thing twice, it belongs in the file.</span>
+      </div>
+    </div>
+    <div class="pullquote">
+      "Bad CLAUDE.md looks like documentation written for a new hire. Good CLAUDE.md looks like notes you'd leave yourself if you knew you'd have amnesia tomorrow."
+    </div>
+  </section>
+
+  <!-- 4. Context Windows -->
+  <section>
+    <p class="section-number">04 — Context Management</p>
+    <h2>Context Windows Degrade Before the Limit</h2>
+    <p>Even with a 200,000-token context window, output quality begins to slip at roughly 20–40% usage. Compaction does not restore quality if the model was already degraded when compaction triggered.</p>
+
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <h4>Scope Conversations</h4>
+        <p>One conversation per feature or task. Building auth and refactoring the database in the same session lets contexts bleed together.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📝</div>
+        <h4>Use External Memory</h4>
+        <p>Have Claude write plans and progress to <strong>SCRATCHPAD.md</strong> or <strong>plan.md</strong>. These persist across sessions so Claude can resume without starting from zero.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔄</div>
+        <h4>The Copy-Paste Reset</h4>
+        <p>When context bloats: copy critical info from the terminal → <strong>/compact</strong> → <strong>/clear</strong> → paste only what matters. Fresh context, essential information preserved.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧹</div>
+        <h4>Know When to Clear</h4>
+        <p>If a conversation has gone off the rails, <strong>/clear</strong> and start fresh. Claude still has CLAUDE.md — you are not losing project context.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 24px;">The correct mental model: <strong>Claude is stateless.</strong> Every conversation starts from nothing except what you explicitly provide.</p>
+  </section>
+
+  <!-- 5. Opus vs Sonnet -->
+  <section>
+    <p class="section-number">05 — Model Selection</p>
+    <h2>Opus vs. Sonnet</h2>
+    <p>There are real, measurable differences. Choosing the right model for the right task is a compounding efficiency gain.</p>
+
+    <div class="compare">
+      <div class="compare-card">
+        <h3>Sonnet — Execution</h3>
+        <p>Faster and more cost-effective. Excellent for tasks with a clear path: writing boilerplate, refactoring from a specific plan, implementing features where architectural decisions are already settled.</p>
+      </div>
+      <div class="compare-card">
+        <h3>Opus — Reasoning</h3>
+        <p>Slower and more capable. Better for complex reasoning, planning, and tasks requiring careful evaluation of tradeoffs before committing to a direction.</p>
+      </div>
+    </div>
+
+    <p>A durable workflow: use <strong>Opus to plan</strong> and decide on architecture, then switch to <strong>Sonnet (Shift + Tab)</strong> for implementation. Because both operate under the same CLAUDE.md constraints, the handoff is clean.</p>
+  </section>
+
+  <!-- 6. MCP, Hooks, Commands -->
+  <section>
+    <p class="section-number">06 — Tooling</p>
+    <h2>MCP, Hooks &amp; Slash Commands</h2>
+    <p>You don't need every feature immediately — but experimenting is worthwhile, because there is almost certainly something you are not using that would save real time.</p>
+
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-label">MCP Servers</span>
+        <span class="rule-body">Connect Claude to external services — Slack, GitHub, databases, APIs. If you are constantly pasting data from one tool into Claude, an MCP server can automate that entirely.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Hooks</span>
+        <span class="rule-body">Run code automatically before or after Claude makes changes. Want Prettier on every file Claude touches? Hook. Type checking after every edit? Hook. This catches problems immediately instead of letting technical debt accumulate.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Slash Commands</span>
+        <span class="rule-body">Create a <code>.claude/commands/</code> folder and add Markdown files. Run them with <code>/commandname</code>. If you run the same kind of task repeatedly — debugging, reviewing, deploying — make it a command.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. When Claude Loops -->
+  <section>
+    <p class="section-number">07 — Troubleshooting</p>
+    <h2>When Claude Loops</h2>
+    <p>When Claude tries the same failing approach repeatedly, the instinct is to add more instructions and more context. The better move is to change the approach entirely.</p>
+
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-label">Clear the context</span>
+        <span class="rule-body">Accumulated context may itself be the problem. <strong>/clear</strong> gives a fresh start.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Simplify the task</span>
+        <span class="rule-body">Break complex tasks into smaller pieces. Get each piece working before combining. If Claude struggles with complexity, the plan going in was probably insufficient.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Show, don't tell</span>
+        <span class="rule-body">Write a minimal example of the desired output yourself: "Here's what the output should look like. Now apply this pattern." Claude is very good at matching concrete examples.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">Reframe the problem</span>
+        <span class="rule-body">"Implement this as a state machine" versus "handle these transitions" can unlock completely different reasoning. The framing matters.</span>
+      </div>
+    </div>
+
+    <p>The meta-skill is recognizing a loop early. If you have explained the same thing three times and it has not landed, more explaining will not help. Change something.</p>
+  </section>
+
+  <!-- 8. Build Systems -->
+  <section>
+    <p class="section-number">08 — Advanced Usage</p>
+    <h2>Build Systems, Not One-Shots</h2>
+    <p>The practitioners extracting the most value from Claude Code are not using it for individual tasks. They are building systems where Claude is a component in a larger, automated workflow.</p>
+
+    <div class="code-block">
+      <span class="dim"># Headless mode — scriptable, pipeable, chainable</span><br/>
+      claude <span class="kw">-p</span> <span class="str">"Review this PR and output a JSON summary"</span> | jq <span class="str">'.issues'</span>
+    </div>
+
+    <p>Practical applications include automatic pull request reviews, support ticket responses, and documentation updates — all logged, auditable, and improvable over time.</p>
+
+    <div class="pullquote">
+      "Claude makes a mistake → you review the logs → you improve CLAUDE.md or the tooling → Claude performs better next time. After months of iteration, the same models produce meaningfully better results — not because the models changed, but because the configuration did."
+    </div>
+
+    <p>If you are only using Claude interactively, you are leaving compounding value on the table.</p>
+  </section>
+
+</div>
+
+<footer>
+  Claude Code 101 · Beginner's Reference · Summary Document
+</footer>
+
+</body>
+</html>
