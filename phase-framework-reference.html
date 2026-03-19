@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Phase Framework — 5-Phase AI-SDLC Workflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0b0d0f;--surface:#111418;--surface2:#181c22;--border:#1f2530;--border2:#2a3040;--text:#c8d0dc;--text-dim:#6b7585;--text-xdim:#3d4555;--head:#edf0f5;--accent:#4af0a0;--accent2:#f0a04a;--accent3:#4a9ef0;--red:#f05a4a;--mono:'IBM Plex Mono',monospace;--display:'Syne',sans-serif;--serif:'Lora',serif;}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.8;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
+.page{position:relative;z-index:1;}
+.container{max-width:900px;margin:0 auto;padding:0 32px;}
+.masthead{border-bottom:1px solid var(--border);padding:80px 0 60px;position:relative;overflow:hidden;}
+.masthead::after{content:'';position:absolute;top:-120px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(74,158,240,.06) 0%,transparent 70%);pointer-events:none;}
+.m-label{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent3);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.m-label::before{content:'';display:block;width:32px;height:1px;background:var(--accent3);}
+h1{font-family:var(--display);font-size:clamp(2.8rem,7vw,5rem);font-weight:800;line-height:.95;color:var(--head);letter-spacing:-.03em;margin-bottom:8px;}
+h1 .dim-word{color:var(--text-xdim);}
+.masthead-sub{margin-top:28px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;border-top:1px solid var(--border);padding-top:24px;}
+.masthead-desc{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--text-dim);line-height:1.6;max-width:520px;}
+.masthead-meta{text-align:right;font-size:10px;color:var(--text-xdim);letter-spacing:.1em;text-transform:uppercase;line-height:1.9;}
+.toc{border:1px solid var(--border);background:var(--surface);padding:32px;margin:48px 0;display:grid;grid-template-columns:1fr 1fr;gap:4px 40px;}
+.toc-title{font-family:var(--display);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-xdim);margin-bottom:20px;grid-column:1/-1;}
+.toc-item{display:flex;align-items:baseline;gap:8px;color:var(--text-dim);font-size:12px;text-decoration:none;padding:5px 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;}
+.toc-item:hover{color:var(--accent3);border-color:var(--border);}
+.toc-num{color:var(--accent3);font-size:10px;min-width:22px;}
+.chapter{padding:72px 0;border-bottom:1px solid var(--border);}
+.chapter:last-of-type{border-bottom:none;}
+.ch-header{display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;}
+.ch-num{font-family:var(--display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent3);min-width:40px;padding-top:6px;}
+.ch-titles h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700;color:var(--head);line-height:1.1;letter-spacing:-.02em;}
+.ch-titles .ch-tagline{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--text-xdim);margin-top:6px;}
+.prose{font-family:var(--mono);font-size:13.5px;color:var(--text);line-height:1.9;}
+.prose p{margin-bottom:18px;}.prose p:last-child{margin-bottom:0;}
+.prose strong{color:var(--head);font-weight:500;}.prose em{font-family:var(--serif);font-style:italic;color:var(--text-dim);}
+.prose code{color:var(--accent2);font-size:12px;}
+.callout{border-left:2px solid var(--accent);background:rgba(74,240,160,.04);padding:20px 24px;margin:28px 0;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--head);line-height:1.65;}
+.callout-warn{border-color:var(--accent2);background:rgba(240,160,74,.04);}
+.callout-danger{border-color:var(--red);background:rgba(240,90,74,.04);}
+.callout-info{border-color:var(--accent3);background:rgba(74,158,240,.04);}
+.callout-tag{display:block;font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;font-weight:500;}
+.callout-warn .callout-tag{color:var(--accent2);}.callout-danger .callout-tag{color:var(--red);}.callout-info .callout-tag{color:var(--accent3);}
+.rule-table{margin:28px 0;}
+.rule-row{display:grid;grid-template-columns:180px 1fr;gap:20px;padding:16px 0;border-top:1px solid var(--border);align-items:start;}
+.rule-row:last-child{border-bottom:1px solid var(--border);}
+.rule-key{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent3);padding-top:2px;font-weight:500;}
+.rule-val{font-size:13px;color:var(--text);line-height:1.75;}
+.rule-val strong{color:var(--head);font-weight:500;}
+.code{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent3);padding:24px;margin:24px 0;overflow-x:auto;position:relative;}
+.code-label{position:absolute;top:-1px;right:16px;background:var(--accent3);color:var(--bg);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:2px 8px;}
+.code pre{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--text);white-space:pre;}
+.code .c{color:var(--text-xdim);}.code .kw{color:var(--accent3);}.code .str{color:var(--accent2);}.code .fn{color:var(--accent);}.code .flag{color:var(--accent2);}.code .punct{color:var(--text-dim);}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:28px 0;border:1px solid var(--border);}
+.compare-col{background:var(--surface);padding:24px;}
+.compare-col:first-child{border-right:2px solid var(--red);}.compare-col:last-child{border-left:2px solid var(--accent);}
+.compare-col h4{font-family:var(--display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;}
+.compare-col:first-child h4{color:var(--red);}.compare-col:last-child h4{color:var(--accent);}
+.compare-col p{font-size:12.5px;color:var(--text-dim);line-height:1.7;font-family:var(--mono);}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:2px;margin:28px 0;}
+.card{background:var(--surface);border:1px solid var(--border);padding:22px;position:relative;transition:border-color .2s;}
+.card:hover{border-color:var(--border2);}
+.card::before{content:attr(data-num);position:absolute;top:16px;right:16px;font-size:26px;font-family:var(--display);font-weight:800;color:var(--text-xdim);line-height:1;}
+.card h4{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--head);margin-bottom:10px;}
+.card p{font-size:12px;color:var(--text-dim);line-height:1.7;}
+.card .card-cmd{display:inline-block;margin-top:10px;font-size:11px;color:var(--accent3);letter-spacing:.05em;}
+.checklist{margin:20px 0;}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);line-height:1.6;}
+.check-item:first-child{border-top:1px solid var(--border);}
+.check-icon{color:var(--accent);min-width:14px;margin-top:2px;}
+.check-icon.warn{color:var(--accent2);}.check-icon.danger{color:var(--red);}
+
+/* Phase pipeline visual */
+.pipeline{display:flex;gap:0;margin:32px 0;position:relative;}
+.pipeline::before{content:'';position:absolute;top:32px;left:24px;right:24px;height:1px;background:var(--border);z-index:0;}
+.phase-node{flex:1;background:var(--surface);border:1px solid var(--border);padding:20px 16px;text-align:center;position:relative;z-index:1;transition:border-color .2s;}
+.phase-node:not(:last-child){border-right:none;}
+.phase-node:hover{border-color:var(--border2);}
+.phase-num{font-family:var(--display);font-size:11px;font-weight:700;color:var(--accent3);letter-spacing:.1em;margin-bottom:8px;}
+.phase-cmd{font-size:12px;color:var(--accent);font-family:var(--mono);margin-bottom:6px;}
+.phase-label{font-size:10px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;}
+.phase-tool{font-size:9px;color:var(--text-xdim);margin-top:6px;letter-spacing:.08em;}
+
+/* Tool matrix */
+.tool-matrix{width:100%;border-collapse:collapse;margin:28px 0;}
+.tool-matrix th{background:var(--surface);font-family:var(--display);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);}
+.tool-matrix td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:top;line-height:1.6;}
+.tool-matrix tr:last-child td{border-bottom:none;}
+.tool-matrix .cmd{color:var(--accent3);font-size:12px;}
+.tool-matrix .auto{color:var(--accent);font-size:11px;letter-spacing:.05em;}
+.tool-matrix .manual{color:var(--accent2);font-size:11px;letter-spacing:.05em;}
+
+.divider{display:flex;align-items:center;gap:16px;margin:40px 0;color:var(--text-xdim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+footer{border-top:1px solid var(--border);padding:48px 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;}
+.footer-brand{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-xdim);letter-spacing:-.01em;}
+.footer-brand span{color:var(--accent3);}
+.footer-meta{font-size:10px;color:var(--text-xdim);letter-spacing:.1em;text-transform:uppercase;text-align:right;line-height:1.9;}
+@media(max-width:640px){.compare{grid-template-columns:1fr;}.compare-col:first-child{border-right:none;border-bottom:2px solid var(--red);}.compare-col:last-child{border-left:none;border-top:2px solid var(--accent);}.rule-row{grid-template-columns:1fr;gap:4px;}.masthead-sub{grid-template-columns:1fr;}.masthead-meta{text-align:left;}.toc{grid-template-columns:1fr;}.pipeline{flex-direction:column;}.pipeline::before{display:none;}.phase-node{border-right:1px solid var(--border) !important;border-bottom:none;}.footer-meta{text-align:left;}footer{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="page"><div class="container">
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <p class="m-label">Plug-In Framework · AI-SDLC · Phase Workflow</p>
+  <h1>PHASE<br/><span class="dim-word">FRAMEWORK</span></h1>
+  <div class="masthead-sub">
+    <p class="masthead-desc">
+      Five phases. Five commands. Two hooks. One agent.
+      The complete structured workflow for building anything non-trivial with Claude Code.
+    </p>
+    <div class="masthead-meta">
+      Memory Framework Compatible<br/>
+      SCWA Compatible<br/>
+      v1.0 · 2026
+    </div>
+  </div>
+</header>
+
+<!-- TOC -->
+<nav class="toc">
+  <p class="toc-title">Contents</p>
+  <a class="toc-item" href="#ch-overview"><span class="toc-num">01</span>The Five Phases</a>
+  <a class="toc-item" href="#ch-tools"><span class="toc-num">02</span>Tools — What, When, Why</a>
+  <a class="toc-item" href="#ch-plan"><span class="toc-num">03</span>Phase 1 · Plan</a>
+  <a class="toc-item" href="#ch-spec"><span class="toc-num">04</span>Phase 2 · Spec</a>
+  <a class="toc-item" href="#ch-build"><span class="toc-num">05</span>Phase 3 · Build</a>
+  <a class="toc-item" href="#ch-verify"><span class="toc-num">06</span>Phase 4 · Verify</a>
+  <a class="toc-item" href="#ch-update"><span class="toc-num">07</span>Phase 5 · Update</a>
+  <a class="toc-item" href="#ch-flow"><span class="toc-num">08</span>Full Session Flow</a>
+  <a class="toc-item" href="#ch-install"><span class="toc-num">09</span>Installation</a>
+</nav>
+
+
+<!-- 01 OVERVIEW -->
+<section class="chapter" id="ch-overview">
+  <div class="ch-header">
+    <span class="ch-num">01</span>
+    <div class="ch-titles">
+      <h2>The Five Phases</h2>
+      <p class="ch-tagline">Every non-trivial feature follows this sequence. Every time.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>The quality of what Claude Code produces is a direct function of the structure you impose on the session. Unstructured sessions drift. They overengineer. They build the wrong thing confidently. They produce code that works today and is incomprehensible in three months.</p>
+    <p>The five-phase workflow exists to prevent all of that — not by constraining Claude, but by <strong>channeling it</strong>. Each phase has a single job. Each phase has a clear exit condition. Claude knows which mode it is in and behaves accordingly.</p>
+  </div>
+
+  <!-- Pipeline visual -->
+  <div class="pipeline">
+    <div class="phase-node">
+      <div class="phase-num">01</div>
+      <div class="phase-cmd">/plan</div>
+      <div class="phase-label">Plan</div>
+      <div class="phase-tool">Command</div>
+    </div>
+    <div class="phase-node">
+      <div class="phase-num">02</div>
+      <div class="phase-cmd">/spec</div>
+      <div class="phase-label">Spec</div>
+      <div class="phase-tool">Command + Template</div>
+    </div>
+    <div class="phase-node">
+      <div class="phase-num">03</div>
+      <div class="phase-cmd">/chunk</div>
+      <div class="phase-label">Build</div>
+      <div class="phase-tool">Command + Hooks</div>
+    </div>
+    <div class="phase-node">
+      <div class="phase-num">04</div>
+      <div class="phase-cmd">/verify</div>
+      <div class="phase-label">Verify</div>
+      <div class="phase-tool">Command + Agent</div>
+    </div>
+    <div class="phase-node">
+      <div class="phase-num">05</div>
+      <div class="phase-cmd">/update</div>
+      <div class="phase-label">Update</div>
+      <div class="phase-tool">Command</div>
+    </div>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Phase 1 · Plan</span>
+      <span class="rule-val"><strong>Architecture agreed before any code exists.</strong> Claude asks questions, surfaces tradeoffs, proposes approach. You decide. No code written. Exit condition: confirmed plan with resolved decisions.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 2 · Spec</span>
+      <span class="rule-val"><strong>Plan converted to a written contract.</strong> Spec file created at <code>/specs/[name].md</code> with scope, file map, locked decisions, and implementation checklist. Exit condition: spec file exists and is complete.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 3 · Build</span>
+      <span class="rule-val"><strong>One chunk at a time, commit after each.</strong> Claude implements per spec. Hooks run type check + lint on every file touched. Exit condition: chunk committed, checklist item marked ✓.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 4 · Verify</span>
+      <span class="rule-val"><strong>Output interrogated before it is accepted.</strong> Claude reviews its own work adversarially — assumptions, risks, scope drift, edge cases. Optional agent review for high-stakes. Exit condition: risk level assessed, blockers resolved.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Phase 5 · Update</span>
+      <span class="rule-val"><strong>System made smarter before session closes.</strong> Corrections harvested as CLAUDE.md candidates. Spec closed if complete. Memory wrapped. Exit condition: next session starts smarter than this one opened.</span>
+    </div>
+  </div>
+
+  <div class="callout callout-danger">
+    <span class="callout-tag">The Non-Negotiable</span>
+    Never build during Phase 1. Never skip Phase 2 for multi-file features. Never batch multiple chunks without committing. Never close a session with meaningful work without running /update. These four rules prevent 80% of the problems that come from working with Claude Code at scale.
+  </div>
+</section>
+
+
+<!-- 02 TOOLS -->
+<section class="chapter" id="ch-tools">
+  <div class="ch-header">
+    <span class="ch-num">02</span>
+    <div class="ch-titles">
+      <h2>Tools — What,<br/>When, Why</h2>
+      <p class="ch-tagline">Commands, hooks, agents, and skills. Each has a specific job.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Four tool types are available in Claude Code. Most guides treat them as interchangeable. They are not. Each is designed for a different class of problem. Using the wrong tool is not just inefficient — it produces worse outcomes.</p>
+  </div>
+
+  <table class="tool-matrix">
+    <thead>
+      <tr>
+        <th>Tool Type</th>
+        <th>What It Is</th>
+        <th>Triggered</th>
+        <th>Best For</th>
+        <th>Not For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Command</strong><br/><span class="cmd">/plan /spec /chunk /verify /update</span></td>
+        <td>Prompt template stored as .md in .claude/commands/. Claude reads and follows it.</td>
+        <td><span class="manual">Manual — you type /name</span></td>
+        <td>Structured phase transitions. Workflows you consciously initiate. Multi-step processes.</td>
+        <td>Things that should always happen automatically. Independent review.</td>
+      </tr>
+      <tr>
+        <td><strong>Hook</strong><br/><span class="cmd">post-edit.sh pre-commit.sh</span></td>
+        <td>Shell script that runs automatically when a trigger condition fires.</td>
+        <td><span class="auto">Automatic — fires on event</span></td>
+        <td>Quality gates that must ALWAYS run. Zero-discipline automation. Catching errors before they accumulate.</td>
+        <td>Reasoning tasks. Anything needing Claude's judgment. Tasks with variable relevance.</td>
+      </tr>
+      <tr>
+        <td><strong>Agent</strong><br/><span class="cmd">/agent-review</span></td>
+        <td>Separate Claude instance via <code>claude -p</code>. Zero session context. Independent perspective.</td>
+        <td><span class="manual">Manual — you trigger /agent-review</span></td>
+        <td>Independent code review with no bias. Security-sensitive code. High-stakes features. Parallel tasks.</td>
+        <td>Routine chunk verification. Tasks where current session context is actually needed.</td>
+      </tr>
+      <tr>
+        <td><strong>Skill</strong><br/><span class="cmd">SKILL.md</span></td>
+        <td>Instruction set Claude reads at task time. Gives Claude domain-specific knowledge.</td>
+        <td><span class="auto">Auto — Claude reads when relevant</span></td>
+        <td>Reusable domain knowledge. Style guides. Output formats. Things Claude should know consistently.</td>
+        <td>Session-specific workflows. Things that change per project.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <span class="callout-tag">The Decision Rule</span>
+    Should it run automatically without prompting? → Hook. Should it run when I consciously decide to trigger it? → Command. Should it be done by a Claude with no context from this session? → Agent. Should Claude know how to do X consistently across all projects? → Skill.
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>❌ Common Mistakes</h4>
+      <p>Using a command for something that should always run (use a hook).<br/><br/>
+      Asking the current Claude to verify its own work without adversarial framing (use /verify or an agent).<br/><br/>
+      Putting project-specific rules in a skill (put them in CLAUDE.md).<br/><br/>
+      Building a hook for something that only matters sometimes (use a command).</p>
+    </div>
+    <div class="compare-col">
+      <h4>✅ Correct Mapping</h4>
+      <p>"Run type check after every file" → <strong>Hook</strong> (always, automatic).<br/><br/>
+      "Review this code for security issues" → <strong>Agent</strong> (independent, unbiased).<br/><br/>
+      "How to write a spec" → <strong>Skill</strong> (reusable, domain knowledge).<br/><br/>
+      "Start a planning session" → <strong>Command</strong> (conscious phase transition).</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 PLAN -->
+<section class="chapter" id="ch-plan">
+  <div class="ch-header">
+    <span class="ch-num">03</span>
+    <div class="ch-titles">
+      <h2>Phase 1 · Plan</h2>
+      <p class="ch-tagline">The five minutes that determine the quality of everything that follows.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>The most expensive mistake in AI-assisted development is building the wrong thing quickly. Phase 1 exists to eliminate that. No code. No files. No implementation. Only questions, tradeoffs, and decisions.</p>
+    <p>When you type <code>/plan</code>, Claude shifts into architect mode. It asks seven structured questions about intent, scope, constraints, and existing opinions. It proposes an approach with a file map and the key decisions that must be resolved before building begins. For each decision, it presents options with honest tradeoffs and states what it would choose — and why.</p>
+    <p>You do not leave Phase 1 without a confirmed plan. The confirmed plan is the input to Phase 2.</p>
+  </div>
+  <div class="callout callout-warn">
+    <span class="callout-tag">When to Skip /plan</span>
+    Single-file changes. Obvious bug fixes. Trivial edits where the path is completely clear and no architectural decision is possible. If you are not sure whether to skip — do not skip. /plan costs five minutes. A wrong architectural decision costs sessions.
+  </div>
+  <div class="code">
+    <span class="code-label">Phase 1 Flow</span>
+    <pre><span class="kw">/plan</span>
+<span class="c">↓ Claude asks: intent, why now, constraints, existing opinions</span>
+<span class="c">↓ You answer</span>
+<span class="c">↓ Claude proposes: approach + file map + key decisions</span>
+<span class="c">↓ Decisions resolved together (Claude states preference + reason)</span>
+<span class="c">↓ Confirmed plan — 5-7 bullet summary</span>
+<span class="fn">→ Ready for /spec</span></pre>
+  </div>
+</section>
+
+
+<!-- 04 SPEC -->
+<section class="chapter" id="ch-spec">
+  <div class="ch-header">
+    <span class="ch-num">04</span>
+    <div class="ch-titles">
+      <h2>Phase 2 · Spec</h2>
+      <p class="ch-tagline">The contract that every future session honours.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>A spec is not a requirements document. It is a <strong>constrained decision record</strong> that lives in the repository. Every Claude session that touches this feature reads it. It prevents scope drift, prevents re-litigation of settled decisions, and prevents a fresh Claude instance from making different architectural choices than the ones you agreed on in Phase 1.</p>
+    <p>When you type <code>/spec</code>, Claude asks for a name and generates <code>/specs/[name].md</code> using the structured template. The spec contains: intent, success condition, scope boundaries, technical approach, file map, locked decisions with reasons, and a chunked implementation checklist.</p>
+    <p>The checklist is the heartbeat of Phase 3. Each item is one committable unit of work. When a chunk is committed, the item is checked. The spec is the shared truth between all sessions and all phases.</p>
+  </div>
+  <div class="code">
+    <span class="code-label">Spec File — Key Sections</span>
+    <pre><span class="c">## Scope</span>
+<span class="str">In Scope:  [explicit list — what WILL be built]</span>
+<span class="str">Out of Scope: [explicit list — what will NOT be touched]</span>
+<span class="c">            ↑ This section is as important as in-scope</span>
+
+<span class="c">## Decisions Locked</span>
+<span class="str">| Decision | Reason | Revisit When |</span>
+<span class="c">  ↑ Claude will not contradict these without flagging it first</span>
+
+<span class="c">## Implementation Checklist</span>
+<span class="str">- [ ] Chunk 1: [description]   ← One committable unit</span>
+<span class="str">- [ ] Chunk 2: [description]</span>
+<span class="c">  ↑ /chunk reads this. Each item becomes a /chunk session.</span></pre>
+  </div>
+</section>
+
+
+<!-- 05 BUILD -->
+<section class="chapter" id="ch-build">
+  <div class="ch-header">
+    <span class="ch-num">05</span>
+    <div class="ch-titles">
+      <h2>Phase 3 · Build</h2>
+      <p class="ch-tagline">One chunk. One commit. Then stop.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>Phase 3 is where most people lose discipline — and where most AI-generated code problems originate. The pattern is: ask Claude to build a lot in one go, accept the output without reading it carefully, skip the commit, ask for more. Three sessions later, the codebase is a tangle of partially-implemented ideas and nobody knows what was intentional.</p>
+    <p><strong>The counter-pattern is simple: one chunk, then stop.</strong> <code>/chunk</code> identifies the next unchecked item from the spec, states exactly which files it will touch and which it will not, builds the chunk, and presents a commit message. You verify and commit. Then and only then does the next chunk begin.</p>
+  </div>
+
+  <div class="divider">The Two Hooks</div>
+
+  <div class="card-grid">
+    <div class="card" data-num="⚡">
+      <h4>post-edit.sh</h4>
+      <p>Fires automatically after every file Claude writes or modifies. Runs type check, ESLint with auto-fix, and Prettier. Problems caught in zero seconds — before they pile up across 20 files.</p>
+      <span class="card-cmd">Automatic · Zero tokens</span>
+    </div>
+    <div class="card" data-num="🔒">
+      <h4>pre-commit.sh</h4>
+      <p>Fires before every git commit. Runs full type check and tests related to changed files. Blocks the commit if type errors exist. Last line of defence before code enters version control.</p>
+      <span class="card-cmd">Automatic · Zero tokens</span>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Scope Discipline</span>
+    If /chunk identifies that implementing the next item requires touching a file outside the spec's File Map, it stops and flags it. This is a feature, not a bug. Scope drift in Phase 3 is how a two-file feature becomes a twelve-file refactor. Every out-of-scope touch requires your explicit approval.
+  </div>
+</section>
+
+
+<!-- 06 VERIFY -->
+<section class="chapter" id="ch-verify">
+  <div class="ch-header">
+    <span class="ch-num">06</span>
+    <div class="ch-titles">
+      <h2>Phase 4 · Verify</h2>
+      <p class="ch-tagline">Fast output is a risk signal, not a confidence signal.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>The most dangerous moment in any Claude Code session is the moment after a clean-looking output. The hooks ran. No type errors. No lint issues. Everything looks fine. This is exactly when you need verification most — because the hooks caught syntax, not logic.</p>
+    <p><code>/verify</code> makes Claude review its own output adversarially. It is not a standard review. Claude is asked to list every assumption it made, every way the code could fail in production, everything it added that wasn't asked for, and every edge case it did not handle. Then it gives a verdict: COMMIT / FIX FIRST / ESCALATE.</p>
+  </div>
+
+  <div class="divider">Two Verification Modes</div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">/verify</span>
+      <span class="rule-val"><strong>Standard chunk verification.</strong> 7 structured questions covering assumptions, failure modes, scope drift, type safety, and spec compliance. Returns a risk level and recommendation. Use after every chunk.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">/verify full</span>
+      <span class="rule-val"><strong>Full spec verification.</strong> All standard checks plus spec completeness, integration risk, and boundary testing. Use when all chunks are complete before marking a spec as done.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">/agent-review</span>
+      <span class="rule-val"><strong>Independent agent review.</strong> Spawns a fresh Claude instance via <code>claude -p</code> with the spec and git diff — but no session context. No familiarity bias. No attachment to decisions made. Use for security code, complex logic, anything going to production fast.</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Why an Agent for Review</span>
+    The Claude that built the code has context bias. It knows why it made each decision. It will unconsciously interpret ambiguous code charitably. An agent spawned with only the spec and the diff has none of that bias. It reads the code exactly as a new engineer would read it during PR review — which is exactly what you need.
+  </div>
+</section>
+
+
+<!-- 07 UPDATE -->
+<section class="chapter" id="ch-update">
+  <div class="ch-header">
+    <span class="ch-num">07</span>
+    <div class="ch-titles">
+      <h2>Phase 5 · Update</h2>
+      <p class="ch-tagline">The compounding step. Every correction becomes a permanent improvement.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>This is the phase most people skip. It feels optional because the feature is done. It is not optional. This is where the configuration layer gets smarter — where the investment you made in this session pays returns in every session that follows.</p>
+    <p><code>/update</code> does four things: it harvests this session's corrections and patterns as CLAUDE.md candidates for your review. It closes the spec if the feature is complete. It checks if any reusable pattern was discovered. And it triggers the memory framework's <code>/wrap</code> to update SCRATCHPAD, DECISIONS, and SESSIONS.</p>
+    <p>The result: the next session opens with a CLAUDE.md that is smarter, a spec that is either closed or correctly up-to-date, and a SCRATCHPAD that puts Claude exactly where the work stopped.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">The Compounding Mechanism</span>
+    Each /update session adds 1–3 rules to CLAUDE.md from real, observed corrections. After three months, your CLAUDE.md has 40–60 battle-tested rules. Claude produces consistently better output — not because the model changed, but because the configuration did. This is the return on the five minutes Phase 5 costs.
+  </div>
+</section>
+
+
+<!-- 08 FULL FLOW -->
+<section class="chapter" id="ch-flow">
+  <div class="ch-header">
+    <span class="ch-num">08</span>
+    <div class="ch-titles">
+      <h2>Full Session Flow</h2>
+      <p class="ch-tagline">Every command, in order, with what triggers what.</p>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Complete Feature Workflow</span>
+    <pre><span class="c">── SESSION OPEN ────────────────────────────────────────────────</span>
+<span class="kw">/resume</span>          <span class="c">← Memory Framework: reads SCRATCHPAD + DECISIONS</span>
+                 <span class="c">   outputs Session Brief, waits for confirmation</span>
+
+<span class="c">── NEW FEATURE ─────────────────────────────────────────────────</span>
+<span class="kw">/plan</span>            <span class="c">← Phase 1: architecture, decisions, confirmed plan</span>
+<span class="kw">/spec</span>            <span class="c">← Phase 2: writes /specs/[name].md with checklist</span>
+
+<span class="c">── BUILD LOOP (repeat per chunk) ───────────────────────────────</span>
+<span class="kw">/chunk</span>           <span class="c">← Phase 3: builds next checklist item</span>
+                 <span class="c">   post-edit hook fires automatically on every file</span>
+                 <span class="c">   (type check + lint + format)</span>
+<span class="kw">/verify</span>          <span class="c">← Phase 4: adversarial self-review</span>
+<span class="fn">git commit</span>       <span class="c">← pre-commit hook fires (type check + related tests)</span>
+                 <span class="c">   chunk marked ✓ in spec</span>
+<span class="c">↑ repeat until all checklist items are ✓</span>
+
+<span class="c">── FEATURE COMPLETE ────────────────────────────────────────────</span>
+<span class="kw">/verify full</span>     <span class="c">← Full spec verification</span>
+<span class="kw">/agent-review</span>    <span class="c">← (optional) independent review for high-stakes</span>
+
+<span class="c">── SESSION CLOSE ────────────────────────────────────────────────</span>
+<span class="kw">/update</span>          <span class="c">← Phase 5: harvest CLAUDE.md, close spec, wrap memory</span>
+                 <span class="c">   triggers /wrap automatically</span>
+                 <span class="c">   SCRATCHPAD + DECISIONS + SESSIONS updated</span></pre>
+  </div>
+
+  <div class="prose" style="margin-top:28px;">
+    <p>For mid-session decisions, use <code>/decide</code> from the Memory Framework immediately — do not wait for <code>/update</code>. Decisions captured at the moment of making are 10x more accurate than decisions reconstructed at session end.</p>
+  </div>
+</section>
+
+
+<!-- 09 INSTALL -->
+<section class="chapter" id="ch-install">
+  <div class="ch-header">
+    <span class="ch-num">09</span>
+    <div class="ch-titles">
+      <h2>Installation</h2>
+      <p class="ch-tagline">Four steps. Works alongside Memory Framework and existing SCWA setup.</p>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 1 — Copy commands</span>
+    <pre><span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/.claude/commands
+<span class="fn">cp</span> .claude/commands/plan.md         /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/spec.md         /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/chunk.md        /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/verify.md       /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/update.md       /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/agent-review.md /your-project/.claude/commands/</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 2 — Enable hooks</span>
+    <pre><span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/.claude/hooks
+<span class="fn">cp</span> .claude/hooks/post-edit.sh   /your-project/.claude/hooks/
+<span class="fn">cp</span> .claude/hooks/pre-commit.sh  /your-project/.claude/hooks/
+<span class="fn">chmod</span> <span class="flag">+x</span> /your-project/.claude/hooks/post-edit.sh
+<span class="fn">chmod</span> <span class="flag">+x</span> /your-project/.claude/hooks/pre-commit.sh
+<span class="fn">cp</span> .claude/hooks/pre-commit.sh  /your-project/.git/hooks/pre-commit
+<span class="fn">chmod</span> <span class="flag">+x</span> /your-project/.git/hooks/pre-commit</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 3 — Create specs directory + copy template</span>
+    <pre><span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/specs
+<span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/templates
+<span class="fn">cp</span> templates/spec-template.md /your-project/templates/</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 4 — Add to CLAUDE.md</span>
+    <pre><span class="c"># Open CLAUDE-MD-ADDITION.md</span>
+<span class="c"># Copy the entire block between the ─── markers</span>
+<span class="c"># Paste into CLAUDE.md — after the Memory Framework block</span>
+<span class="c"># The ordering matters: Memory Protocol first, Phase Protocol second</span></pre>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Combined Framework Stack</span>
+    Memory Framework handles what Claude remembers between sessions. Phase Framework handles how Claude works within sessions. They share the same .claude/ folder, zero conflicts. /update triggers /wrap — no double-execution. Together they form a complete AI-SDLC operating environment.
+  </div>
+
+  <div class="checklist">
+    <div class="check-item"><span class="check-icon">▸</span><span>All 6 commands copied to .claude/commands/</span></div>
+    <div class="check-item"><span class="check-icon">▸</span><span>Both hooks copied, chmod +x on both</span></div>
+    <div class="check-item"><span class="check-icon">▸</span><span>pre-commit.sh also copied to .git/hooks/pre-commit</span></div>
+    <div class="check-item"><span class="check-icon">▸</span><span>specs/ directory created</span></div>
+    <div class="check-item"><span class="check-icon warn">▸</span><span>CLAUDE-MD-ADDITION.md pasted into CLAUDE.md (after memory framework block)</span></div>
+    <div class="check-item"><span class="check-icon warn">▸</span><span>Memory Framework installed first (Phase Framework depends on /wrap from memory framework)</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">PHASE <span>FRAMEWORK</span></div>
+  <div class="footer-meta">
+    5-Phase AI-SDLC Workflow<br/>
+    Claude Code · SCWA Compatible<br/>
+    v1.0 · 2026
+  </div>
+</footer>
+
+</div></div>
+</body>
+</html>

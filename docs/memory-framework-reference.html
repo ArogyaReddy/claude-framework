@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Memory Framework — Claude Code Persistent Memory System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#0b0d0f;--surface:#111418;--surface2:#181c22;
+  --border:#1f2530;--border2:#2a3040;
+  --text:#c8d0dc;--text-dim:#6b7585;--text-xdim:#3d4555;--head:#edf0f5;
+  --accent:#4af0a0;--accent2:#f0a04a;--accent3:#4a9ef0;--red:#f05a4a;
+  --mono:'IBM Plex Mono',monospace;--display:'Syne',sans-serif;--serif:'Lora',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.8;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
+.page{position:relative;z-index:1;}
+.container{max-width:900px;margin:0 auto;padding:0 32px;}
+
+/* MASTHEAD */
+.masthead{border-bottom:1px solid var(--border);padding:80px 0 60px;position:relative;overflow:hidden;}
+.masthead::after{content:'';position:absolute;top:-120px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(74,240,160,.06) 0%,transparent 70%);pointer-events:none;}
+.m-label{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.m-label::before{content:'';display:block;width:32px;height:1px;background:var(--accent);}
+h1{font-family:var(--display);font-size:clamp(2.8rem,7vw,5rem);font-weight:800;line-height:.95;color:var(--head);letter-spacing:-.03em;margin-bottom:8px;}
+h1 .dim-word{color:var(--text-xdim);}
+.masthead-sub{margin-top:28px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;border-top:1px solid var(--border);padding-top:24px;}
+.masthead-desc{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--text-dim);line-height:1.6;max-width:520px;}
+.masthead-meta{text-align:right;font-size:10px;color:var(--text-xdim);letter-spacing:.1em;text-transform:uppercase;line-height:1.9;}
+
+/* TOC */
+.toc{border:1px solid var(--border);background:var(--surface);padding:32px;margin:48px 0;display:grid;grid-template-columns:1fr 1fr;gap:4px 40px;}
+.toc-title{font-family:var(--display);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-xdim);margin-bottom:20px;grid-column:1/-1;}
+.toc-item{display:flex;align-items:baseline;gap:8px;color:var(--text-dim);font-size:12px;text-decoration:none;padding:5px 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;}
+.toc-item:hover{color:var(--accent);border-color:var(--border);}
+.toc-num{color:var(--accent);font-size:10px;min-width:22px;}
+
+/* CHAPTERS */
+.chapter{padding:72px 0;border-bottom:1px solid var(--border);}
+.chapter:last-of-type{border-bottom:none;}
+.ch-header{display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;}
+.ch-num{font-family:var(--display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);min-width:40px;padding-top:6px;}
+.ch-titles h2{font-family:var(--display);font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700;color:var(--head);line-height:1.1;letter-spacing:-.02em;}
+.ch-titles .ch-tagline{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--text-xdim);margin-top:6px;}
+
+/* PROSE */
+.prose{font-family:var(--mono);font-size:13.5px;color:var(--text);line-height:1.9;}
+.prose p{margin-bottom:18px;}
+.prose p:last-child{margin-bottom:0;}
+.prose strong{color:var(--head);font-weight:500;}
+.prose em{font-family:var(--serif);font-style:italic;color:var(--text-dim);}
+.prose code{color:var(--accent2);font-size:12px;}
+
+/* CALLOUTS */
+.callout{border-left:2px solid var(--accent);background:rgba(74,240,160,.04);padding:20px 24px;margin:28px 0;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--head);line-height:1.65;}
+.callout-warn{border-color:var(--accent2);background:rgba(240,160,74,.04);}
+.callout-danger{border-color:var(--red);background:rgba(240,90,74,.04);}
+.callout-tag{display:block;font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;font-weight:500;}
+.callout-warn .callout-tag{color:var(--accent2);}
+.callout-danger .callout-tag{color:var(--red);}
+
+/* RULE TABLE */
+.rule-table{margin:28px 0;}
+.rule-row{display:grid;grid-template-columns:180px 1fr;gap:20px;padding:16px 0;border-top:1px solid var(--border);align-items:start;}
+.rule-row:last-child{border-bottom:1px solid var(--border);}
+.rule-key{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);padding-top:2px;font-weight:500;}
+.rule-val{font-size:13px;color:var(--text);line-height:1.75;}
+.rule-val strong{color:var(--head);font-weight:500;}
+
+/* CODE */
+.code{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent);padding:24px;margin:24px 0;overflow-x:auto;position:relative;}
+.code-label{position:absolute;top:-1px;right:16px;background:var(--accent);color:var(--bg);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:2px 8px;}
+.code pre{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--text);white-space:pre;}
+.code .c{color:var(--text-xdim);}
+.code .kw{color:var(--accent3);}
+.code .str{color:var(--accent2);}
+.code .fn{color:var(--accent);}
+.code .flag{color:var(--accent2);}
+.code .punct{color:var(--text-dim);}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:28px 0;border:1px solid var(--border);}
+.compare-col{background:var(--surface);padding:24px;}
+.compare-col:first-child{border-right:2px solid var(--red);}
+.compare-col:last-child{border-left:2px solid var(--accent);}
+.compare-col h4{font-family:var(--display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;}
+.compare-col:first-child h4{color:var(--red);}
+.compare-col:last-child h4{color:var(--accent);}
+.compare-col p{font-size:12.5px;color:var(--text-dim);line-height:1.7;font-family:var(--mono);}
+
+/* CARD GRID */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:2px;margin:28px 0;}
+.card{background:var(--surface);border:1px solid var(--border);padding:22px;position:relative;transition:border-color .2s;}
+.card:hover{border-color:var(--border2);}
+.card::before{content:attr(data-num);position:absolute;top:16px;right:16px;font-size:28px;font-family:var(--display);font-weight:800;color:var(--text-xdim);line-height:1;}
+.card h4{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--head);margin-bottom:10px;}
+.card p{font-size:12px;color:var(--text-dim);line-height:1.7;}
+
+/* CHECKLIST */
+.checklist{margin:20px 0;}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);line-height:1.6;}
+.check-item:first-child{border-top:1px solid var(--border);}
+.check-icon{color:var(--accent);min-width:14px;margin-top:2px;}
+.check-icon.warn{color:var(--accent2);}
+.check-icon.danger{color:var(--red);}
+
+/* TOKEN TABLE */
+.token-table{margin:28px 0;border:1px solid var(--border);width:100%;border-collapse:collapse;}
+.token-table th{background:var(--surface);font-family:var(--display);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);}
+.token-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:top;}
+.token-table tr:last-child td{border-bottom:none;}
+.token-table .good{color:var(--accent);font-weight:500;}
+.token-table .total-row td{background:rgba(74,240,160,.04);font-weight:500;color:var(--head);}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:0;margin:28px 0;flex-wrap:wrap;}
+.flow-node{background:var(--surface);border:1px solid var(--border);padding:16px 20px;flex:1;min-width:140px;}
+.flow-node h4{font-family:var(--display);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.flow-node p{font-size:11px;color:var(--text-dim);line-height:1.5;}
+.flow-arrow{color:var(--text-xdim);font-size:18px;padding:0 8px;flex-shrink:0;}
+
+.divider{display:flex;align-items:center;gap:16px;margin:40px 0;color:var(--text-xdim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+footer{border-top:1px solid var(--border);padding:48px 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;}
+.footer-brand{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-xdim);letter-spacing:-.01em;}
+.footer-brand span{color:var(--accent);}
+.footer-meta{font-size:10px;color:var(--text-xdim);letter-spacing:.1em;text-transform:uppercase;text-align:right;line-height:1.9;}
+
+@media(max-width:640px){
+  .compare{grid-template-columns:1fr;}
+  .compare-col:first-child{border-right:none;border-bottom:2px solid var(--red);}
+  .compare-col:last-child{border-left:none;border-top:2px solid var(--accent);}
+  .rule-row{grid-template-columns:1fr;gap:4px;}
+  .masthead-sub{grid-template-columns:1fr;}
+  .masthead-meta{text-align:left;}
+  .toc{grid-template-columns:1fr;}
+  footer{grid-template-columns:1fr;}
+  .footer-meta{text-align:left;}
+  .flow{flex-direction:column;}
+  .flow-arrow{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="container">
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <p class="m-label">Plug-In Framework · Claude Code Memory System</p>
+  <h1>MEMORY<br/><span class="dim-word">FRAMEWORK</span></h1>
+  <div class="masthead-sub">
+    <p class="masthead-desc">
+      Persistent memory for Claude Code — three files, three commands, one hook.
+      Drop it into any project. Never re-explain context again.
+    </p>
+    <div class="masthead-meta">
+      SCWA Compatible<br/>
+      Zero Dependencies<br/>
+      v1.0 · 2026
+    </div>
+  </div>
+</header>
+
+<!-- TOC -->
+<nav class="toc">
+  <p class="toc-title">Contents</p>
+  <a class="toc-item" href="#ch-problem"><span class="toc-num">01</span>The Problem This Solves</a>
+  <a class="toc-item" href="#ch-architecture"><span class="toc-num">02</span>Architecture Overview</a>
+  <a class="toc-item" href="#ch-files"><span class="toc-num">03</span>The Three Memory Files</a>
+  <a class="toc-item" href="#ch-commands"><span class="toc-num">04</span>The Three Commands</a>
+  <a class="toc-item" href="#ch-session"><span class="toc-num">05</span>Daily Session Flow</a>
+  <a class="toc-item" href="#ch-tokens"><span class="toc-num">06</span>Token Cost Analysis</a>
+  <a class="toc-item" href="#ch-install"><span class="toc-num">07</span>Installation</a>
+  <a class="toc-item" href="#ch-rules"><span class="toc-num">08</span>Maintenance Rules</a>
+</nav>
+
+
+<!-- 01 THE PROBLEM -->
+<section class="chapter" id="ch-problem">
+  <div class="ch-header">
+    <span class="ch-num">01</span>
+    <div class="ch-titles">
+      <h2>The Problem<br/>This Solves</h2>
+      <p class="ch-tagline">Claude Code has no memory. You pay for that every single session.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>When a Claude Code session closes, everything is gone. The next session opens blank. Claude knows your codebase only because it can read files. It knows your decisions, your constraints, your failed attempts, your current focus — only if those things are written somewhere it can read.</p>
+    <p>Without a memory system, you spend the first 5–10 minutes of every session re-establishing context. You explain the architecture again. You mention the constraint again. You warn Claude about the approach that already failed. You cost yourself <strong>3,000–6,000 tokens per session</strong> just to get back to zero — and that is before any real work begins.</p>
+    <p>Multiply that by 5 sessions a week. That is 15,000–30,000 tokens a week spent on re-explanation. That is real cost. And it compounds — because without a decision log, the same architectural decisions get re-litigated. Without a scratchpad, the same failed approaches get suggested again. Without a session trail, you lose track of why the code is the way it is.</p>
+  </div>
+  <div class="callout">
+    <span class="callout-tag">Core Insight</span>
+    The memory problem is not a Claude limitation to work around. It is a configuration problem to solve once. A three-file system on disk costs ~1,300 tokens per session pair and eliminates the re-explanation tax permanently.
+  </div>
+  <div class="prose">
+    <p>This framework solves it completely. Three plain Markdown files. Three slash commands. One optional hook. No external services. No API keys. Everything is version-controllable, readable, and portable.</p>
+  </div>
+</section>
+
+
+<!-- 02 ARCHITECTURE -->
+<section class="chapter" id="ch-architecture">
+  <div class="ch-header">
+    <span class="ch-num">02</span>
+    <div class="ch-titles">
+      <h2>Architecture Overview</h2>
+      <p class="ch-tagline">Three files. Three commands. One protocol.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Each file has a single, non-overlapping responsibility. They do not duplicate each other. Keeping them separate is the design — if you merge them, you lose the ability to control what Claude reads and when.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">SCRATCHPAD.md</span>
+      <span class="rule-val"><strong>Rolling current state.</strong> What you're working on, where to resume, what failed, what's unresolved. Replaced and updated each session. Kept under 300 lines. This is the file Claude reads first.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">DECISIONS.md</span>
+      <span class="rule-val"><strong>Permanent decision log.</strong> Every architectural or significant decision, with its reason and the conditions under which it should be revisited. Never truncated. Never deleted. Append only. This is your institutional memory.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">SESSIONS.md</span>
+      <span class="rule-val"><strong>Audit trail.</strong> One row per session — date, focus, outcome, next step. Claude does not read this at session start (too much noise). You use it when you need to answer "when did we change X?" or "what happened last Tuesday?"</span>
+    </div>
+  </div>
+
+  <div class="divider">Session Flow</div>
+
+  <div class="flow">
+    <div class="flow-node">
+      <h4>Session Opens</h4>
+      <p>Run /resume. Claude reads SCRATCHPAD + relevant DECISIONS. Outputs brief.</p>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node">
+      <h4>Work Happens</h4>
+      <p>Use /decide when decisions are made. Claude flags DECISIONS.md conflicts.</p>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node">
+      <h4>Session Closes</h4>
+      <p>Run /wrap. All three files updated. Resume point written. CLAUDE.md suggestions surfaced.</p>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node">
+      <h4>Next Session</h4>
+      <p>/resume reads the updated files. Claude is fully oriented in 30 seconds. No re-explanation.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 THE FILES -->
+<section class="chapter" id="ch-files">
+  <div class="ch-header">
+    <span class="ch-num">03</span>
+    <div class="ch-titles">
+      <h2>The Three<br/>Memory Files</h2>
+      <p class="ch-tagline">What each file contains and why it is structured that way.</p>
+    </div>
+  </div>
+
+  <div class="divider">SCRATCHPAD.md</div>
+
+  <div class="prose">
+    <p>The session state file. Think of it as the shift handover note — the minimum a fresh person needs to resume without losing ground. Not a log. Not a journal. A rolling briefing document.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">SCRATCHPAD.md — Structure</span>
+    <pre><span class="c">## What We're Building</span>
+<span class="str">Written once. Updated only when scope changes. The "why" as much as the "what".</span>
+
+<span class="c">## Current Focus</span>
+<span class="str">Replace entirely each session. The one specific thing being worked on.
+With: why it matters + what is explicitly out of scope this session.</span>
+
+<span class="c">## Resume Here</span>
+<span class="kw">→</span> <span class="str">ONE sentence. Specific file path + line number if applicable.
+   A fresh Claude instance should know exactly what to do.</span>
+
+<span class="c">## Active Files</span>
+<span class="str">3-6 files most relevant to current focus. Speeds up orientation.</span>
+
+<span class="c">## What Was Tried and Failed</span>
+<span class="str">Append only. Never delete. Prevents Claude re-suggesting dead ends.
+Format: [date] — what was tried → why it failed</span>
+
+<span class="c">## Open Questions</span>
+<span class="str">Unresolved things. Claude knows they exist but does not try to resolve
+them without new information.</span>
+
+<span class="c">## Context Claude Needs</span>
+<span class="str">Business constraints, client requirements, team decisions not in the codebase.</span></pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Size Rule</span>
+    Keep SCRATCHPAD.md under 300 lines. When it grows beyond this, the /wrap command will summarise older "Failed" entries into a paragraph. A bloated scratchpad degrades the value of reading it — if Claude has to read 600 lines to orient, you have lost the efficiency gain.
+  </div>
+
+  <div class="divider">DECISIONS.md</div>
+
+  <div class="prose">
+    <p>The institutional memory file. This is the one that pays the longest dividends. Six months from now, when you or a new developer touches a piece of code and asks "why is this done this way?" — the answer is in DECISIONS.md, with the reasoning that was compelling at the time.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">DECISIONS.md — Entry Format</span>
+    <pre><span class="c">### [DECISION-007] Redis for session storage, not database</span>
+<span class="kw">Date:</span> <span class="str">2026-03-18</span>
+<span class="kw">Status:</span> <span class="str">Active</span>
+<span class="kw">Decision:</span> <span class="str">Store auth sessions in Redis, not Postgres.</span>
+<span class="kw">Reason:</span> <span class="str">p99 latency requirement of &lt;10ms from Client X SLA.
+         DB reads were consistently 35-80ms under load.
+         This is a contractual constraint, not a preference.</span>
+<span class="kw">Alternatives Considered:</span> <span class="str">Postgres (too slow), in-memory (no horizontal scale).</span>
+<span class="kw">Revisit When:</span> <span class="str">Client X SLA changes, or Redis hosting cost exceeds $400/mo.</span></pre>
+  </div>
+
+  <div class="prose">
+    <p><strong>The reason field is the most important field.</strong> A decision without its reason is a constraint that looks arbitrary. An arbitrary-looking constraint gets violated. A well-reasoned constraint gets respected — by Claude, by new developers, by you six months from now when you have forgotten why you made it.</p>
+  </div>
+
+  <div class="divider">SESSIONS.md</div>
+
+  <div class="prose">
+    <p>One row per session. Append only. Five words per column. Claude does not read this at session start — it is for your benefit, not Claude's. Use it when you need to reconstruct the history of a decision or understand why the codebase looks the way it does.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">SESSIONS.md — Row Format</span>
+    <pre><span class="c">| Session | Date       | Focus                  | Outcome                    | Next               |</span>
+<span class="str">| 001     | 2026-03-15 | Auth webhook handler   | Redis lock implemented     | Write tests        |</span>
+<span class="str">| 002     | 2026-03-17 | Webhook tests          | 4 tests passing, 2 failing | Fix race condition  |</span>
+<span class="str">| 003     | 2026-03-18 | Race condition fix     | SET NX pattern works       | PR and review      |</span></pre>
+  </div>
+</section>
+
+
+<!-- 04 COMMANDS -->
+<section class="chapter" id="ch-commands">
+  <div class="ch-header">
+    <span class="ch-num">04</span>
+    <div class="ch-titles">
+      <h2>The Three<br/>Commands</h2>
+      <p class="ch-tagline">One keystroke each. The entire memory protocol in three triggers.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" data-num="/r">
+      <h4>/resume — Session Start</h4>
+      <p>Reads SCRATCHPAD + relevant DECISIONS. Outputs a Session Brief. Waits for your confirmation before starting work. Use at the start of every session without exception.</p>
+    </div>
+    <div class="card" data-num="/w">
+      <h4>/wrap — Session End</h4>
+      <p>Updates all three memory files. Surfaces CLAUDE.md suggestions for your review. Writes the resume point. Use at the end of every session. Takes 30 seconds. Saves 5 minutes next time.</p>
+    </div>
+    <div class="card" data-num="/d">
+      <h4>/decide — Mid-Session</h4>
+      <p>Logs a decision to DECISIONS.md immediately — while context is fresh. Do not wait for /wrap. Decisions recorded at the moment of making are 10x more valuable than decisions reconstructed at session end.</p>
+    </div>
+  </div>
+
+  <div class="divider">What /resume Outputs</div>
+
+  <div class="code">
+    <span class="code-label">Session Brief — Example Output</span>
+    <pre><span class="c">## Session Brief</span>
+
+<span class="kw">Resuming:</span> <span class="str">Fixing the race condition in Stripe webhook idempotency handler.</span>
+
+<span class="kw">Next action:</span> <span class="str">→ Implement Redis SET NX pessimistic lock in
+              /api/webhooks/stripe.ts line 47, replace current optimistic lock.</span>
+
+<span class="kw">Watch out for:</span> <span class="str">- Optimistic locking was tried (session 002) — race condition persisted.
+               - Queue-vs-drop decision still open — waiting on product sign-off.</span>
+
+<span class="kw">Active constraints:</span> <span class="str">- No new dependencies without approval (CLAUDE.md)
+                    - All DB access via /lib/db — not applicable here (Redis direct)</span>
+
+<span class="kw">Decisions that apply:</span> <span class="str">- DECISION-007: Redis for sessions (&lt;10ms latency req)
+                       - DECISION-012: Stripe webhooks only, no Paddle</span>
+
+<span class="str">Ready to proceed. Confirm or redirect.</span></pre>
+  </div>
+
+  <div class="prose">
+    <p>That brief costs ~700 tokens to generate. It replaces 5 minutes of re-explanation. <strong>Every time.</strong></p>
+  </div>
+</section>
+
+
+<!-- 05 SESSION FLOW -->
+<section class="chapter" id="ch-session">
+  <div class="ch-header">
+    <span class="ch-num">05</span>
+    <div class="ch-titles">
+      <h2>Daily Session Flow</h2>
+      <p class="ch-tagline">The ritual that makes everything else work.</p>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>❌ Without Framework</h4>
+      <p>Open session.<br/>
+      Re-explain project context (2 mins).<br/>
+      Re-explain current focus (1 min).<br/>
+      Re-explain what failed last time (1 min).<br/>
+      Re-establish constraints (1 min).<br/>
+      5 minutes lost. 4,000 tokens wasted.<br/>
+      Claude still makes the same mistakes.<br/>
+      Same decisions re-litigated.<br/>
+      No record of why code is the way it is.</p>
+    </div>
+    <div class="compare-col">
+      <h4>✅ With Framework</h4>
+      <p>Open session.<br/>
+      Type: <code>/resume</code><br/>
+      Read Session Brief (30 seconds).<br/>
+      Type: <code>confirmed, let's go</code><br/>
+      Working in under 2 minutes.<br/>
+      700 tokens spent. Zero re-explanation.<br/>
+      Failed approaches blocked automatically.<br/>
+      Decisions respected without repeating them.<br/>
+      Full institutional memory intact.</p>
+    </div>
+  </div>
+
+  <div class="divider">The Full Daily Checklist</div>
+
+  <div class="checklist">
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>Session start:</strong> Run <code>/resume</code> before typing anything else. Confirm the brief.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>When a decision is made:</strong> Run <code>/decide</code> immediately. Do not wait for session end.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>When Claude contradicts a decision:</strong> Claude should flag it. If it doesn't, check DECISIONS.md yourself before accepting the output.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>Before closing:</strong> Run <code>/wrap</code>. Do not close the session without updating memory files. The next session's quality depends entirely on this step.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon danger">▸</span>
+      <span><strong>Never skip /wrap</strong> thinking "I'll remember tomorrow." You won't. Claude definitely won't. The entire framework fails if wrap is inconsistent.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 06 TOKEN COST -->
+<section class="chapter" id="ch-tokens">
+  <div class="ch-header">
+    <span class="ch-num">06</span>
+    <div class="ch-titles">
+      <h2>Token Cost Analysis</h2>
+      <p class="ch-tagline">The cheapest thing in your workflow. By a significant margin.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Every token spent on the memory framework displaces a larger token cost elsewhere. This is not a cost to minimise — it is an investment to make deliberately, because the return ratio is approximately 7:1 per session pair.</p>
+  </div>
+
+  <table class="token-table">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Token Cost</th>
+        <th>Tokens Saved</th>
+        <th>Net</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/resume at session start</td>
+        <td>~700</td>
+        <td class="good">~5,000 (re-explanation)</td>
+        <td class="good">+4,300</td>
+      </tr>
+      <tr>
+        <td>/wrap at session end</td>
+        <td>~650</td>
+        <td class="good">~5,000 (next session)</td>
+        <td class="good">+4,350</td>
+      </tr>
+      <tr>
+        <td>/decide mid-session</td>
+        <td>~200</td>
+        <td class="good">~2,000 (future re-litigation)</td>
+        <td class="good">+1,800</td>
+      </tr>
+      <tr class="total-row">
+        <td>Per session pair (typical)</td>
+        <td>~1,550</td>
+        <td class="good">~12,000</td>
+        <td class="good">+10,450 (~7:1 ratio)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="callout-tag">Compounding Return</span>
+    The DECISIONS.md savings compound over time. A decision logged in month 1 prevents re-litigation in month 3, month 6, and month 12. The token savings on a single well-documented decision can exceed 10,000 tokens across the lifetime of a project — from a 200-token investment.
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <span class="rule-key">Git Strategy</span>
+      <span class="rule-val">Add <strong>SCRATCHPAD.md</strong> and <strong>SESSIONS.md</strong> to <code>.gitignore</code> — they are local session state. Keep <strong>DECISIONS.md</strong> in version control — it is institutional memory that the whole team benefits from.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">File Size Control</span>
+      <span class="rule-val">SCRATCHPAD.md: 300-line cap, enforced by /wrap. DECISIONS.md: no cap — never truncate. SESSIONS.md: grows ~2 lines/week — negligible. Total read cost at session start: ~600-900 tokens.</span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-key">Sonnet vs Opus</span>
+      <span class="rule-val">Run /resume and /wrap on Sonnet. These are structured read/write tasks, not reasoning tasks. Save Opus for architectural decisions — which you then immediately log with /decide.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 07 INSTALL -->
+<section class="chapter" id="ch-install">
+  <div class="ch-header">
+    <span class="ch-num">07</span>
+    <div class="ch-titles">
+      <h2>Installation</h2>
+      <p class="ch-tagline">Five steps. Under ten minutes. Works alongside your existing setup.</p>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 1 — Copy memory files to project root</span>
+    <pre><span class="fn">cp</span> SCRATCHPAD.md     /your-project/
+<span class="fn">cp</span> DECISIONS.md      /your-project/
+<span class="fn">cp</span> SESSIONS.md       /your-project/</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 2 — Copy commands to .claude/commands/</span>
+    <pre><span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/.claude/commands
+<span class="fn">cp</span> .claude/commands/resume.md   /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/wrap.md     /your-project/.claude/commands/
+<span class="fn">cp</span> .claude/commands/decide.md   /your-project/.claude/commands/</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 3 — Install hook (optional — auto-wrap on close)</span>
+    <pre><span class="fn">mkdir</span> <span class="flag">-p</span> /your-project/.claude/hooks
+<span class="fn">cp</span> .claude/hooks/post-session.sh /your-project/.claude/hooks/
+<span class="fn">chmod</span> <span class="flag">+x</span> /your-project/.claude/hooks/post-session.sh</pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 4 — Add memory protocol to your CLAUDE.md</span>
+    <pre><span class="c"># Open CLAUDE-MD-ADDITION.md</span>
+<span class="c"># Copy the entire block between the ─── markers</span>
+<span class="c"># Paste into your existing CLAUDE.md</span>
+<span class="c"># This is what makes Claude follow the protocol automatically</span></pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Step 5 — Initialise SCRATCHPAD.md</span>
+    <pre><span class="c"># Fill in ONE section manually:</span>
+<span class="c"># "What We're Building" — one paragraph, the project purpose</span>
+<span class="c"># Everything else gets written by Claude via /wrap</span>
+
+<span class="c"># Then run your first session:</span>
+<span class="fn">/resume</span>    <span class="c">← Claude will note the scratchpad is fresh and ask what to focus on</span></pre>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Compatibility</span>
+    This framework is additive. It does not replace or modify anything in your existing SCWA setup — no existing hooks, no existing CLAUDE.md rules, no existing specs. It layers on top. The only file you edit is CLAUDE.md, and only by appending the memory protocol block.
+  </div>
+</section>
+
+
+<!-- 08 MAINTENANCE -->
+<section class="chapter" id="ch-rules">
+  <div class="ch-header">
+    <span class="ch-num">08</span>
+    <div class="ch-titles">
+      <h2>Maintenance Rules</h2>
+      <p class="ch-tagline">The rules that keep the framework working six months from now.</p>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>SCRATCHPAD.md: 300-line cap.</strong> /wrap enforces this. If you see it growing between wraps, summarise "Failed" entries manually before the next session.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>DECISIONS.md: never truncate, never delete.</strong> If a decision is reversed, mark it <code>[REVERSED]</code> and add a new entry explaining why. The reversal is itself a decision worth recording.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">▸</span>
+      <span><strong>SESSIONS.md: append only via /wrap.</strong> Never edit manually. Its value is in being a reliable, untampered audit trail.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>CLAUDE.md: /wrap surfaces suggestions, never auto-edits.</strong> You review every CLAUDE.md change. This is intentional — permanent project constraints require human judgment, not automatic promotion.</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon warn">▸</span>
+      <span><strong>If Claude contradicts a DECISIONS.md entry:</strong> the entry wins until you explicitly decide to reverse it. Claude should flag the conflict — if it doesn't, that is a CLAUDE.md addition: "Always flag before contradicting a DECISIONS.md entry."</span>
+    </div>
+    <div class="check-item">
+      <span class="check-icon danger">▸</span>
+      <span><strong>/wrap is non-negotiable at session end.</strong> One skipped wrap means the next session starts with stale memory. Two skipped wraps means the scratchpad is meaningfully inaccurate. Three means you have abandoned the framework.</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">The Long Game</span>
+    At six months, your DECISIONS.md has 30–50 entries, each with its reason. Your SCRATCHPAD.md always reflects exactly where you are. Your sessions open in under two minutes. The same architectural mistakes are never made twice. That is not a vision — it is what this framework produces if you run /resume and /wrap consistently. The entire investment is two keystrokes per session.
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-brand">MEMORY <span>FRAMEWORK</span></div>
+  <div class="footer-meta">
+    Claude Code · Persistent Memory System<br/>
+    SCWA Compatible · Zero Dependencies<br/>
+    v1.0 · 2026
+  </div>
+</footer>
+
+</div></div>
+</body>
+</html>
