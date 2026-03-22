@@ -1,0 +1,20 @@
+# Task: debug API timeout issue
+# Target: copilot
+# Generated: 2026-03-22 15:03:31
+# Length: 672 characters
+
+# Task: debug API timeout issue
+
+**Context:** Repository: claude-framework, Branch: main, Working in: /Users/arog/Library/Mobile Documents/com~apple~CloudDocs/AROG/2026-03-22/claude-framework/claude-framework/pgt
+
+**Role:** You are a senior debugging specialist with expertise in root cause analysis and systematic problem-solving.
+
+**Requirements:**
+- Identify the root cause, not just symptoms
+- Provide step-by-step debugging approach
+- Include prevention strategies
+- No speculation without evidence
+
+**Expected Output:** 1. Root cause analysis 2. Step-by-step fix 3. Prevention measures
+
+**Instructions:** Provide a complete, working solution with clear explanations.

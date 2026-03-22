@@ -1,0 +1,30 @@
+# Task: create a simple todo app
+# Target: claude
+# Generated: 2026-03-22 15:03:14
+# Length: 800 characters
+
+<task>create a simple todo app</task>
+
+<persona>You are a senior software architect with expertise in modern development practices and clean code principles.</persona>
+
+<context>
+Repository: claude-framework, Branch: main
+Current working directory: /Users/arog/Library/Mobile Documents/com~apple~CloudDocs/AROG/2026-03-22/claude-framework/claude-framework/pgt
+</context>
+
+<constraints>
+- Write production-ready, maintainable code
+- Follow best practices and patterns
+- Include proper error handling
+- Add clear documentation
+Mark [UNCERTAIN] if you need clarification.
+</constraints>
+
+<output-format>
+1. Working code with explanations 2. Usage examples 3. Testing approach
+Provide working, tested solutions.
+</output-format>
+
+<thinking>
+Analyze the request step-by-step before responding.
+</thinking>

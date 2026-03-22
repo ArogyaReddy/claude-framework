@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "name": "Universal Prompt Generator",
+  "description": "Professional command-line tool for generating optimized AI prompts",
+  "default_target": "claude",
+  "supported_targets": [
+    "claude",
+    "claude-code",
+    "copilot",
+    "universal"
+  ],
+  "task_patterns": {
+    "debug": ["bug", "fix", "debug", "error", "issue", "troubleshoot"],
+    "create": ["create", "build", "develop", "implement", "make", "generate"],
+    "test": ["test", "testing", "spec", "specification", "verify"],
+    "document": ["document", "doc", "explain", "guide", "readme"],
+    "review": ["review", "analyze", "audit", "check", "examine"]
+  },
+  "storage": {
+    "prompts_dir": "data/prompts",
+    "templates_dir": "data/templates",
+    "examples_dir": "data/examples",
+    "history_file": "data/history.log",
+    "index_file": "data/index.json"
+  }
+}

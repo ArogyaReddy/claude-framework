@@ -1,0 +1,30 @@
+# Task: create a React login component
+# Target: claude
+# Generated: 2026-03-22 15:20:00
+# Length: 820 characters
+
+<task>create a React login component</task>
+
+<persona>You are a senior software architect with expertise in modern development practices and clean code principles.</persona>
+
+<context>
+Repository: my-project, Branch: main, Stack: Node.js/React
+Current working directory: /path/to/project
+</context>
+
+<constraints>
+- Write production-ready, maintainable code
+- Follow best practices and patterns
+- Include proper error handling
+- Add clear documentation
+Mark [UNCERTAIN] if you need clarification.
+</constraints>
+
+<output-format>
+1. Working code with explanations 2. Usage examples 3. Testing approach
+Provide working, tested solutions.
+</output-format>
+
+<thinking>
+Analyze the request step-by-step before responding.
+</thinking>
