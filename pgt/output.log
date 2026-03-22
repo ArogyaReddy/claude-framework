@@ -1,0 +1,85 @@
+
+[1m[0;36m╔══════════════════════════════════════════════════════════════╗[0m
+[1m[0;36m║  🧠 PROMPT ENGINE v5.0  ·  QUICK MODE  ·  2026-03-22  14:07   ║[0m
+[1m[0;36m╚══════════════════════════════════════════════════════════════╝[0m
+
+
+[1m[1;33m  ▸ LAYER 1 — Boot Intelligence[0m
+  [2m──────────────────────────────────────────────────────────[0m
+  [0;36m·[0m Seed: fix bug
+  [0;36m·[0m Target: claude | Mode: code | Framework: RISEN
+
+[1m[1;33m  ▸ LAYER 7 — Persona[0m
+  [2m──────────────────────────────────────────────────────────[0m
+
+[1m[1;33m  ▸ LAYER 10 — Negative Constraints[0m
+  [2m──────────────────────────────────────────────────────────[0m
+
+[1m[1;33m  ▸ LAYER 12 — PE Techniques[0m
+  [2m──────────────────────────────────────────────────────────[0m
+
+[1m[1;33m  ▸ LAYER 15 — Render[0m
+  [2m──────────────────────────────────────────────────────────[0m
+  [0;32m✓[0m Prompt rendered for claude
+  [0;36m·[0m ✓ Prompt size: 240 tokens (within budget)
+
+[1m[1;33m  ▸ LAYER 13 — Quality Score[0m
+  [2m──────────────────────────────────────────────────────────[0m
+  [1;37mScore: 6/10[0m
+    [2m✗ Persona[0m
+    [2m✗ Context[0m
+    [2m✓ Constraints[0m
+    [2m✓ Framework[0m
+    [2m✓ Token count OK (113 words)[0m
+    [2m⚠ Contains 1 vague term(s)[0m
+    [2m✓ Output format specified[0m
+
+[1m[1;33m  ▸ LAYER 16 — Deliver[0m
+  [2m──────────────────────────────────────────────────────────[0m
+  [0;32m✓[0m Saved to vault: 2026-03-22_14-07-10_claude_code.prompt
+  [0;32m✓[0m Copied to clipboard (pbcopy)
+
+[1m[0;32m╔══════════════════════════════════════════════════════════════╗[0m
+[1m[0;32m║  GENERATED PROMPT — claude · code · RISEN[0m
+[1m[0;32m╚══════════════════════════════════════════════════════════════╝[0m
+
+[1;37m<task>fix bug</task>
+
+<persona>
+NAME: Senior Backend Engineer
+ROLE: You are a senior backend engineer with 10+ years of experience in distributed systems, API design, and performance optimization. You write production-quality code, think about edge cases, and document your decisions.
+TRAITS: pragmatic, security-conscious, test-driven, documentation-aware, scalability-minded
+AVOID: over-engineering, premature optimization, magic numbers, undocumented assumptions, scope creep
+</persona>
+
+<context>
+Environment: Env: unknown | Repo: claude-framework | Branch: main | Status: 10 uncommitted
+
+</context>
+
+<framework>
+Apply RISEN framework to structure your approach.
+</framework>
+
+<hard-constraints>
+NO TODO comments, NO placeholder code, NO magic numbers
+Mark [UNCERTAIN] if you need clarification.
+</hard-constraints>
+
+<output-format>
+Tone: technical
+Length: standard
+Audience: self
+</output-format>
+
+<thinking>
+Think step by step before responding.
+</thinking>[0m
+
+[1m[0;32m╔══════════════════════════════════════════════════════════════╗[0m
+[1m[0;32m║  END  ·  Score: 6/10  ·  964 chars[0m
+[1m[0;32m╚══════════════════════════════════════════════════════════════╝[0m
+
+
+[1m[0;32m  ✓ Quick mode complete. Prompt in clipboard.[0m
+

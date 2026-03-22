@@ -1,0 +1,29 @@
+DEBUG: After parse_args - SEED='fix bug', SPEED='quick'
+DEBUG: Checking quick mode: SPEED='quick', SEED='fix bug'
+DEBUG: Entering quick_mode
+DEBUG: Started layer1_boot
+DEBUG: In git repo, getting git info
+DEBUG: Git info collected
+DEBUG: Starting language detection
+DEBUG: Language detection complete
+DEBUG: Spec detection complete
+DEBUG: Framework integration complete
+DEBUG: Completed layer1_boot
+DEBUG: After layer1_boot
+DEBUG: TARGET=claude
+DEBUG: MODE=code
+DEBUG: FRAMEWORK=RISEN
+DEBUG: Calling layer7_persona
+DEBUG: Calling layer10_negative
+DEBUG: Calling layer12_techniques
+DEBUG: Starting layer12_techniques
+DEBUG: Completed layer12_techniques
+DEBUG: Calling layer15_render
+DEBUG: Starting layer15_render, TARGET=claude
+DEBUG: Calling render_claude
+DEBUG: render_claude completed
+DEBUG: About to calculate final tokens
+DEBUG: Got final_tokens=240
+DEBUG: Completed layer15_render
+DEBUG: Calling layer13_score
+DEBUG: Calling layer16_deliver

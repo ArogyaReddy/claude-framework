@@ -10,6 +10,22 @@
 set -euo pipefail
 
 # ═══════════════════════════════════════════════════════════════
+# BASH VERSION CHECK — macOS ships with Bash 3.2, need 4.0+
+# ═══════════════════════════════════════════════════════════════
+if (( BASH_VERSINFO[0] < 4 )); then
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "ERROR: This script requires Bash 4.0 or higher"
+  echo "Your version: ${BASH_VERSION}"
+  echo ""
+  echo "macOS default Bash is 3.2. To fix:"
+  echo "  1. Install: brew install bash"
+  echo "  2. Run with: /usr/local/bin/bash $0 \$@"
+  echo "  Or add to ~/.zshrc: alias pg='/usr/local/bin/bash $(realpath "$0")'"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 1
+fi
+
+# ═══════════════════════════════════════════════════════════════
 # VAULT PATHS
 # ═══════════════════════════════════════════════════════════════
 VAULT="${HOME}/.prompt-vault"
@@ -755,6 +771,27 @@ read_clipboard() {
 }
 
 # ═══════════════════════════════════════════════════════════════
+# TOKEN BUDGET UTILITIES — Prevent cost explosion
+# ═══════════════════════════════════════════════════════════════
+estimate_tokens() {
+  local text="$1"
+  # Rough estimate: 1 token ≈ 4 characters
+  echo $(( ${#text} / 4 ))
+}
+
+truncate_to_budget() {
+  local text="$1"
+  local max_tokens="${2:-2000}"  # Default 2K token limit per section
+  local char_limit=$(( max_tokens * 4 ))
+
+  if (( ${#text} > char_limit )); then
+    echo -e "${text:0:$char_limit}\n\n... [TRUNCATED - exceeded ${max_tokens} token budget, showing first ${char_limit} characters]"
+  else
+    echo "$text"
+  fi
+}
+
+# ═══════════════════════════════════════════════════════════════
 # LAYER 1 — BOOT INTELLIGENCE (Enhanced with framework integration)
 # ═══════════════════════════════════════════════════════════════
 layer1_boot() {
@@ -791,6 +828,7 @@ layer1_boot() {
   if [[ -f "SESSION_LOG.md" ]]; then
     log_info "SESSION_LOG.md found — injecting recent context"
     SESSION_CONTEXT=$(tail -50 SESSION_LOG.md 2>/dev/null || echo "")
+    # SESSION_CONTEXT=$(truncate_to_budget "$SESSION_CONTEXT" 1000)
   fi
 
   # Build boot context summary
@@ -928,6 +966,7 @@ layer6_context() {
   if [[ -n "$SPEC_FILE" && -f "$SPEC_FILE" ]]; then
     local spec_content
     spec_content=$(cat "$SPEC_FILE")
+    spec_content=$(truncate_to_budget "$spec_content" 3000)
     EXTRA_CONTEXT="${EXTRA_CONTEXT}\n\n<specification>\n${spec_content}\n</specification>"
     log_ok "Spec file loaded: ${SPEC_FILE}"
   fi
@@ -938,6 +977,7 @@ layer6_context() {
       if [[ -f "$file" ]]; then
         local file_content
         file_content=$(cat "$file")
+        file_content=$(truncate_to_budget "$file_content" 2000)
         EXTRA_CONTEXT="${EXTRA_CONTEXT}\n\n<file path=\"${file}\">\n${file_content}\n</file>"
         log_ok "Included file: ${file}"
       else
@@ -956,6 +996,7 @@ layer6_context() {
   if [[ -f ".claude/history/decisions.md" ]]; then
     local recent_decisions
     recent_decisions=$(tail -100 .claude/history/decisions.md 2>/dev/null || echo "")
+    recent_decisions=$(truncate_to_budget "$recent_decisions" 1500)
     if [[ -n "$recent_decisions" ]]; then
       EXTRA_CONTEXT="${EXTRA_CONTEXT}\n\n<architectural-decisions>\nRecent decisions to consider:\n${recent_decisions}\n</architectural-decisions>"
       log_info "Injected recent architectural decisions"
@@ -976,6 +1017,7 @@ layer6_context() {
   if [[ "$FROM_CLIP" == true ]]; then
     CLIP_CONTENT=$(read_clipboard)
     if [[ -n "$CLIP_CONTENT" ]]; then
+      CLIP_CONTENT=$(truncate_to_budget "$CLIP_CONTENT" 2000)
       EXTRA_CONTEXT="${EXTRA_CONTEXT}\n\n<clipboard-context>\n${CLIP_CONTENT}\n</clipboard-context>"
       log_ok "Clipboard content loaded ($(echo "$CLIP_CONTENT" | wc -c | tr -d ' ') chars)"
     else
@@ -1271,6 +1313,17 @@ layer15_render() {
   esac
 
   log_ok "Prompt rendered for ${TARGET}"
+
+  # Final token budget check
+  local final_tokens
+  final_tokens=$(estimate_tokens "$FINAL_PROMPT")
+
+  if (( final_tokens > 8000 )); then
+    log_warn "⚠️  Prompt size: ${final_tokens} tokens (>8K recommended limit)"
+    log_warn "    Consider using --quick mode or fewer --include files to reduce cost"
+  else
+    log_info "✓ Prompt size: ${final_tokens} tokens (within budget)"
+  fi
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -1972,16 +2025,26 @@ main_flow() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --target|-t)  TARGET="$2"; TARGET_LOCKED=true; shift 2 ;;
-      --mode|-m)    MODE="$2";     shift 2 ;;
+      --target|-t)
+        [[ -z "${2:-}" ]] && { echo -e "${R}ERROR: --target requires a value${NC}"; exit 1; }
+        TARGET="$2"; TARGET_LOCKED=true; shift 2 ;;
+      --mode|-m)
+        [[ -z "${2:-}" ]] && { echo -e "${R}ERROR: --mode requires a value${NC}"; exit 1; }
+        MODE="$2";     shift 2 ;;
       --quick|-q)   SPEED="quick"; shift ;;
       --standard)   SPEED="standard"; shift ;;
       --deep|-d)    SPEED="deep";  shift ;;
-      --template)   TEMPLATE_NAME="$2"; USE_TEMPLATE=true; shift 2 ;;
-      --include)    INCLUDE_FILES+=("$2"); shift 2 ;;
+      --template)
+        [[ -z "${2:-}" ]] && { echo -e "${R}ERROR: --template requires a value${NC}"; exit 1; }
+        TEMPLATE_NAME="$2"; USE_TEMPLATE=true; shift 2 ;;
+      --include)
+        [[ -z "${2:-}" ]] && { echo -e "${R}ERROR: --include requires a file path${NC}"; exit 1; }
+        INCLUDE_FILES+=("$2"); shift 2 ;;
       --chain)      IS_CHAIN=true; shift ;;
       --from-clipboard|--clip) FROM_CLIP=true; shift ;;
-      --spec|-s)    SPEC_FILE="$2"; shift 2 ;;
+      --spec|-s)
+        [[ -z "${2:-}" ]] && { echo -e "${R}ERROR: --spec requires a file path${NC}"; exit 1; }
+        SPEC_FILE="$2"; shift 2 ;;
       --history)    init_vault; browse_history;  exit 0 ;;
       --personas)   init_vault; browse_personas; exit 0 ;;
       --templates)  init_vault; browse_templates; exit 0 ;;
@@ -2039,4 +2102,7 @@ main() {
   main_flow
 }
 
-main "$@"
+# Only run main if script is executed directly (not sourced)
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi

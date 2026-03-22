@@ -7,9 +7,7 @@ set -euo pipefail
 
 # Configuration
 VAULT_DIR="${HOME}/.prompt-vault"
-PROMPTS_DIR="${VAULT_DIR}/prompts"
 HISTORY_FILE="${VAULT_DIR}/history.log"
-INDEX_FILE="${VAULT_DIR}/index.txt"
 
 # Colors for professional output
 readonly BLUE='\033[0;34m'
@@ -22,8 +20,8 @@ readonly NC='\033[0m'
 
 # Initialize vault
 init_vault() {
-    mkdir -p "$VAULT_DIR" "$PROMPTS_DIR"
-    touch "$HISTORY_FILE" "$INDEX_FILE"
+    mkdir -p "$VAULT_DIR"
+    touch "$HISTORY_FILE"
 }
 
 # Smart context detection
@@ -189,107 +187,12 @@ copy_to_clipboard() {
     fi
 }
 
-# Generate filename from task description
-generate_filename() {
-    local task="$1"
-    local timestamp=$(date +%Y%m%d_%H%M%S)
-    local clean_task=$(echo "$task" | tr ' ' '_' | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-30)
-    echo "${timestamp}_${clean_task}.prompt"
-}
-
-# Save prompt with full content
-save_prompt() {
+# Save to history
+save_to_history() {
     local task="$1"
     local target="$2"
-    local prompt="$3"
-    local prompt_length=${#prompt}
-    local filename=$(generate_filename "$task")
-    local filepath="$PROMPTS_DIR/$filename"
-
-    # Save full prompt to file
-    cat > "$filepath" << EOF
-# Task: $task
-# Target: $target
-# Generated: $(date '+%Y-%m-%d %H:%M:%S')
-# Length: $prompt_length characters
-
-$prompt
-EOF
-
-    # Update index for searching
-    echo "$(date '+%Y-%m-%d %H:%M:%S') | $target | $task | $prompt_length chars | $filename" >> "$INDEX_FILE"
-
-    # Keep old history format for compatibility
-    echo "$(date '+%Y-%m-%d %H:%M:%S') | $target | $task | $prompt_length chars" >> "$HISTORY_FILE"
-
-    echo -e "${GREEN}💾 Saved as:${NC} $filename"
-    return 0
-}
-
-# List saved prompts
-list_prompts() {
-    if [[ ! -f "$INDEX_FILE" || ! -s "$INDEX_FILE" ]]; then
-        echo -e "${YELLOW}No saved prompts yet.${NC}"
-        return
-    fi
-
-    echo -e "${BOLD}📚 Saved Prompts:${NC}"
-    echo ""
-
-    local count=1
-    while IFS='|' read -r timestamp target task length filename; do
-        echo -e "${BLUE}[$count]${NC} ${timestamp} ${YELLOW}$target${NC}"
-        echo -e "    📝 $task ${DIM}($length)${NC}"
-        echo -e "    📁 $filename"
-        echo ""
-        ((count++))
-    done < "$INDEX_FILE"
-}
-
-# Retrieve saved prompt
-get_prompt() {
-    local search_term="$1"
-    local matches=()
-
-    # Search by number or partial task name
-    if [[ "$search_term" =~ ^[0-9]+$ ]]; then
-        # Search by number
-        local line_num=$(sed -n "${search_term}p" "$INDEX_FILE")
-        if [[ -n "$line_num" ]]; then
-            local filename=$(echo "$line_num" | cut -d'|' -f5 | tr -d ' ')
-            local filepath="$PROMPTS_DIR/$filename"
-            if [[ -f "$filepath" ]]; then
-                echo -e "${BOLD}Retrieved Prompt:${NC}"
-                echo ""
-                # Show just the prompt content (skip metadata lines)
-                tail -n +6 "$filepath"
-                echo ""
-                copy_to_clipboard "$(tail -n +6 "$filepath")"
-                return 0
-            fi
-        fi
-    else
-        # Search by task description
-        local matches=$(grep -i "$search_term" "$INDEX_FILE" | head -5)
-        if [[ -n "$matches" ]]; then
-            echo -e "${BOLD}Found matching prompts:${NC}"
-            echo ""
-            local count=1
-            while IFS= read -r line; do
-                local task=$(echo "$line" | cut -d'|' -f3 | tr -d ' ')
-                local filename=$(echo "$line" | cut -d'|' -f5 | tr -d ' ')
-                echo -e "${BLUE}[$count]${NC} $task"
-                echo -e "    📁 $filename"
-                ((count++))
-            done <<< "$matches"
-            echo ""
-            echo -e "Run: ${BOLD}pg --get <number>${NC} to retrieve a specific prompt"
-            return 0
-        fi
-    fi
-
-    echo -e "${RED}No prompts found matching: $search_term${NC}"
-    return 1
+    local prompt_length="$3"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | $target | $task | ${prompt_length} chars" >> "$HISTORY_FILE"
 }
 
 # Show usage
@@ -312,17 +215,10 @@ OPTIONS:
   --target claude      XML format for Claude (default)
   --target copilot     Natural language for Copilot
   --target universal   Works with any AI tool
-  --list              Show all saved prompts
-  --get <search>      Retrieve saved prompt (by number or search term)
-  --history           Show recent prompts (legacy view)
+  --history           Show recent prompts
   --help              Show this help
 
-PROMPT MANAGEMENT:
-  pg --list                          # Show all saved prompts
-  pg --get 3                         # Get prompt #3
-  pg --get "login"                   # Search for prompts containing "login"
-
-All generated prompts are automatically saved and can be reused.
+The generated prompt is automatically copied to your clipboard.
 EOF
 }
 
@@ -352,18 +248,6 @@ main() {
             --target)
                 target="$2"
                 shift 2
-                ;;
-            --list)
-                list_prompts
-                exit 0
-                ;;
-            --get)
-                if [[ -z "${2:-}" ]]; then
-                    echo -e "${RED}Error: --get requires a search term or number${NC}"
-                    exit 1
-                fi
-                get_prompt "$2"
-                exit 0
                 ;;
             --history)
                 show_history
@@ -415,7 +299,7 @@ main() {
 
     # Copy and save
     copy_to_clipboard "$prompt"
-    save_prompt "$task" "$target" "$prompt"
+    save_to_history "$task" "$target" "$char_count"
 
     echo -e "${GREEN}✓ Ready to paste into $target${NC}"
 }
