@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Claude Code Master Framework — Field Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #0b0d0f;
+  --surface:   #111418;
+  --surface2:  #181c22;
+  --border:    #1f2530;
+  --border2:   #2a3040;
+  --text:      #c8d0dc;
+  --text-dim:  #6b7585;
+  --text-xdim: #3d4555;
+  --head:      #edf0f5;
+  --accent:    #4af0a0;
+  --accent2:   #f0a04a;
+  --accent3:   #4a9ef0;
+  --red:       #f05a4a;
+  --mono:      'IBM Plex Mono', monospace;
+  --display:   'Syne', sans-serif;
+  --serif:     'Lora', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.8;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .4;
+}
+.page { position: relative; z-index: 1; }
+.container { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+
+/* MASTHEAD */
+.masthead {
+  border-bottom: 1px solid var(--border);
+  padding: 80px 0 60px;
+  position: relative; overflow: hidden;
+}
+.masthead::after {
+  content: '';
+  position: absolute; top: -120px; right: -80px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(74,240,160,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.m-label {
+  font-family: var(--display);
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.m-label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--accent); }
+h1 {
+  font-family: var(--display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 800; line-height: .95;
+  color: var(--head); letter-spacing: -.03em; margin-bottom: 8px;
+}
+h1 .dim-word { color: var(--text-xdim); }
+.masthead-sub {
+  margin-top: 28px;
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: end; gap: 24px;
+  border-top: 1px solid var(--border); padding-top: 24px;
+}
+.masthead-desc {
+  font-family: var(--serif); font-style: italic;
+  font-size: 16px; color: var(--text-dim); line-height: 1.6; max-width: 520px;
+}
+.masthead-meta {
+  text-align: right; font-size: 10px; color: var(--text-xdim);
+  letter-spacing: .1em; text-transform: uppercase; line-height: 1.9;
+}
+
+/* TOC */
+.toc {
+  border: 1px solid var(--border); background: var(--surface);
+  padding: 32px; margin: 48px 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 40px;
+}
+.toc-title {
+  font-family: var(--display); font-size: 10px; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--text-xdim);
+  margin-bottom: 20px; grid-column: 1 / -1;
+}
+.toc-item {
+  display: flex; align-items: baseline; gap: 8px;
+  color: var(--text-dim); font-size: 12px; text-decoration: none;
+  padding: 5px 0; border-bottom: 1px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.toc-item:hover { color: var(--accent); border-color: var(--border); }
+.toc-num { color: var(--accent); font-size: 10px; min-width: 22px; }
+
+/* CHAPTERS */
+.chapter { padding: 72px 0; border-bottom: 1px solid var(--border); }
+.chapter:last-of-type { border-bottom: none; }
+.ch-header { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
+.ch-num {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--accent); min-width: 40px; padding-top: 6px;
+}
+.ch-titles h2 {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 700; color: var(--head); line-height: 1.1; letter-spacing: -.02em;
+}
+.ch-titles .ch-tagline {
+  font-family: var(--serif); font-style: italic;
+  font-size: 14px; color: var(--text-xdim); margin-top: 6px;
+}
+
+/* PROSE */
+.prose { font-family: var(--mono); font-size: 13.5px; color: var(--text); line-height: 1.9; }
+.prose p { margin-bottom: 18px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { color: var(--head); font-weight: 500; }
+.prose em { font-family: var(--serif); font-style: italic; color: var(--text-dim); }
+.prose code { color: var(--accent2); font-size: 12px; }
+
+/* CALLOUTS */
+.callout {
+  border-left: 2px solid var(--accent); background: rgba(74,240,160,.04);
+  padding: 20px 24px; margin: 28px 0;
+  font-family: var(--serif); font-style: italic;
+  font-size: 15px; color: var(--head); line-height: 1.65;
+}
+.callout-warn { border-color: var(--accent2); background: rgba(240,160,74,.04); }
+.callout-danger { border-color: var(--red); background: rgba(240,90,74,.04); }
+.callout-tag {
+  display: block; font-family: var(--mono); font-style: normal;
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px; font-weight: 500;
+}
+.callout-warn .callout-tag { color: var(--accent2); }
+.callout-danger .callout-tag { color: var(--red); }
+
+/* RULE TABLE */
+.rule-table { margin: 28px 0; }
+.rule-row {
+  display: grid; grid-template-columns: 180px 1fr;
+  gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); align-items: start;
+}
+.rule-row:last-child { border-bottom: 1px solid var(--border); }
+.rule-key {
+  font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--accent); padding-top: 2px; font-weight: 500;
+}
+.rule-val { font-size: 13px; color: var(--text); line-height: 1.75; }
+.rule-val strong { color: var(--head); font-weight: 500; }
+
+/* CODE BLOCKS */
+.code {
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  padding: 24px; margin: 24px 0; overflow-x: auto; position: relative;
+}
+.code-label {
+  position: absolute; top: -1px; right: 16px;
+  background: var(--accent); color: var(--bg);
+  font-size: 9px; font-weight: 500; letter-spacing: .15em;
+  text-transform: uppercase; padding: 2px 8px;
+}
+.code pre {
+  font-family: var(--mono); font-size: 12.5px;
+  line-height: 1.7; color: var(--text); white-space: pre;
+}
+.code .c   { color: var(--text-xdim); }
+.code .kw  { color: var(--accent3); }
+.code .str { color: var(--accent2); }
+.code .fn  { color: var(--accent); }
+.code .flag{ color: var(--accent2); }
+.code .punct{ color: var(--text-dim); }
+
+/* COMPARE GRID */
+.compare {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; margin: 28px 0; border: 1px solid var(--border);
+}
+.compare-col { background: var(--surface); padding: 24px; }
+.compare-col:first-child { border-right: 2px solid var(--red); }
+.compare-col:last-child  { border-left:  2px solid var(--accent); }
+.compare-col h4 {
+  font-family: var(--display); font-size: 11px; letter-spacing: .2em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.compare-col:first-child h4 { color: var(--red); }
+.compare-col:last-child  h4 { color: var(--accent); }
+.compare-col p { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; font-family: var(--mono); }
+
+/* CARD GRID */
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 2px; margin: 28px 0;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 22px; position: relative; transition: border-color .2s;
+}
+.card:hover { border-color: var(--border2); }
+.card::before {
+  content: attr(data-num); position: absolute; top: 16px; right: 16px;
+  font-size: 28px; font-family: var(--display); font-weight: 800;
+  color: var(--text-xdim); line-height: 1;
+}
+.card h4 {
+  font-family: var(--display); font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--head); margin-bottom: 10px;
+}
+.card p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+
+/* CHECKLIST */
+.checklist { margin: 20px 0; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--text); line-height: 1.6;
+}
+.check-item:first-child { border-top: 1px solid var(--border); }
+.check-icon { color: var(--accent); min-width: 14px; margin-top: 2px; }
+.check-icon.warn { color: var(--accent2); }
+.check-icon.danger { color: var(--red); }
+
+/* DIVIDER */
+.divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 40px 0; color: var(--text-xdim);
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border); padding: 48px 0;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px;
+}
+.footer-brand { font-family: var(--display); font-size: 18px; font-weight: 700; color: var(--text-xdim); letter-spacing: -.01em; }
+.footer-brand span { color: var(--accent); }
+.footer-meta { font-size: 10px; color: var(--text-xdim); letter-spacing: .1em; text-transform: uppercase; text-align: right; line-height: 1.9; }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .compare { grid-template-columns: 1fr; }
+  .compare-col:first-child { border-right: none; border-bottom: 2px solid var(--red); }
+  .compare-col:last-child  { border-left: none; border-top: 2px solid var(--accent); }
+  .rule-row { grid-template-columns: 1fr; gap: 4px; }
+  .masthead-sub { grid-template-columns: 1fr; }
+  .masthead-meta { text-align: left; }
+  .toc { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; }
+  .footer-meta { text-align: left; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="container">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="m-label">Claude Code Master Framework</div>
+  <h1>The <span class="dim-word">Field</span><br>Manual</h1>
+  <div class="masthead-sub">
+    <p class="masthead-desc">A file-based operating layer for Claude Code. Minimal tokens, maximum precision, zero guesswork — built for engineers who use Claude daily and need it to behave like a senior team member, not a blank slate.</p>
+    <div class="masthead-meta">
+      Version 1.0<br>
+      March 2026<br>
+      github.com/ArogyaReddy<br>
+      /claude-framework
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-title">Contents</div>
+  <a class="toc-item" href="#what-it-is"><span class="toc-num">01</span>What It Is</a>
+  <a class="toc-item" href="#how-it-works"><span class="toc-num">02</span>How It Works</a>
+  <a class="toc-item" href="#memory-system"><span class="toc-num">03</span>Memory System</a>
+  <a class="toc-item" href="#skills"><span class="toc-num">04</span>Skill Library</a>
+  <a class="toc-item" href="#hooks"><span class="toc-num">05</span>Hook Scripts</a>
+  <a class="toc-item" href="#five-phase"><span class="toc-num">06</span>5-Phase Protocol</a>
+  <a class="toc-item" href="#session-loop"><span class="toc-num">07</span>The Session Loop</a>
+  <a class="toc-item" href="#token-discipline"><span class="toc-num">08</span>Token Discipline</a>
+  <a class="toc-item" href="#prompt-craft"><span class="toc-num">09</span>Prompt Craft</a>
+  <a class="toc-item" href="#setup"><span class="toc-num">10</span>Setup & Verification</a>
+</nav>
+
+<!-- 01 WHAT IT IS -->
+<section class="chapter" id="what-it-is">
+  <div class="ch-header">
+    <div class="ch-num">01</div>
+    <div class="ch-titles">
+      <h2>What It Is</h2>
+      <div class="ch-tagline">Not a wrapper. Not a plugin. A persistent behavioral layer.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Claude Code sessions are stateless by default. Every morning you open a terminal, type <code>claude</code>, and it has no memory of what you were building, what decisions you made, what you tried that didn't work. You spend the first fifteen minutes re-explaining context. That's not pair programming — that's onboarding your own tool from scratch every day.</p>
+    <p>This framework ends that. It is a set of markdown files that Claude reads before your first message — a persistent briefing that gives Claude your identity, your project's rules, and an accurate summary of where you left off. The "intelligence" is the files. Claude just reads them.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Core Principle</span>
+    Move as much intelligence as possible into persistent context — CLAUDE.md, skills, hooks — so your per-task prompts become tiny, cheap, and precise. The best prompt is the one that requires the least explanation because everything structural is already loaded.
+  </div>
+
+  <div class="card-grid">
+    <div class="card" data-num="01">
+      <h4>Zero Infrastructure</h4>
+      <p>No server. No database. No build step. No API key beyond what Claude Code already uses. Markdown files on your hard drive.</p>
+    </div>
+    <div class="card" data-num="02">
+      <h4>Layered Non-Destructively</h4>
+      <p>Drops into any existing project. Does not replace your stack, your tools, or your workflow. Adds a behavioral layer on top.</p>
+    </div>
+    <div class="card" data-num="03">
+      <h4>Two-Layer Safety</h4>
+      <p>CLAUDE.md rules are layer one — behavioral. Hook scripts are layer two — mechanical. Layer two fires even when layer one drifts.</p>
+    </div>
+    <div class="card" data-num="04">
+      <h4>Cost-Efficient By Design</h4>
+      <p>.claudeignore, skill invocation on demand, and session continuity typically cut per-session token spend 40–60%.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 HOW IT WORKS -->
+<section class="chapter" id="how-it-works">
+  <div class="ch-header">
+    <div class="ch-num">02</div>
+    <div class="ch-titles">
+      <h2>How It Works</h2>
+      <div class="ch-tagline">What actually happens before you type your first message.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Before you type a single word, Claude Code has already loaded the framework into context. This is the actual sequence — not how it should work, but what is verified to happen every session.</p>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Session Boot Sequence</span>
+    <pre>
+<span class="fn">claude</span> opens in project folder
+  ↓
+loads <span class="str">~/.claude/CLAUDE.md</span>     <span class="c">← global policy: output rules, memory system, phase protocol</span>
+  ↓
+loads <span class="str">./CLAUDE.md</span>            <span class="c">← project policy: stack, conventions, active specs</span>
+  ↓
+CLAUDE.md startup protocol fires:
+  → reads <span class="str">PROFILE.md</span>          <span class="c">← who you are: role, stack, communication style</span>
+  → reads <span class="str">SESSION_LOG.md</span>      <span class="c">← where you left off: focus, decisions, next step</span>
+  → reads active specs       <span class="c">← locked decisions for in-progress features</span>
+  ↓
+<span class="kw">you type your first message</span>
+Claude already knows everything. Zero re-explanation needed.</pre>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Important Distinction</span>
+    Rules in CLAUDE.md are not suggestions. They are visible text in Claude's working memory. Claude follows them the same way it follows its training. But they are not mechanical — they can drift as context fills. Hooks are mechanical. Both layers are necessary.
+  </div>
+</section>
+
+<!-- 03 MEMORY SYSTEM -->
+<section class="chapter" id="memory-system">
+  <div class="ch-header">
+    <div class="ch-num">03</div>
+    <div class="ch-titles">
+      <h2>Memory System</h2>
+      <div class="ch-tagline">Claude has no memory. Your hard drive does. The difference is a habit.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Claude Code does not store anything between sessions. No database. No vector store. Nothing in the model itself. When a session ends, context is wiped completely. The memory system works by having Claude write what happened to disk — and read it back next session. The "memory" is as good as what got written.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <div class="rule-key">SCRATCHPAD.md</div>
+      <div class="rule-val"><strong>Rolling session state.</strong> Current focus, where to resume, failed attempts, open questions. Replaced entirely at each /wrap. Read at every session start. If this file doesn't exist, tomorrow's Claude starts blank.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">DECISIONS.md</div>
+      <div class="rule-val"><strong>Permanent decision log. Never truncated.</strong> Every architectural choice, every rejected alternative. If a new decision contradicts an existing one, Claude flags it before writing. This file is your project's institutional memory.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">SESSIONS.md</div>
+      <div class="rule-val"><strong>Lightweight audit trail.</strong> One row per session: date, summary, status. Never read at session start (noise). Written at /wrap only. Useful for project retrospectives and understanding the timeline of work.</div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>Without /wrap</h4>
+      <p>Session ends. Context wiped. Tomorrow's Claude: "I don't have context for this project. Could you explain what we're building?" You spend 15 minutes re-explaining. Every. Single. Morning.</p>
+    </div>
+    <div class="compare-col">
+      <h4>With /wrap</h4>
+      <p>Session ends. SCRATCHPAD.md written with exact focus, decisions, next step. Tomorrow: /resume → session brief in 10 seconds → working in 30 seconds. Same as walking back to your desk after lunch.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-danger">
+    <span class="callout-tag">The One Non-Negotiable Rule</span>
+    Type /wrap before closing Claude Code. Every session, without exception. There is no technical enforcement of this — it must become reflexive. The cost of missing it is permanent loss of that session's context.
+  </div>
+</section>
+
+<!-- 04 SKILLS -->
+<section class="chapter" id="skills">
+  <div class="ch-header">
+    <div class="ch-num">04</div>
+    <div class="ch-titles">
+      <h2>Skill Library</h2>
+      <div class="ch-tagline">17 invocable behaviors. Each fires only when called. Zero idle token cost.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>A skill is a markdown file containing precise behavioral instructions. When you say <code>Use debug-first skill.</code>, Claude Code reads that file and injects the instructions into your session. The skill remains active for the conversation. No code runs. No compilation. Just text placed in front of Claude.</p>
+    <p>Skills cost tokens only when invoked. An unused skill costs nothing. This is why you don't auto-load all 17 at session start — that would burn 3,000–5,000 tokens before you've done anything.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <div class="rule-key">debug-first</div>
+      <div class="rule-val"><code>Use debug-first skill.</code> — Forces EXPECTS → ACTUAL → CAUSE → FIX diagnosis before touching any code. The most important skill. Use it for every bug.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">scope-guard</div>
+      <div class="rule-val"><code>Use scope-guard skill.</code> — Locks Claude to named files. Any attempt to touch anything else triggers SCOPE BLOCKER and Claude stops. Use before every multi-file task.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">spec-to-task</div>
+      <div class="rule-val"><code>Use spec-to-task skill on specs/[name].md</code> — Converts a spec file to an ordered task list. One task per /chunk. Dependencies stated. Runs as subagent to protect your context.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">code-review</div>
+      <div class="rule-val"><code>Use code-review skill on [file].</code> — Reviews against CLAUDE.md rules. Returns violations only. No praise, no summary. Runs as subagent.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">session-closer</div>
+      <div class="rule-val"><code>Use session-closer skill.</code> — Invoked by /wrap. Writes SCRATCHPAD.md and DECISIONS.md from full session context. The most consequential skill in the library.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">healthcheck</div>
+      <div class="rule-val"><code>Use healthcheck skill.</code> — 12-point diagnostic: PASS / WARN / FAIL for every framework component. Run on any new project after framework-apply.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">project-scan + framework-apply</div>
+      <div class="rule-val"><code>Use project-scan skill on [path].</code> then <code>Use framework-apply skill.</code> — Scans for missing components, installs them. The onboarding sequence for any new project.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">minimal-output</div>
+      <div class="rule-val"><code>Use minimal-output skill.</code> — Strips all narration. Code only. No preamble, no explanation, no process description. Maximum signal-to-noise for pure coding sessions.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-tag">Agent Flag</span>
+    Skills marked <code>agent: true</code> spawn a Claude Code subagent — they run in a separate context and don't consume your session's token budget. Use agent skills for file-heavy work (code-review, project-scan). Use <code>agent: false</code> skills for lightweight instruction injection.
+  </div>
+</section>
+
+<!-- 05 HOOKS -->
+<section class="chapter" id="hooks">
+  <div class="ch-header">
+    <div class="ch-num">05</div>
+    <div class="ch-titles">
+      <h2>Hook Scripts</h2>
+      <div class="ch-tagline">Safety that Claude can't override. Fires at the app layer, not the context layer.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>CLAUDE.md rules tell Claude not to do dangerous things. Claude follows them — until context drift, a long session, or an ambiguous prompt causes it to forget. Hook scripts fire at the Claude Code application layer, below Claude's context entirely. They cannot be overridden by anything Claude decides to do.</p>
+    <p>Three hooks. Three moments. All wired via <code>~/.claude/settings.json</code> with absolute paths.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <div class="rule-key">pre-tool-use.ps1</div>
+      <div class="rule-val">
+        <strong>Fires before every Bash, Write, and Edit call.</strong><br>
+        Blocks: <code>rm -rf</code>, <code>DROP TABLE</code>, <code>DROP DATABASE</code>, <code>TRUNCATE</code>, <code>git push --force</code>, writes to <code>.env</code>, <code>npm install</code>, <code>pip install</code>, <code>yarn add</code>.<br>
+        Logs every tool event to <code>.claude/logs/tool-use.log</code>.
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">post-tool-use.ps1</div>
+      <div class="rule-val">
+        <strong>Fires after every tool call.</strong><br>
+        Logs outcomes, file paths of every Write/Edit, and failed Bash commands. Writes to <code>tool-use.log</code>, <code>changes.log</code>, and dated <code>session-YYYY-MM-DD.log</code>.
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">pre-compact.ps1</div>
+      <div class="rule-val">
+        <strong>Fires before each /compact.</strong><br>
+        Saves state snapshot: files changed this session, git status, last SESSION_LOG entry. Writes to <code>.claude/logs/pre-compact-state.md</code>. Nothing is lost during context compression.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-danger">
+    <span class="callout-tag">Critical: Use Absolute Paths</span>
+    Hook paths in settings.json must be absolute. A relative path works only when Claude Code is opened from the exact framework directory. Open it from anywhere else and the hook silently fails. Always: <code>C:/Users/name/.claude/settings.json</code> with forward slashes.
+  </div>
+</section>
+
+<!-- 06 FIVE-PHASE -->
+<section class="chapter" id="five-phase">
+  <div class="ch-header">
+    <div class="ch-num">06</div>
+    <div class="ch-titles">
+      <h2>5-Phase Protocol</h2>
+      <div class="ch-tagline">The difference between code that's fast to write and code that's right.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Without a protocol, AI-assisted development has one reliable failure mode: Claude starts writing before the architecture is clear, produces code that looks correct but has structural problems, and you spend more time fixing the structure than you would have spent planning. The code is fast to generate and slow to be right.</p>
+    <p>The 5-phase protocol applies to any feature touching more than two files. For single-file changes, /chunk + /verify is sufficient.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <div class="rule-key">/plan — Phase 1</div>
+      <div class="rule-val"><strong>Architecture only. No code written.</strong> Claude proposes structure, resolves open decisions, identifies scope. You confirm or redirect. The plan must exist as text before Phase 2 begins.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">/spec — Phase 2</div>
+      <div class="rule-val"><strong>Writes specs/[feature].md.</strong> The spec captures: scope, out-of-scope, locked decisions, constraints, and an ordered task checklist. One task per /chunk. This file is what tomorrow's Claude reads instead of your verbal re-explanation.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">/chunk — Phase 3</div>
+      <div class="rule-val"><strong>Builds one bounded piece.</strong> One chunk = one commit-ready set of changes. Hooks fire on every file write. Output: file:line change manifest. Never batch multiple chunks without committing between them.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">/verify — Phase 4</div>
+      <div class="rule-val"><strong>Claude interrogates its own output.</strong> Scope check (touched only named files?), logic check (matches the spec?), risk assessment. Returns: APPROVED or FLAGGED with reason. Run this before every commit. Always.</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">/update — Phase 5</div>
+      <div class="rule-val"><strong>CLAUDE.md improves.</strong> Every correction made during the session should become a rule. If Claude did something wrong that a rule could have prevented, write the rule. Then /wrap.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-tag">Why the Spec File Matters for AI Specifically</span>
+    Claude does not hold multi-session architectural intent in its head. If you plan on Monday and build on Tuesday without a spec file, Tuesday's Claude does not know Monday's plan. The spec is not documentation — it is the continuity mechanism.
+  </div>
+</section>
+
+<!-- 07 SESSION LOOP -->
+<section class="chapter" id="session-loop">
+  <div class="ch-header">
+    <div class="ch-num">07</div>
+    <div class="ch-titles">
+      <h2>The Session Loop</h2>
+      <div class="ch-tagline">Open → work → close. Three habits that determine everything.</div>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Daily Workflow</span>
+    <pre>
+<span class="c">── MORNING ──────────────────────────────────────────</span>
+<span class="kw">cd</span> /your-project <span class="punct">&&</span> <span class="fn">claude</span>
+<span class="fn">/resume</span>                  <span class="c">← reads memory, outputs brief, waits for confirm</span>
+<span class="c">confirm the brief → start working</span>
+
+<span class="c">── DURING WORK ──────────────────────────────────────</span>
+<span class="fn">Use scope-guard skill.</span>   <span class="c">← before any multi-file task</span>
+<span class="fn">/plan</span>                    <span class="c">← non-trivial features: architecture first</span>
+<span class="fn">/spec</span>                    <span class="c">← write the spec before touching code</span>
+<span class="fn">/chunk</span>                   <span class="c">← build one piece</span>
+<span class="fn">/verify</span>                  <span class="c">← interrogate before committing</span>
+<span class="fn">/decide</span>                  <span class="c">← any significant decision: log it NOW</span>
+<span class="fn">/compact</span>                 <span class="c">← at ~60% context, not 95%</span>
+
+<span class="c">── END OF DAY ───────────────────────────────────────</span>
+<span class="fn">/wrap</span>                    <span class="c">← writes SCRATCHPAD.md + DECISIONS.md + SESSIONS.md</span>
+<span class="c">exit Claude Code</span></pre>
+  </div>
+
+  <div class="checklist">
+    <div class="check-item"><span class="check-icon">✓</span> /resume at session open — never skip, even for "quick tasks"</div>
+    <div class="check-item"><span class="check-icon">✓</span> scope-guard before every multi-file task</div>
+    <div class="check-item"><span class="check-icon">✓</span> /decide immediately when architecture decisions are made</div>
+    <div class="check-item"><span class="check-icon warn">⚠</span> /compact at 60% context, not when quality has already degraded</div>
+    <div class="check-item"><span class="check-icon danger">✗</span> Never close Claude Code without /wrap — there is no recovery</div>
+  </div>
+</section>
+
+<!-- 08 TOKEN DISCIPLINE -->
+<section class="chapter" id="token-discipline">
+  <div class="ch-header">
+    <div class="ch-num">08</div>
+    <div class="ch-titles">
+      <h2>Token Discipline</h2>
+      <div class="ch-tagline">Automatic savings vs. habit savings. Know which is which.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Some token savings are mechanical — they happen automatically once set up. Others require habits. Confusing the two is where cost discipline breaks down.</p>
+  </div>
+
+  <div class="rule-table">
+    <div class="rule-row">
+      <div class="rule-key">Automatic</div>
+      <div class="rule-val">
+        <strong>.claudeignore</strong> — blocks node_modules, dist, logs. Saves 5,000–200,000 tokens per session automatically, once created.<br><br>
+        <strong>CLAUDE.md auto-load</strong> — your rules and identity are in context before you type. Eliminates 300–500 tokens of re-explanation per session, every session.
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-key">Requires Habits</div>
+      <div class="rule-val">
+        <strong>/wrap every session</strong> — SESSION_LOG saves re-explanation cost next session. Only works if you do it.<br><br>
+        <strong>/compact at 60%</strong> — prevents quality degradation. Only works if you watch the meter.<br><br>
+        <strong>scope-guard invocation</strong> — prevents file-sprawl (Claude reading unnecessary files for "context"). Only fires when invoked.<br><br>
+        <strong>4-element prompts</strong> — SCOPE + ACTION + FENCE + OUTPUT reduces back-and-forth. Only when you write them this way.
+      </div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4>Expensive Prompt</h4>
+      <p>"Can you help me with the authentication? I need to add JWT validation and also maybe update the middleware and check the config file and make sure the tests still pass..."</p>
+    </div>
+    <div class="compare-col">
+      <h4>4-Element Prompt</h4>
+      <p>SCOPE: src/middleware/auth.js only.<br>ACTION: Add JWT validation to the checkToken function.<br>FENCE: Do not touch any other file.<br>OUTPUT: file:line changes only, no explanation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 PROMPT CRAFT -->
+<section class="chapter" id="prompt-craft">
+  <div class="ch-header">
+    <div class="ch-num">09</div>
+    <div class="ch-titles">
+      <h2>Prompt Craft</h2>
+      <div class="ch-tagline">The four elements. When FENCE and OUTPUT live in CLAUDE.md, you only write two.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Every effective prompt contains four elements. When FENCE and OUTPUT are defined in CLAUDE.md and skills, your prompts shrink to SCOPE + ACTION. That is the goal: prompts so short they can't be misinterpreted.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" data-num="S">
+      <h4>Scope</h4>
+      <p>Exactly what file or function. Not "the auth module" — <code>src/auth/middleware.js</code>, the <code>checkToken</code> function.</p>
+    </div>
+    <div class="card" data-num="A">
+      <h4>Action</h4>
+      <p>Exactly one thing being done. Not "refactor and improve" — "add try/catch around the fetchUser call."</p>
+    </div>
+    <div class="card" data-num="F">
+      <h4>Fence</h4>
+      <p>What must not be touched. When scope-guard is active, this is enforced mechanically. Otherwise state it explicitly.</p>
+    </div>
+    <div class="card" data-num="O">
+      <h4>Output</h4>
+      <p>Format, exclusions, stop condition. "file:line format only, no explanation, stop after writing the function."</p>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Golden Prompt Templates</span>
+    <pre>
+<span class="c">── Bug diagnosis ──────────────────────────────────────</span>
+<span class="fn">Use debug-first skill.</span>
+<span class="str">[Describe symptom — what happens vs. what should happen]</span>
+
+<span class="c">── Scoped code change ─────────────────────────────────</span>
+<span class="fn">Use scope-guard skill.</span>
+SCOPE: <span class="str">src/auth/middleware.js</span> — <span class="str">checkToken function</span> only.
+ACTION: <span class="str">Add JWT expiry validation.</span>
+OUTPUT: file:line changes only.
+
+<span class="c">── Feature start ──────────────────────────────────────</span>
+<span class="fn">/plan</span>
+<span class="str">Feature: user authentication — JWT + refresh tokens.</span>
+<span class="str">Constraints: no new dependencies, Lambda compatible.</span>
+<span class="str">Produce architecture only, no code.</span>
+
+<span class="c">── Code review ────────────────────────────────────────</span>
+<span class="fn">Use code-review skill on</span> <span class="str">src/api/users.js.</span></pre>
+  </div>
+</section>
+
+<!-- 10 SETUP -->
+<section class="chapter" id="setup">
+  <div class="ch-header">
+    <div class="ch-num">10</div>
+    <div class="ch-titles">
+      <h2>Setup & Verification</h2>
+      <div class="ch-tagline">Install once. Verify with healthcheck. Apply to new projects in three commands.</div>
+    </div>
+  </div>
+
+  <div class="code">
+    <span class="code-label">First-Time Install</span>
+    <pre>
+<span class="c"># 1. Clone</span>
+<span class="kw">git</span> <span class="fn">clone</span> <span class="str">https://github.com/ArogyaReddy/claude-framework.git</span>
+<span class="kw">cd</span> claude-framework
+
+<span class="c"># 2. Install (Windows)</span>
+<span class="fn">.\setup.ps1</span>
+
+<span class="c"># 2. Install (Unix/Mac)</span>
+<span class="fn">./setup.sh</span>
+
+<span class="c"># 3. Open Claude Code and verify</span>
+<span class="fn">claude</span>
+<span class="fn">Use healthcheck skill.</span>     <span class="c">← all 12 points should show PASS</span></pre>
+  </div>
+
+  <div class="code">
+    <span class="code-label">Apply to Any Existing Project</span>
+    <pre>
+<span class="kw">cd</span> /path/to/your-project
+<span class="fn">claude</span>
+<span class="fn">Use project-scan skill on .</span>    <span class="c">← produces gap analysis</span>
+<span class="fn">Use framework-apply skill.</span>     <span class="c">← installs missing components</span>
+<span class="fn">Use healthcheck skill.</span>         <span class="c">← verify: all PASS before real work</span></pre>
+  </div>
+
+  <div class="checklist">
+    <div class="check-item"><span class="check-icon">✓</span> CLAUDE.md present (both global ~/.claude/ and project root)</div>
+    <div class="check-item"><span class="check-icon">✓</span> PROFILE.md filled — no placeholder text remaining</div>
+    <div class="check-item"><span class="check-icon">✓</span> All 17 skills present in skills/</div>
+    <div class="check-item"><span class="check-icon">✓</span> Hook paths in settings.json are absolute with forward slashes</div>
+    <div class="check-item"><span class="check-icon">✓</span> .claudeignore present in project root</div>
+    <div class="check-item"><span class="check-icon warn">⚠</span> PowerShell execution policy: RemoteSigned or Unrestricted</div>
+    <div class="check-item"><span class="check-icon warn">⚠</span> SESSION_LOG.md will only exist after first successful /wrap</div>
+    <div class="check-item"><span class="check-icon danger">✗</span> Do NOT use relative paths in settings.json hook registration</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Claude<span>Framework</span></div>
+  <div class="footer-meta">
+    Field Manual v1.0<br>
+    March 2026<br>
+    github.com/ArogyaReddy/claude-framework
+  </div>
+</footer>
+
+</div><!-- /container -->
+</div><!-- /page -->
+</body>
+</html>
